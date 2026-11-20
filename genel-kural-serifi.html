@@ -1,0 +1,789 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>LOTOTO Kural Şerifi</title>
+<style>
+  :root{
+    --copper:#b57b5e; --copper-dark:#8f5c43; --copper-light:#d9a78e;
+    --ink:#1d1d1b; --bg:#f7f4f1; --card:#ffffff; --card2:#f8f2ee;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(143,92,67,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(143,92,67,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .combo{display:inline-block;background:var(--green);color:#fff;font-weight:800;border-radius:999px;padding:4px 12px;font-size:.8rem;margin-left:8px;animation:pop .3s;}
+  /* MATCH */
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .match-col{display:grid;gap:10px;align-content:start;}
+  .mitem{background:var(--card2);border:2px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;font-size:.88rem;line-height:1.4;}
+  .mitem.term{font-weight:800;font-size:.95rem;}
+  .mitem:hover{border-color:var(--copper);}
+  .mitem.sel{border-color:var(--copper);background:#f3e6dd;}
+  .mitem.done{border-color:var(--green);background:var(--green-bg);opacity:.75;pointer-events:none;}
+  @media (max-width:640px){ .match-grid{grid-template-columns:1fr;} }
+  /* DURUM KARTLARI */
+  .kp-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:30px 22px;text-align:center;font-size:1.15rem;font-weight:700;margin-bottom:8px;animation:pop .25s ease;line-height:1.55;min-height:130px;display:flex;align-items:center;justify-content:center;}
+  .kp-cat{text-align:center;color:var(--muted);font-size:.88rem;font-weight:700;min-height:44px;margin-bottom:14px;line-height:1.45;}
+  .kp-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .kp-btn{border:none;border-radius:14px;padding:18px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.15s;color:#fff;}
+  .kp-btn:hover{transform:translateY(-2px);filter:brightness(1.06);}
+  .kp-btn.uygun{background:linear-gradient(135deg,#3aa96c,#2e9e5b);}
+  .kp-btn.ihlal{background:linear-gradient(135deg,#e05656,#c43b3b);}
+  /* RULES LIST */
+  .rule-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
+  .rulecard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:.15s;}
+  .rulecard:hover{border-color:var(--copper);}
+  .rulecard .no{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border-radius:8px;padding:2px 10px;font-size:.8rem;margin-bottom:8px;}
+  .rulecard .name{font-weight:800;font-size:.95rem;line-height:1.35;}
+  .rulecard .desc{font-size:.82rem;color:var(--muted);line-height:1.45;display:none;margin-top:6px;}
+  .rulecard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>LOTOTO</b><small>Kural Şerifi · EKED Altın Kurallar</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <!-- NAME ENTRY -->
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">⭐</div>
+      <h2>Kural Şerifi'ne Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">EKED'in altın kurallarını öğrenecek, sahadaki ihlalleri yakalayacaksın. Rozetini kap, hedef: 🏆 EKED Şerifi!</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Eğitime Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <h1>Altın Kurallar, <span class="accent">Demir Disiplin!</span></h1>
+    <p class="sub">Tek kilit, tek personel, tek anahtar… Kim takarsa o söker! EKED'in altın kurallarını oyunlarla kavra, sahadaki ihlalleri gözünden kaçırma.</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">🚸</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Kural Çaylağı</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu">
+      <div class="mcard" onclick="startLearn()">
+        <div class="ic">📖</div><h3>Altın Kurallar</h3>
+        <p>9 altın kuralı kartlardan incele — kısa, net, hayat kurtarır.</p>
+      </div>
+      <div class="mcard" onclick="startKP()">
+        <div class="ic">🚦</div><h3>Uygun mu, İhlal mi?</h3>
+        <p>Sahadan 16 durum: kurala uygun mu, ihlal mi? Hızlı karar ver, seriyi bozma!</p>
+        <div class="best" id="bestKp"></div>
+      </div>
+      <div class="mcard" onclick="startMatch()">
+        <div class="ic">🧩</div><h3>Kuralı Tamamla</h3>
+        <p>Kuralın başını doğru sonuyla eşleştir. 8 kural, yanlış eşleşme puan götürür!</p>
+        <div class="best" id="bestMatch"></div>
+      </div>
+      <div class="mcard" onclick="startQuiz()">
+        <div class="ic">🕵️</div><h3>İhlal Avcısı</h3>
+        <p>12 soruluk quiz: vaka analizleri ve kural bilgisi — ihlali bul, nedenini bil.</p>
+        <div class="best" id="bestQuiz"></div>
+      </div>
+      <div class="mcard" onclick="openTrainer()">
+        <div class="ic">👨‍🏫</div><h3>Eğitici Ekranı</h3>
+        <p>Katılımcı raporu: oynama sayıları, başarı oranları ve otomatik değerlendirme notu. Eğitim sonunda ekran görüntüsünü eğitmeninle paylaş!</p>
+      </div>
+    </div>
+    <div class="notebox">⭐ <b>Şerifin ilk kuralı:</b> Etiket kilit yerine geçmez, anahtar cebinden çıkmaz, kilidin sahada kalmaz!</div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="screen" id="scr-learn">
+    <div class="topbar"><h2>📖 Altın Kurallar</h2><button class="btn ghost small" onclick="go('home')">← Ana Menü</button></div>
+    <p class="sub">Kartlara dokunarak açıklamaları gör.</p>
+    <div class="rule-grid" id="learnList"></div>
+    <div class="notebox"><b>Neden bu kadar katı?</b> Çünkü kilit, onu takan kişinin canını korur. Kilide yapılan her "küçük" müdahale, birinin hayatını riske atmaktır.</div>
+  </section>
+
+  <!-- KP (Uygun/İhlal) -->
+  <section class="screen" id="scr-kp">
+    <div class="topbar">
+      <h2>🚦 Uygun mu, İhlal mi?</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="kpScore">0</span></span>
+        <span class="pill" id="kpProg">1/16</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="kpBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div style="text-align:center;margin-bottom:8px;" id="kpCombo"></div>
+      <div class="kp-card" id="kpCard"></div>
+      <div class="kp-cat" id="kpCat"></div>
+      <div class="kp-btns">
+        <button class="kp-btn uygun" onclick="answerKP('U')">✅ Kurala Uygun</button>
+        <button class="kp-btn ihlal" onclick="answerKP('I')">🚫 İhlal!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATCH -->
+  <section class="screen" id="scr-match">
+    <div class="topbar">
+      <h2>🧩 Kuralı Tamamla</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="matchScore">0</span></span>
+        <span class="pill" id="matchProg">0/8</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <p class="sub">Soldan kuralın <b>başını</b>, sağdan <b>devamını</b> seç. Doğru kural yeşillenir!</p>
+    <div class="match-grid">
+      <div class="match-col" id="matchTerms"></div>
+      <div class="match-col" id="matchDefs"></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2>🕵️ İhlal Avcısı</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="quizScore">0</span></span>
+        <span class="pill" id="quizProg">1/12</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🎉</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <button class="btn" id="resReplay">↻ Tekrar Oyna</button>
+      <button class="btn ghost" onclick="go('home')">Ana Menü</button>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    EKED | LOTOTO Kural Şerifi · Altın Kurallar Eğitim Oyunu
+  </footer>
+</div>
+
+<script>
+/* ================= ALTIN KURALLAR ================= */
+const RULES = [
+ {n:1, t:'Tek kilit, tek personel, tek anahtar', d:'Tehlikeli bölgede çalışan herkes, çalışma boyunca kilitlemeye katılmalıdır. Herkesin kendi kilidi ve tek anahtarı vardır.'},
+ {n:2, t:'Kim takarsa o söker', d:'Sadece kilidi takan kişi kilidi sökebilir. Başkası adına kilit sökülmez.'},
+ {n:3, t:'Kilit anahtarı çoğaltılmaz', d:'OSHA\'ya göre emniyet kilitleri tek anahtarlı üretilmelidir. Kopya anahtar, kilidin güvenliğini yok eder.'},
+ {n:4, t:'Başkasının kilidi ile çalışılmaz', d:'Adınızın yazmadığı veya tanımsız kilitleri kullanmayın. Kilidiniz sizin kimliğinizdir.'},
+ {n:5, t:'Kilit anahtarı başkasına verilmez', d:'Anahtar çalışma boyunca yanınızda olmalıdır. Anahtarınızı kimseye emanet etmeyin.'},
+ {n:6, t:'Başkasının kilidine müdahale edilmez', d:'Başka birinin kilidini sökmek, zorlamak ya da yerini değiştirmek kesinlikle yasaktır. Sorun varsa nezaretçiye haber verin.'},
+ {n:7, t:'Kontrol cihazları yerine bırakılır', d:'Kilit istasyonundan alınan kontrol cihazları iş bitiminde yerine bırakılır — bir sonraki çalışan onları orada arayacak.'},
+ {n:8, t:'Etiketler kilit yerine kullanılmaz', d:'Etiket bilgi verir ama enerjiyi kesmez. Etiket kilit yerine geçmez!'},
+ {n:9, t:'Kilidinizi sahada unutmayın', d:'İş bitiminde sahayı terk etmeden kilidinizi sökmeyi unutmayın.'},
+];
+
+const MATCH_PAIRS = [
+ {t:'Tek kilit,', d:'tek personel, tek anahtar'},
+ {t:'Kim takarsa,', d:'kilidi o söker'},
+ {t:'Kilit anahtarı', d:'çoğaltılmaz'},
+ {t:'Başkasının kilidi ile', d:'çalışılmaz'},
+ {t:'Kilit anahtarı başkasına', d:'verilmez'},
+ {t:'Başkasının kilidine', d:'müdahale edilmez'},
+ {t:'İstasyondan alınan kontrol cihazları', d:'yerine bırakılır'},
+ {t:'Etiketler kilit yerine', d:'kullanılmaz'},
+];
+
+const KP = [
+ {x:'Mehmet, tehlikeli bölgeye giren ekip arkadaşlarıyla birlikte kendi kilidini de taktı.', a:'U', r:'Tek kilit, tek personel, tek anahtar — herkes kilitlemeye katılmalı.'},
+ {x:'Usta, acelesi olduğu için anahtarını çırağına verip kendi kilidini söktürdü.', a:'I', r:'Kim takarsa o söker; anahtar başkasına verilmez!'},
+ {x:'Ali, "kaybolursa yedek olsun" diye kilit anahtarından kopya çıkarttırdı.', a:'I', r:'Kilit anahtarı çoğaltılmaz — emniyet kilitleri tek anahtarlıdır.'},
+ {x:'Ayşe, üzerinde isim olmayan boştaki bir kilidi alıp kendi işinde kullandı.', a:'I', r:'Tanımsız veya başkasının kilidi ile çalışılmaz.'},
+ {x:'Veli, işini bitirince kendi kilidini söküp sahadan öyle ayrıldı.', a:'U', r:'Kilidinizi sahada unutmayın — doğru davranış.'},
+ {x:'Hasan, arkadaşının kilidi işini geciktirdiği için kilidi kendisi söküverdi.', a:'I', r:'Başkasının kilidine müdahale edilmez!'},
+ {x:'Fatma, istasyondan aldığı çoklandırıcıyı iş bitiminde yerine bıraktı.', a:'U', r:'İstasyondan alınan kontrol cihazları yerine bırakılır.'},
+ {x:'Kilit bulamayan Kemal, izolasyon noktasına sadece uyarı etiketi asıp işe başladı.', a:'I', r:'Etiketler kilit yerine kullanılmaz — etiket enerjiyi kesmez!'},
+ {x:'Zeynep, kilidinin anahtarını çalışma boyunca üzerinde taşıdı.', a:'U', r:'Anahtar çalışma boyunca yanınızda olmalıdır.'},
+ {x:'Vardiya biten Murat, kilidini sökmek yerine anahtarı yeni gelen arkadaşına bıraktı.', a:'I', r:'Anahtar başkasına verilmez; devralan kişi kendi kilidini takmalıdır.'},
+ {x:'Ekipteki 5 kişinin her biri çoklandırıcıya kendi kilidini taktı.', a:'U', r:'Tek kilit, tek personel — çoklandırıcı bunun için var.'},
+ {x:'Can, "beş dakikalık iş, değmez" diyerek kilit takmadan çalışmaya başladı.', a:'I', r:'Süresi ne olursa olsun kilitsiz çalışılmaz.'},
+ {x:'Selin, üzerinde adı lazerle yazılı olan kendi kilidini taktı.', a:'U', r:'Kilidiniz kimliğinizdir — isimli kilit doğru uygulamadır.'},
+ {x:'Oğuz, işi bitti ama kilidini sökmeyi unutup servise bindi.', a:'I', r:'Kilidinizi sahada unutmayın — kilit kesme prosedürü gerekir.'},
+ {x:'Derya, işini engelleyen yabancı bir kilit görünce dokunmadan nezaretçiye haber verdi.', a:'U', r:'Müdahale etmek yerine nezaretçiye bildirmek doğru davranıştır.'},
+ {x:'Emre, arkadaşı yemekteyken onun kilidini alıp kendi noktasına taktı.', a:'I', r:'Başkasının kilidi ile çalışılmaz!'},
+];
+
+const QUIZ = [
+ {q:"Tehlikeli bölgede 6 kişi çalışacak. Kaç kilit takılmalıdır?",
+  o:["1 — ekip lideri taksın yeter","6 — herkes kendi kilidini takar","2 — giriş ve çıkışa","Hiç — etiket yeterli"], c:1,
+  e:"Tek kilit, tek personel, tek anahtar: tehlikeli bölgede çalışan herkes kilitlemeye katılmalıdır."},
+ {q:"Kilidi kim sökebilir?",
+  o:["Vardiya amiri","En kıdemli çalışan","Sadece kilidi takan kişi","Herhangi bir yetkili"], c:2,
+  e:"Kim takarsa o söker — kilidi yalnızca takan kişi sökebilir."},
+ {q:"OSHA'ya göre emniyet kilitleri nasıl üretilmelidir?",
+  o:["Çift anahtarlı","Tek anahtarlı","Master anahtarsız","Şifreli"], c:1,
+  e:"OSHA'ya göre emniyet kilitleri tek anahtarlı üretilmelidir; anahtar çoğaltılmaz."},
+ {q:"Üzerinde isim olmayan bir kilit buldunuz. Ne yaparsınız?",
+  o:["Kendi işimde kullanırım","Kullanmam — tanımsız kilitle çalışılmaz","İsmimi yazıp kullanırım","Arkadaşıma veririm"], c:1,
+  e:"Adınızın yazmadığı veya tanımsız kilitleri kullanmayın!"},
+ {q:"Kilit anahtarı çalışma boyunca nerede olmalıdır?",
+  o:["Kilit istasyonunda","Amirin çekmecesinde","Takan kişinin yanında","Pano üzerinde"], c:2,
+  e:"Anahtar çalışma boyunca yanınızda olmalıdır; başkasına verilmez."},
+ {q:"Başkasının kilidi işinizi engelliyor. Doğru davranış hangisi?",
+  o:["Kilidi kendim sökerim","Kilidi zorlayıp açarım","Dokunmam, nezaretçiye haber veririm","Kilidin yerini değiştiririm"], c:2,
+  e:"Başkasının kilidine müdahale edilmez — sorun varsa nezaretçiye bildirilir."},
+ {q:"İstasyondan aldığınız çoklandırıcıyı iş bitince ne yaparsınız?",
+  o:["Dolabıma koyarım","Yerine bırakırım","Sahada bırakırım","Eve götürürüm"], c:1,
+  e:"İstasyondan alınan kontrol cihazları yerine bırakılır — sonraki çalışan orada arayacak."},
+ {q:"Kilit yok, sadece uyarı etiketi var. İşe başlanabilir mi?",
+  o:["Evet, etiket yeterli","Evet, kısa işlerde olur","Hayır — etiket kilit yerine geçmez","Evet, amir onaylarsa"], c:2,
+  e:"Etiketler kilit yerine kullanılmaz: etiket bilgi verir ama enerjiyi kesmez."},
+ {q:"İş bitti. Sahadan ayrılmadan önce son görev nedir?",
+  o:["Fotoğraf çekmek","Kilidinizi sökmek","Etiketi yenilemek","Amiri aramak"], c:1,
+  e:"Kilidinizi sahada unutmayın — iş bitiminde sahayı terk etmeden kilidinizi sökün."},
+ {q:"Arkadaşınız 'anahtarını ver, ben sökerim' diyor. Cevabınız?",
+  o:["Veririm, güveniyorum","Veremem — anahtar başkasına verilmez, kilidi ben sökerim","Fotokopisini veririm","Amire sorarım"], c:1,
+  e:"Kilit anahtarı başkasına verilmez ve kilidi yalnızca takan söker."},
+ {q:"Hangisi altın kurallardan biri DEĞİLDİR?",
+  o:["Tek kilit, tek personel, tek anahtar","Kim takarsa o söker","Acil işlerde kilit yerine etiket yeterlidir","Kilit anahtarı çoğaltılmaz"], c:2,
+  e:"Etiket hiçbir durumda kilit yerine geçmez — bu bir kural değil, ihlaldir!"},
+ {q:"Vardiya değişiminde devralan kişi ne yapmalıdır?",
+  o:["Önceki vardiyanın kilidini kullanmalı","Anahtarı teslim almalı","Kendi kilidini takmalı","Kilitsiz devam etmeli"], c:2,
+  e:"Herkes kendi kilidiyle çalışır: devralan kişi kendi kilidini takar, anahtar devredilmez."},
+];
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+/* ================= ÜNVANLAR ================= */
+const TITLES = [
+ {min:0,    icon:"🚸", name:"Kural Çaylağı",        msg:"Herkes bir yerden başlar — kuralları incele!"},
+ {min:600,  icon:"📏", name:"Kural Takipçisi",      msg:"Kurallar cebine girmeye başladı!"},
+ {min:1400, icon:"👮", name:"Saha Gözcüsü",          msg:"Gözünden ihlal kaçmıyor!"},
+ {min:2400, icon:"🕵️", name:"İhlal Avcısı",          msg:"Sahada senden gizli iş yapılamaz!"},
+ {min:3400, icon:"🛡️", name:"Altın Kural Bekçisi",  msg:"Kurallar artık refleksin!"},
+ {min:4500, icon:"🏆", name:"EKED Şerifi",           msg:"Efsane! Rozet senindir, şerif."},
+];
+function titleFor(p){ let t = TITLES[0]; for(const x of TITLES){ if(p >= x.min) t = x; } return t; }
+
+/* ================= STATE ================= */
+let total = 0;
+let playerName = "";
+const best = {kp:null, match:null, quiz:null};
+const stats = {
+  kp:{plays:0, correct:0, answered:0, bestStreak:0},
+  match:{plays:0, wrong:0},
+  quiz:{plays:0, correct:0, answered:0}
+};
+function addTotal(p){
+  const before = titleFor(total);
+  total += p;
+  document.getElementById('totalScore').textContent = total;
+  const after = titleFor(total);
+  updateRank();
+  if(after !== before) showToast('🎉 Yeni ünvan: ' + after.icon + ' ' + after.name + ' — ' + after.msg);
+}
+function updateRank(){
+  const t = titleFor(total);
+  document.getElementById('playerTitle').textContent = t.icon + ' ' + t.name;
+  document.getElementById('rankIcon').textContent = t.icon;
+  document.getElementById('rankName').textContent = t.name;
+  const next = TITLES[TITLES.indexOf(t) + 1];
+  if(next){
+    document.getElementById('rankBar').style.width = Math.min(100, (total - t.min) / (next.min - t.min) * 100) + '%';
+    document.getElementById('rankNext').textContent = 'Sonraki ünvan: ' + next.icon + ' ' + next.name + ' — ' + (next.min - total) + ' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width = '100%';
+    document.getElementById('rankNext').textContent = 'En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+function registerPlayer(){
+  const v = document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length < 5 || v.split(' ').length < 2){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  playerName = v.replace(/(^|\s)\S/g, c=>c.toLocaleUpperCase('tr'));
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent = playerName;
+  document.getElementById('playerPill').style.display = 'flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id !== 'name') id = 'name';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') refreshBest();
+}
+function refreshBest(){
+  document.getElementById('bestKp').textContent    = best.kp!=null    ? '⭐ En iyi: '+best.kp+' puan' : '';
+  document.getElementById('bestMatch').textContent = best.match!=null ? '⭐ En iyi: '+best.match+' puan' : '';
+  document.getElementById('bestQuiz').textContent  = best.quiz!=null  ? '⭐ En iyi: '+best.quiz+' puan' : '';
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function flashDanger(){ const f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= ALTIN KURALLAR (LEARN) ================= */
+function startLearn(){
+  let html = '';
+  RULES.forEach(r=>{
+    html += '<div class="rulecard" onclick="this.classList.toggle(\'open\')">'+
+      '<span class="no">KURAL '+r.n+'</span>'+
+      '<div class="name">'+r.t+'</div>'+
+      '<div class="desc">'+r.d+'</div></div>';
+  });
+  document.getElementById('learnList').innerHTML = html;
+  go('learn');
+}
+
+/* ================= UYGUN / İHLAL ================= */
+let kpList, kpIdx, kpScore, kpStreak, kpLock;
+function startKP(){
+  kpList = shuffle(KP);
+  kpIdx = 0; kpScore = 0; kpStreak = 0; kpLock = false;
+  document.getElementById('kpScore').textContent = 0;
+  renderKP();
+  go('kp');
+}
+function renderKP(){
+  const k = kpList[kpIdx];
+  document.getElementById('kpProg').textContent = (kpIdx+1)+'/'+kpList.length;
+  document.getElementById('kpBar').style.width = (kpIdx/kpList.length*100)+'%';
+  document.getElementById('kpCard').textContent = k.x;
+  document.getElementById('kpCat').innerHTML = '&nbsp;';
+  document.getElementById('kpCombo').innerHTML = kpStreak>=3 ? '<span class="combo">🔥 Seri x'+kpStreak+'</span>' : '&nbsp;';
+}
+function answerKP(ans){
+  if(kpLock) return;
+  kpLock = true;
+  const k = kpList[kpIdx];
+  stats.kp.answered++;
+  const catEl = document.getElementById('kpCat');
+  if(ans === k.a){
+    stats.kp.correct++;
+    kpStreak++;
+    stats.kp.bestStreak = Math.max(stats.kp.bestStreak, kpStreak);
+    const pts = kpStreak>=3 ? 100 : 75;
+    kpScore += pts;
+    SFX.ding();
+    catEl.innerHTML = '✅ <b style="color:var(--green)">Doğru!</b> '+k.r+' (+'+pts+')';
+  } else {
+    kpStreak = 0;
+    SFX.buzz(); flashDanger();
+    catEl.innerHTML = '❌ <b style="color:var(--red)">Yanlış!</b> Bu durum '+(k.a==='I'?'bir İHLALDİR':'kurala UYGUNDUR')+'. '+k.r;
+  }
+  document.getElementById('kpScore').textContent = kpScore;
+  setTimeout(()=>{
+    kpIdx++;
+    kpLock = false;
+    if(kpIdx >= kpList.length){
+      const pct = stats.kp.answered ? kpScore/(kpList.length*75) : 0;
+      finishGame('kp', kpScore, 'Devriye tamamlandı!',
+        pct>=1 ? 'Hiçbir ihlal gözünden kaçmadı — saha sana emanet!' :
+        pct>=0.7 ? 'İyi devriye! Altın kuralları bir daha oku, seriyi uzat.' :
+        'Altın kurallar kartlarını incele ve devriyeye tekrar çık!',
+        pct>=1?3:(pct>=0.7?2:1), startKP);
+    } else renderKP();
+  }, 1400);
+}
+
+/* ================= KURALI TAMAMLA ================= */
+let mScore, mFound, mSel, mWrong;
+function startMatch(){
+  mScore = 0; mFound = 0; mSel = null; mWrong = 0;
+  document.getElementById('matchScore').textContent = 0;
+  document.getElementById('matchProg').textContent = '0/8';
+  const terms = shuffle(MATCH_PAIRS);
+  const defs = shuffle(MATCH_PAIRS);
+  const tc = document.getElementById('matchTerms');
+  const dc = document.getElementById('matchDefs');
+  tc.innerHTML = ''; dc.innerHTML = '';
+  terms.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'mitem term'; el.textContent = p.t; el.dataset.t = p.t;
+    el.onclick = ()=>pickTerm(el);
+    tc.appendChild(el);
+  });
+  defs.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'mitem'; el.textContent = '… ' + p.d; el.dataset.t = p.t;
+    el.onclick = ()=>pickDef(el);
+    dc.appendChild(el);
+  });
+  go('match');
+}
+function pickTerm(el){
+  document.querySelectorAll('#matchTerms .mitem').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  mSel = el;
+  SFX.init();
+}
+function pickDef(el){
+  if(!mSel){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),400); return; }
+  if(el.dataset.t === mSel.dataset.t){
+    el.classList.add('done'); mSel.classList.add('done'); mSel.classList.remove('sel');
+    mSel = null; mFound++; mScore += 100;
+    SFX.cheer();
+    document.getElementById('matchScore').textContent = mScore;
+    document.getElementById('matchProg').textContent = mFound+'/8';
+    if(mFound >= 8){
+      const bonus = mWrong===0 ? 300 : Math.max(0, 200 - mWrong*40);
+      mScore += bonus;
+      finishGame('match', mScore, 'Tüm kurallar tamamlandı!',
+        mWrong===0 ? 'Hiç yanlış eşleşme yapmadın! Mükemmellik bonusu: +'+bonus+' puan.' :
+        mWrong+' yanlış eşleşme yaptın. Bonus: +'+bonus+' puan. Hatasız tur için tekrar dene!',
+        mWrong===0?3:(mWrong<=3?2:1), startMatch);
+    }
+  } else {
+    mWrong++;
+    mScore = Math.max(0, mScore - 20);
+    document.getElementById('matchScore').textContent = mScore;
+    el.classList.add('shake'); mSel.classList.add('shake');
+    SFX.buzz(); flashDanger();
+    setTimeout(()=>{ document.querySelectorAll('.mitem.shake').forEach(x=>x.classList.remove('shake')); }, 450);
+  }
+}
+
+/* ================= İHLAL AVCISI (QUIZ) ================= */
+let quizIdx, quizScore, quizList;
+function startQuiz(){
+  quizIdx = 0; quizScore = 0;
+  quizList = shuffle(QUIZ);
+  document.getElementById('quizScore').textContent = 0;
+  renderQuiz();
+  go('quiz');
+}
+function renderQuiz(){
+  const q = quizList[quizIdx];
+  document.getElementById('quizProg').textContent = (quizIdx+1)+'/'+quizList.length;
+  document.getElementById('quizBar').style.width = (quizIdx/quizList.length*100)+'%';
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizExpl').className = 'expl';
+  document.getElementById('quizNext').style.display = 'none';
+  const box = document.getElementById('quizOpts');
+  box.innerHTML = '';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerQuiz(d, op.i, q);
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el, i, q){
+  const opts = document.querySelectorAll('#quizOpts .opt');
+  opts.forEach(o=>{ o.classList.add('dim'); if(o.textContent===q.o[q.c]) o.classList.add('correct'); });
+  const ex = document.getElementById('quizExpl');
+  stats.quiz.answered++;
+  if(i === q.c){
+    stats.quiz.correct++;
+    SFX.cheer();
+    quizScore += 100;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ <b>Doğru!</b> ' + q.e;
+  } else {
+    el.classList.add('incorrect');
+    SFX.buzz(); flashDanger();
+    ex.className = 'expl no'; ex.innerHTML = '❌ <b>Yanlış.</b> ' + q.e;
+  }
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizNext').style.display = 'inline-block';
+}
+function nextQuiz(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){
+    const pct = quizScore/(quizList.length*100);
+    finishGame('quiz', quizScore, 'İhlal Avı tamamlandı!',
+      pct===1 ? 'Tüm vakaları çözdün — rozeti hak ettin!' :
+      pct>=0.7 ? 'İyi avcılık! Kaçırdığın kurallar için kartlara göz at.' :
+      'Altın kurallar kartları seni bekliyor — tekrar dene.',
+      pct===1?3:(pct>=0.7?2:1), startQuiz);
+  } else renderQuiz();
+}
+
+/* ================= SONUÇ ================= */
+function finishGame(mode, pts, title, msg, stars, replayFn, emoji){
+  addTotal(pts);
+  stats[mode].plays++;
+  if(best[mode]==null || pts > best[mode]) best[mode] = pts;
+  const t = titleFor(total);
+  document.getElementById('resPlayer').textContent = playerName + ' · ' + t.icon + ' ' + t.name;
+  document.getElementById('resEmoji').textContent = emoji || (stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'💥');
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resStars').textContent = stars>0 ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : '☆☆☆';
+  document.getElementById('resPts').textContent = '+' + pts + ' puan';
+  document.getElementById('resMsg').textContent = msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick = replayFn;
+  go('result');
+}
+
+/* ================= EĞİTİCİ ================= */
+function openTrainer(){
+  const t = titleFor(total);
+  document.getElementById('trName').textContent = playerName || '—';
+  document.getElementById('trTitle').textContent = 'Ünvan: ' + t.icon + ' ' + t.name;
+  document.getElementById('trTotal').textContent = total + ' puan';
+  document.getElementById('trDate').textContent = new Date().toLocaleString('tr-TR', {dateStyle:'long', timeStyle:'short'});
+  const k = stats.kp, m = stats.match, q = stats.quiz;
+  const kpct = k.answered ? Math.round(k.correct/k.answered*100) : null;
+  const qpct = q.answered ? Math.round(q.correct/q.answered*100) : null;
+  const row = (l,v)=>'<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';
+  document.getElementById('trCards').innerHTML =
+    '<div class="trcard"><h4>🚦 Uygun mu, İhlal mi?</h4>'+
+      row('Oynama sayısı', k.plays) +
+      row('En iyi puan', best.kp!=null ? best.kp : '—') +
+      row('Doğru / Durum', k.correct+' / '+k.answered) +
+      row('En uzun seri', k.bestStreak) +
+    '</div>'+
+    '<div class="trcard"><h4>🧩 Kuralı Tamamla</h4>'+
+      row('Oynama sayısı', m.plays) +
+      row('En iyi puan', best.match!=null ? best.match : '—') +
+      row('Yanlış eşleşme', m.wrong) +
+    '</div>'+
+    '<div class="trcard"><h4>🕵️ İhlal Avcısı</h4>'+
+      row('Oynama sayısı', q.plays) +
+      row('En iyi puan', best.quiz!=null ? best.quiz : '—') +
+      row('Doğru / Cevap', q.correct+' / '+q.answered) +
+      row('Başarı oranı', qpct!=null ? '%'+qpct : '—') +
+    '</div>';
+  const notes = [];
+  if(!k.plays && !m.plays && !q.plays){
+    notes.push('Katılımcı henüz bölüm oynamadı — rapor, bölümler oynandıkça otomatik dolar.');
+  } else {
+    if(kpct!=null) notes.push(kpct>=70 ? 'İhlal tanıma oranı %'+kpct+' — saha farkındalığı iyi.' : 'İhlal tanıma oranı %'+kpct+' — vaka örnekleri tekrar edilmeli.');
+    if(m.plays) notes.push(m.wrong<=3 ? 'Kural tamamlamada akıcı ('+m.wrong+' yanlış eşleşme).' : 'Kural tamamlamada '+m.wrong+' hata — altın kurallar ezber tekrarı önerilir.');
+    if(qpct!=null) notes.push(qpct>=70 ? 'Vaka analizi başarısı %'+qpct+' — kural bilgisi oturmuş.' : 'Vaka analizi başarısı %'+qpct+' — altın kurallar tekrar edilmeli.');
+    notes.push('Genel seviye: ' + t.icon + ' ' + t.name + '.');
+  }
+  document.getElementById('trNote').innerHTML = '<b>Eğitici değerlendirme notu:</b><br>• ' + notes.join('<br>• ');
+  go('trainer');
+}
+
+/* isim girişi */
+const _ni = document.getElementById('nameInput');
+_ni.addEventListener('keydown', e=>{ if(e.key === 'Enter') registerPlayer(); });
+_ni.addEventListener('input', ()=>{ document.getElementById('nameErr').style.display = 'none'; });
+</script>
+
+</body></html>

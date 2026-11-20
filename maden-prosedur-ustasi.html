@@ -1,0 +1,840 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>LOTOTO Prosedür Ustası</title>
+<style>
+  :root{
+    --copper:#b8912f; --copper-dark:#8a6a1e; --copper-light:#dfc269;
+    --ink:#1d1d1b; --bg:#f7f5f0; --card:#ffffff; --card2:#f8f4ea;
+    --border:#e6dfd0; --muted:#8b8172;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e; --blue:#2f6fa8;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(900px 500px at 85% -10%, #f6eed3 0%, rgba(246,238,211,0) 60%),var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(138,106,30,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(138,106,30,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  .progressbar{height:8px;background:#ebe4d2;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .lives{font-size:1.05rem;letter-spacing:2px;}
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .scene-tag{display:inline-block;background:#f6eed3;color:var(--copper-dark);font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+  .combo{display:inline-block;background:var(--green);color:#fff;font-weight:800;border-radius:999px;padding:4px 12px;font-size:.8rem;margin-left:8px;animation:pop .3s;}
+  /* KART OYUNU */
+  .kp-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:30px 22px;text-align:center;font-size:1.12rem;font-weight:700;margin-bottom:8px;animation:pop .25s ease;line-height:1.55;min-height:120px;display:flex;align-items:center;justify-content:center;}
+  .kp-cat{text-align:center;color:var(--muted);font-size:.88rem;font-weight:700;min-height:44px;margin-bottom:14px;line-height:1.45;}
+  .card-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .card-btn{border:none;border-radius:14px;padding:16px 10px;font-size:1rem;font-weight:800;cursor:pointer;transition:.15s;color:#fff;}
+  .card-btn:hover{transform:translateY(-2px);filter:brightness(1.06);}
+  .card-btn.beyaz{background:#fdfdfd;color:#1d1d1b;border:2px solid #c9c2b2;}
+  .card-btn.sari{background:linear-gradient(135deg,#f0cd30,#d9b41d);color:#1d1d1b;}
+  .card-btn.mavi{background:linear-gradient(135deg,#3b82c4,#2f6fa8);}
+  .card-btn.kirmizi{background:linear-gradient(135deg,#e05656,#c43b3b);}
+  .card-btn small{display:block;font-weight:600;font-size:.72rem;margin-top:3px;opacity:.85;}
+  /* LEARN */
+  .cat-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;font-size:.95rem;}
+  .stepcard .desc{font-size:.84rem;color:var(--muted);line-height:1.45;display:none;}
+  .stepcard.open .desc{display:block;}
+  .cardchip{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15);}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#ebe4d2;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  footer{margin-top:40px;text-align:center;color:#b5ab96;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>LOTOTO</b><small>Prosedür Ustası · Tüprag Kışladağ Enerji İzolasyonu</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <!-- NAME ENTRY -->
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">📋</div>
+      <h2>Prosedür Ustası'na Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">Kışladağ Enerji İzolasyonu prosedürünü (KGM-HSS-0021-MP) oyunlarla öğren: bilgi kartları, grup kilitleme ve saha kuralları. Hedef: 🏆 Prosedür Ustası!</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Eğitime Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <h1>Önce İzole Et, <span class="accent">Sonra Çalış!</span></h1>
+    <p class="sub">Sıfır enerji, bir kişi bir kilit, dört renkli bilgi kartı ve grup kilitleme — Kışladağ Enerji İzolasyonu prosedürünü oyunlarla kavra!</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">📋</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Prosedür Çaylağı</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu">
+      <div class="mcard" onclick="startLearn()">
+        <div class="ic">📖</div><h3>Prosedür Rehberi</h3>
+        <p>Tanımlar, ekipmanlar, kart renkleri ve temel kurallar — kartlara dokun, öğren.</p>
+      </div>
+      <div class="mcard" onclick="startKart()">
+        <div class="ic">🎨</div><h3>Hangi Kart?</h3>
+        <p>12 durum: Beyaz, Sarı, Mavi, Kırmızı — doğru bilgi kartını seç, seriyi bozma!</p>
+        <div class="best" id="bestKart"></div>
+      </div>
+      <div class="mcard" onclick="startScen()">
+        <div class="ic">🔋</div><h3>Senaryo: Grup Kilitleme</h3>
+        <p>MCC odasında 10 adımlık grup kilitlemeyi yönet. 3 canın var!</p>
+        <div class="best" id="bestScen"></div>
+      </div>
+      <div class="mcard" onclick="startQuiz()">
+        <div class="ic">🎯</div><h3>Prosedür Avı</h3>
+        <p>12 soruluk quiz: sıfır enerji, kilit kuralları, paletli ekipman ve daha fazlası.</p>
+        <div class="best" id="bestQuiz"></div>
+      </div>
+    </div>
+    <div class="notebox">⚠️ <b>Unutma:</b> Acil durum butonları, seçici anahtarlar ve diğer akım kontrol ekipmanları <b>enerji izolasyon ekipmanı olarak kullanılamaz!</b> Ambalajdan çıkan üç anahtardan <b>ikisi imha edilir</b> — yedek anahtar yoktur.</div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="screen" id="scr-learn">
+    <div class="topbar"><h2>📖 Prosedür Rehberi</h2><button class="btn ghost small" onclick="go('home')">← Ana Menü</button></div>
+    <p class="sub">Kartlara dokunarak açıklamaları gör.</p>
+    <div id="learnList"></div>
+    <div class="notebox"><b>Bir Kişi, Bir Kilit Prensibi:</b> Tehlike bölgesinde çalışan kişi kendisine ait kilidi, gerekli tanımlamaları da ekleyerek enerji kesiciye yerleştirir ve anahtarını şahsen saklar. Kilit kaldırılana kadar hiç kimse o bölgeye ait şalter / devre kesici / vana gibi ekipmanları çalıştıramaz.</div>
+  </section>
+
+  <!-- KART OYUNU -->
+  <section class="screen" id="scr-kart">
+    <div class="topbar">
+      <h2>🎨 Hangi Kart?</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="kartScore">0</span></span>
+        <span class="pill" id="kartProg">1/12</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="kartBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div style="text-align:center;margin-bottom:8px;" id="kartCombo"></div>
+      <div class="kp-card" id="kartCard"></div>
+      <div class="kp-cat" id="kartCat"></div>
+      <div class="card-btns">
+        <button class="card-btn beyaz" onclick="answerKart('B')">⬜ Beyaz<small>kişisel kartı olmayan Tüprag çalışanı</small></button>
+        <button class="card-btn sari" onclick="answerKart('S')">🟨 Sarı<small>alt işveren çalışanı</small></button>
+        <button class="card-btn mavi" onclick="answerKart('M')">🟦 Mavi<small>grup kilitleme yetkilisi</small></button>
+        <button class="card-btn kirmizi" onclick="answerKart('K')">🟥 Kırmızı<small>servis dışı</small></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SENARYO -->
+  <section class="screen" id="scr-scen">
+    <div class="topbar">
+      <h2>🔋 Grup Kilitleme</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="scenScore">0</span></span>
+        <span class="pill lives" id="scenLives">❤️❤️❤️</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="scenBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <span class="scene-tag" id="scenTag"></span>
+      <div class="qtext" id="scenQ"></div>
+      <div class="opts" id="scenOpts"></div>
+      <div class="expl" id="scenExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="scenNext" style="display:none;" onclick="nextScen()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2>🎯 Prosedür Avı</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="quizScore">0</span></span>
+        <span class="pill" id="quizProg">1/12</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🎉</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <button class="btn" id="resReplay">↻ Tekrar Oyna</button>
+      <button class="btn ghost" onclick="go('home')">Ana Menü</button>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    EKED | LOTOTO Prosedür Ustası · Tüprag Kışladağ Enerji İzolasyonu (Kilitleme-Etiketleme) Eğitim Oyunu
+  </footer>
+</div>
+
+<script>
+/* ================= REHBER ================= */
+const TERMS = [
+ {t:'Tehlikeli Enerji', cat:'TANIMLAR', d:'Beklenmedik şekilde maruz kalındığında zarar verebilecek veya ciddi yaralanmalara hatta ölüme sebep olabilecek enerji kaynağıdır. Kinetik (dönen miller, akışkanlar, akım) veya potansiyel (kaldırılmış kasalar, tank basıncı, batarya) halde görülür.'},
+ {t:'Sıfır (0) Enerji Durumu', cat:'TANIMLAR', d:'Makine parçalarından tüm potansiyel ve kinetik enerjinin kaldırılması; elektriğin makineyi harekete geçiremeyecek şekilde kesilmesi, basınçlı hatların boşaltılması vb. durumlardır.'},
+ {t:'Kilitleme', cat:'TANIMLAR', d:'Tüm enerjiyi etkisiz hale getirerek, kilitleme aparatı kaldırılıncaya kadar ekipmanın çalıştırılamamasını sağlamak amacıyla enerji izolasyon ekipmanına kilit yerleştirilmesidir.'},
+ {t:'Etiketleme (İşaretleme)', cat:'TANIMLAR', d:'İzolasyonun kim/ler tarafından ve ne zaman yapıldığını gösteren uyarı etiketlerinin asılmasıdır. Etiket kaldırılana kadar ekipman çalıştırılmaz.'},
+ {t:'Grup Kilitlemesi', cat:'TANIMLAR', d:'Birden çok noktada ve birden çok çalışanın izolasyon yapması gerekiyorsa kilitleme kutusu kullanılarak yapılan kilitleme-işaretleme yöntemidir.'},
+ {t:'Bir Kişi, Bir Kilit Prensibi', cat:'TANIMLAR', d:'Tehlike bölgesinde çalışan kişi kendi kilidini enerji kesiciye yerleştirir ve anahtarını şahsen saklar. Kilit kaldırılana kadar kimse o ekipmanı çalıştıramaz.'},
+ {t:'Yetkili Çalışan', cat:'TANIMLAR', d:'Bakım, tamir, revizyon veya servis işlerini yürütmek amacıyla mesleki eğitimleri de dahil her türlü teknik ve İSG eğitimlerini başarıyla tamamlamış çalışandır.'},
+ {t:'Enerji İzolasyon Ekipmanları', cat:'EKİPMANLAR', d:'Tehlikeli enerjinin izole edilmesinde kullanılan anahtarlar, enerji kesiciler (şalter veya sigorta) ve vana gibi ekipmanlardır. Acil durum butonları ve seçici anahtarlar izolasyon ekipmanı DEĞİLDİR!'},
+ {t:'Asma Güvenlik Kilidi', cat:'EKİPMANLAR', d:'Her çalışan için aynı marka, renk, şekil ve etikette olmalıdır. Başka amaçla (takım çantası vb.) kullanılamaz. Üç anahtardan ikisi imha edilir — tek anahtar kalır.'},
+ {t:'Kişisel Kilit ve Fotoğraflı Etiket', cat:'EKİPMANLAR', d:'Tüprag çalışanları öncelikle fotoğraflı kişisel kilitleme ekipmanlarını kullanır; kişisel bilgileri içerir. Eksik/kayıpsa beyaz kilitleme bilgi etiketi kullanılır.'},
+ {t:'Çoklu Kilitleme Makası', cat:'EKİPMANLAR', d:'Birden çok çalışanın kilitleme yapması veya grup kilitlemesi için kullanılır. Makas uygulanamadığında zincir, destek barları ve durdurucular kullanılır.'},
+ {t:'Kilitleme Kutusu (Lock Box)', cat:'EKİPMANLAR', d:'Grup kilitlemelerinde kesici anahtarlarının içine konduğu kutudur; herkes kutuya kendi kilidini takar.'},
+ {t:'Uyarı Etiketleri', cat:'EKİPMANLAR', d:'Minimum bilgiler: "TEHLİKE" kelimesi ve "ÇALIŞTIRMAYIN", "EKİPMAN KİLİTLENMİŞTİR", "KİLİDİN BAŞKA KİŞİLER TARAFINDAN ALINMASI YASAKTIR" ifadeleri.'},
+ {t:'Servis Dışı Etiketi', cat:'EKİPMANLAR', d:'Arızalı makine, alet ve ekipmanların tamiri yapılıp güvenli hale getirilinceye kadar kullanılmasını engellemek için asılır.'},
+ {t:'⬜ Beyaz Bilgi Kartı', cat:'BİLGİ KARTLARI', d:'Kişisel kilitleme kartı olmayan Tüprag çalışanları tarafından kullanılır.'},
+ {t:'🟨 Sarı Bilgi Kartı', cat:'BİLGİ KARTLARI', d:'Alt işveren çalışanları tarafından kullanılır.'},
+ {t:'🟦 Mavi Grup Kilitleme Kartı', cat:'BİLGİ KARTLARI', d:'Grup kilitlemelerinde ilk kilitlemeyi yapacak yetkili Tüprag çalışanının kullanacağı karttır.'},
+ {t:'🟥 Kırmızı Servis Dışı Kartı', cat:'BİLGİ KARTLARI', d:'Arızalı ekipmanların tamir edilip güvenli hale getirilinceye kadar kullanılmasını engellemek için kullanılır.'},
+ {t:'Tek Anahtar Kuralı', cat:'TEMEL KURALLAR', d:'Asma kilitlerin sadece bir anahtarı olacaktır; yedek anahtarlar kullanımdan kaldırılır.'},
+ {t:'Deneme (Try Out)', cat:'TEMEL KURALLAR', d:'Kilitleme sonrası ekipmana enerji verilemediğinden emin olunur: start/stop yapılabiliyorsa bilgisayar üzerinden, değilse lokal start/stop panoları üzerinden denenir.'},
+ {t:'Muhafazalar', cat:'TEMEL KURALLAR', d:'Kilitleme aparatlarını yerinden çıkarmadan önce kilitlenen ekipmanın tüm muhafazaları yerine takılacaktır.'},
+ {t:'Kilit Kesme', cat:'TEMEL KURALLAR', d:'Çalışan kilidini almadan sahayı terk etmişse ve ulaşılamıyorsa; nezaretçi işin bittiğinden ve önlemlerin alındığından emin olup kilidi keser, "Kilit Kesme Formu" doldurur.'},
+ {t:'Paletli/Lastikli Ekipman Kuralları', cat:'TEMEL KURALLAR', d:'En az 50 metre mesafeden telsizle iletişim kurulur; bom, kova, bıçak zemine indirilir; lastikli ekipman çift yönden takozlanır; Servis Dışı Etiketi ana şaltere asılır; alan zincirli bariyer/şerit ile kapatılır.'},
+];
+
+const KART = [
+ {x:'Kişisel kilitleme kartı olmayan bir Tüprag çalışanı pano kilitleyecek.', a:'B', r:'Beyaz kart: kişisel kartı olmayan Tüprag çalışanları içindir.'},
+ {x:'Alt işveren firmasının elektrikçisi izolasyon yapacak.', a:'S', r:'Sarı kart: alt işveren çalışanları tarafından kullanılır.'},
+ {x:'Grup kilitlemede ilk kilitlemeyi yapacak yetkili Tüprag çalışanı.', a:'M', r:'Mavi kart: grup kilitlemede ilk kilitlemeyi yapan yetkili Tüprag çalışanınındır.'},
+ {x:'Arızalı taşlama motoru, tamir edilene kadar kimse kullanmamalı.', a:'K', r:'Kırmızı kart: Servis Dışı — ekipman güvenli hale gelene kadar kullanılmaz.'},
+ {x:'Hizmet sağlayıcı firmanın bakım teknisyeni vana kilitleyecek.', a:'S', r:'Alt işveren ve hizmet sağlayıcılar sarı kart kullanır.'},
+ {x:'MCC odasında kesicileri devre açma pozisyonuna getiren yetkili elektrikçi kart dolduracak.', a:'M', r:'Grup kilitlemeyi başlatan yetkili elektrikçi mavi kartı doldurur.'},
+ {x:'Fotoğraflı kişisel etiketi kaybolan Tüprag operatörü kilitleme yapacak.', a:'B', r:'Kişisel ekipmanı eksik/kayıp olan Tüprag çalışanı beyaz etiket kullanır.'},
+ {x:'Hidrolik hortumu patlayan pres, bakım tamamlanana dek kullanım dışı kalacak.', a:'K', r:'Arızalı ekipman kırmızı Servis Dışı kartı ile işaretlenir.'},
+ {x:'Taşeron firmanın kaynakçısı çalışma öncesi şalteri kilitleyecek.', a:'S', r:'Alt işveren çalışanları sarı kart kullanır.'},
+ {x:'İşe yeni başlayan ve kartı henüz basılmamış Tüprag çalışanı.', a:'B', r:'Kişisel kartı olmayan Tüprag çalışanı beyaz kart kullanır.'},
+ {x:'Değirmen grubunda 8 noktayı kilitleyip anahtarları kutuya koyan yetkili.', a:'M', r:'Grup kilitlemenin ilk kilitleyicisi mavi kartla çalışır.'},
+ {x:'Freni tutmayan forklift, tamir edilip güvenli hale getirilene kadar bekleyecek.', a:'K', r:'Kırmızı Servis Dışı kartı: arızalı araç/ekipman kullanılmaz.'},
+];
+
+const SCEN = [
+ {tag:'ADIM 1 · HAZIRLIK', q:'Değirmen bakımı için grup kilitleme yapılacak. İlk ne olmalı?',
+  o:['Herkes hemen kendi kilidini takar','Çalışmayı etkileyecek tüm enerji kaynakları durdurulur; kesicileri yetkili elektrikçi devre açma pozisyonuna getirir','Kilitleme kutusu doğrudan kapatılır','Operatör işe başlar, kilitleme sonra yapılır'], c:1,
+  ok:'Doğru! Önce grubu etkileyecek bütün enerji kaynakları durdurulur; devre kesicileri yetkili elektrikçi devre açma pozisyonuna getirir.',
+  no:'Yanlış! Grup kilitlemeden önce tüm enerji kaynakları durdurulmalı ve kesiciler yetkili elektrikçi tarafından açılmalıdır.'},
+ {tag:'ADIM 2 · KART', q:'Kesicileri devre açma pozisyonuna getiren yetkili elektrikçi hangi kartı doldurur?',
+  o:['Beyaz kart','Sarı kart','Mavi grup kilitleme bilgi kartı','Kırmızı kart'], c:2,
+  ok:'Doğru! Yetkili elektrikçi mavi renkli grup kilitleme bilgi kartını doldurarak kilitler.',
+  no:'Yanlış! Grup kilitlemede ilk kilitlemeyi yapan yetkili Tüprag çalışanı MAVİ kartı kullanır.'},
+ {tag:'ADIM 3 · KONTROL', q:'Kilitlemenin güvenilirliği nasıl kontrol edilir?',
+  o:['Gözle bakmak yeterli','Kontrol odasıyla temas kurulur ve operatörden ekipmanı manuel pozisyonda çalıştırması istenir','Kilidi çekiştirerek','Beklemeden işe başlanır'], c:1,
+  ok:'Doğru! Kontrol odasıyla temasa geçilir, operatörden manuel çalıştırma denemesi istenir; ekipman manuel çalışma pozisyonunda kalır.',
+  no:'Yanlış! Güvenilirlik kontrolü için kontrol odasıyla temas kurulup manuel çalıştırma denemesi yapılmalıdır.'},
+ {tag:'ADIM 4 · ANAHTARLAR', q:'Kesicilerin üzerindeki asma kilitlerin anahtarları nereye konur?',
+  o:['Yetkili elektrikçinin cebine','Elektrik odasındaki çekmeceye','Kilitleme kutusuna','Vardiya amirine teslim edilir'], c:2,
+  ok:'Doğru! Kesici anahtarları yetkili elektrikçi tarafından kilitleme kutusuna konur.',
+  no:'Yanlış! Anahtarlar kilitleme kutusuna konur — kutu kilitlenmeden hiçbir çalışan kilit takamaz.'},
+ {tag:'ADIM 5 · LİSTELER', q:'Yetkili elektrikçi iki adet ekipman listesi etiketi hazırladı. Nereye konur?',
+  o:['İkisi de panoya asılır','Biri asma kilitle kutunun üzerine; diğeri kutu kilidinin anahtarıyla birlikte elektrik odasına','İkisi de dosyaya kaldırılır','Biri operatöre, biri amire verilir'], c:1,
+  ok:'Doğru! Listelerden biri kutunun üzerine konur, diğeri kutuyu kilitleyen asma kilidin anahtarıyla birlikte elektrik odasında saklanır.',
+  no:'Yanlış! Bir liste kutunun üzerine, diğeri kutu anahtarıyla birlikte elektrik odasına konur.'},
+ {tag:'ADIM 6 · EKİP', q:'Diğer çalışanlar kilitleme kutusuna ne yapar?',
+  o:['Sadece bakarlar','Kutu etiketindeki ekipman listesini kontrol edip kendi kişisel kilitlerini ve etiketlerini kutuya iliştirirler','Amirlerinin kilidini takarlar','Kutuyu açıp anahtar alırlar'], c:1,
+  ok:'Doğru! Her çalışan listeyi kontrol eder, kendi çalışma alanına ait kutuya kişisel kilidini ve etiketini takar.',
+  no:'Yanlış! Her çalışan listeyi kontrol ettikten sonra kutuya KENDİ kişisel kilidini ve etiketini iliştirmelidir.'},
+ {tag:'ADIM 7 · DENEME', q:'Çalışanlar faaliyete başlamadan önce son kontrol nedir?',
+  o:['Fotoğraf çekmek','Kilitlenen ekipmanı manuel modda çalıştırmayı deneyip çalışmadığından emin olmak','Amirden sözlü onay almak','Kutu kilidini sökmek'], c:1,
+  ok:'Doğru! İşe başlamadan önce ekipman manuel modda denenerek çalışmadığından emin olunur.',
+  no:'Yanlış! Faaliyet öncesi ekipmanın çalışmadığı manuel deneme ile teyit edilmelidir.'},
+ {tag:'ADIM 8 · İŞ BİTTİ', q:'Çalışma tamamlandı. Çalışanlar ne yapar?',
+  o:['Kilitleri ertesi güne bırakır','Kendi asma kilitlerini bizzat kendileri alır','Kilitlerini arkadaşlarına aldırır','Kutuyu kırıp açar'], c:1,
+  ok:'Doğru! Her çalışan kendi asma kilidini ve etiketini bizzat kendisi alır.',
+  no:'Yanlış! Kilidi yalnızca sahibi, bizzat kendisi alabilir.'},
+ {tag:'ADIM 9 · SONLANDIRMA', q:'Kilitleme işlemi nasıl sonlandırılır?',
+  o:['Herhangi biri kutuyu açar','İlk kilitlemeyi yapan yetkili elektrikçi aranır; ulaşılamazsa başka bir yetkili elektrikçi anahtarı elektrik odasından alıp kutuyu açar','Kutu bir hafta bekletilir','Güvenlik görevlisi açar'], c:1,
+  ok:'Doğru! İlk kilitlemeyi yapan yetkili elektrikçi aranır; ulaşılamazsa elektrik odasındaki başka bir yetkili elektrikçi anahtarı alıp kutuyu açar.',
+  no:'Yanlış! Kutuyu yalnızca yetkili elektrikçi açabilir — önce ilk kilitleyen aranır.'},
+ {tag:'ADIM 10 · ENERJİ', q:'Kutudan kesici anahtarları alındı. Son adım nedir?',
+  o:['Kesiciler kapalı devre pozisyonuna getirilerek ekipman çalışmaya hazır hale getirilir','Anahtarlar imha edilir','Kutu tekrar kilitlenir','Ekipman manuel modda bırakılır'], c:0,
+  ok:'Doğru! Yetkili elektrikçi kesicilerin kilitlerini açar ve kesicileri kapalı devre pozisyonuna getirir. Grup kilitleme güvenle tamamlandı! 🎉',
+  no:'Yanlış! Son adım: kesicilerin kilitleri açılır ve kesiciler kapalı devre pozisyonuna getirilir.'},
+];
+
+const QUIZ = [
+ {q:"Sıfır (0) enerji durumu ne demektir?",
+  o:["Ekipmanın kapalı olması","Tüm potansiyel ve kinetik enerjinin kaldırılması, elektriğin kesilmesi, basınçlı hatların boşaltılması","Sayacın sıfırı göstermesi","Sadece fişin çekilmesi"], c:1,
+  e:"Sıfır enerji: makine parçalarından tüm potansiyel ve kinetik enerjinin kaldırılması, elektriğin makineyi harekete geçiremeyecek şekilde kesilmesi ve basınçlı hatların boşaltılmasıdır."},
+ {q:"Hangisi enerji izolasyon ekipmanı olarak KULLANILAMAZ?",
+  o:["Ana şalter","Sigorta","Acil durum butonu","Vana"], c:2,
+  e:"Acil durum butonları, seçici anahtarlar ve diğer akım kontrol ekipmanları enerji izolasyon ekipmanı olarak kullanılamaz."},
+ {q:"Ambalajından üç anahtarla çıkan güvenlik kilidinde ne yapılır?",
+  o:["Üçü de saklanır","İkisi yedek olarak amire verilir","İki tanesi imha edilir","Anahtarlar çoğaltılır"], c:2,
+  e:"Kilit anahtarları sadece ait olduğu kilidi açmalıdır; ambalajdan çıkan üç anahtardan ikisi imha edilir."},
+ {q:"Asma kilitlerin yedek anahtarları ne yapılır?",
+  o:["Elektrik odasında saklanır","Kullanımdan kaldırılır","Amire teslim edilir","Kilitleme kutusuna konur"], c:1,
+  e:"Asma kilitlerin sadece bir anahtarı olacaktır; yedek anahtarlar kullanımdan kaldırılır."},
+ {q:"Kilitleme için kullanılacak kilit ve etiketleri hangi birimler verir?",
+  o:["Her çalışan kendi temin eder","İSG, Proses Elektrik ve Mekanik Departmanları","Satın alma birimi","Güvenlik birimi"], c:1,
+  e:"Ekipmanları kilitlemek için sadece İSG, Proses Elektrik ve Mekanik Departmanları tarafından verilen uygun kilit ve etiketler kullanılır."},
+ {q:"Kilitleme yapıldıktan sonra çalışanlar neyden emin olmalıdır?",
+  o:["Kilidin renginden","Ekipmana enerji verilemediğinden — start/stop denemesi yapılır","Etiketin boyutundan","Amirin haberi olduğundan"], c:1,
+  e:"Doğru kaynakların kilitlendiğinden emin olmak için deneme yapılır: start/stop yapılabiliyorsa bilgisayardan, değilse lokal start/stop panolarından."},
+ {q:"Kilidini almadan sahayı terk eden çalışana ulaşılamıyor. Ne olur?",
+  o:["Kilit sonsuza kadar kalır","Nezaretçi işin bittiğinden ve önlemlerden emin olup kilidi keser, Kilit Kesme Formu doldurur","Herhangi bir çalışan keser","Ekipman kilitli çalıştırılır"], c:1,
+  e:"Nezaretçi inceleme yapar, bütün önlemlerin alındığından emin olur, kilidi keser ve 'Kilit Kesme Formu' ile kayıt altına alır."},
+ {q:"Paletli/lastikli iş ekipmanına yaklaşmadan önce kaç metre mesafeden iletişim kurulur?",
+  o:["10 metre","25 metre","En az 50 metre","100 metre"], c:2,
+  e:"Ekipmanın en az 50 metre mesafesinde ve güvenli bir noktada durularak operatörle öncelikle telsizle iletişim kurulur."},
+ {q:"Lastikli iş ekipmanı durdurulduktan sonra ne yapılır?",
+  o:["Sadece el freni çekilir","Bom, kova, bıçak zemine indirilir; lastikli ekipman çift yönden takozlanır","Motor çalışır bırakılır","Sadece etiket asılır"], c:1,
+  e:"Bom, kova, bıçak vb. zemine veya sehpaya indirilir; lastikli iş ekipmanları çift yönden takozlanır."},
+ {q:"Kilitleme aparatlarını çıkarmadan önce ne yapılmalıdır?",
+  o:["Fotoğraf çekilmeli","Kilitlenen ekipmanın tüm muhafazaları yerine takılmalı","Alan yıkanmalı","Vardiya amiri çağrılmalı"], c:1,
+  e:"Kilitleme aparatları yerinden çıkarılmadan önce ekipmanın tüm muhafazaları yerine takılacaktır."},
+ {q:"Kilitleme/Etiketleme prosedürünün ihlal edildiğini gören çalışan ne yapar?",
+  o:["Görmezden gelir","Hemen amirini konu ile ilgili bilgilendirir","Kendisi müdahale eder","Mesai sonunda not bırakır"], c:1,
+  e:"İhlali gözlemleyen çalışanlar hemen amirlerini bilgilendirir."},
+ {q:"Tüprag çalışanları öncelikle hangi kilitleme ekipmanını kullanır?",
+  o:["Beyaz etiket","Fotoğraflı kişisel kilitleme ekipmanları","Sarı kart","Herhangi bir kilit"], c:1,
+  e:"Öncelik fotoğraflı kişisel kilitleme ekipmanıdır; eksik, kayıp veya hasarlıysa beyaz kilitleme bilgi etiketi kullanılır."},
+];
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+/* ================= ÜNVANLAR ================= */
+const TITLES = [
+ {min:0,    icon:"📋", name:"Prosedür Çaylağı",      msg:"Herkes bir yerden başlar — rehbere göz at!"},
+ {min:600,  icon:"🎨", name:"Kart Bilgini",           msg:"Renkler yerine oturmaya başladı!"},
+ {min:1400, icon:"🔐", name:"Kilit Ustası Adayı",     msg:"Kilitler senden sorulmaya başladı!"},
+ {min:2400, icon:"👷", name:"Saha Yetkilisi",         msg:"Grup kilitleme sana emanet!"},
+ {min:3400, icon:"🛡️", name:"İzolasyon Uzmanı",      msg:"Sıfır enerji senin işin!"},
+ {min:4500, icon:"🏆", name:"Prosedür Ustası",        msg:"Efsane! Kışladağ'ın prosedürü avucunun içinde."},
+];
+function titleFor(p){ let t = TITLES[0]; for(const x of TITLES){ if(p >= x.min) t = x; } return t; }
+
+/* ================= STATE ================= */
+let total = 0;
+let playerName = "";
+const best = {kart:null, scen:null, quiz:null};
+const stats = {
+  kart:{plays:0, correct:0, answered:0, bestStreak:0},
+  scen:{plays:0, wrong:0, completed:0},
+  quiz:{plays:0, correct:0, answered:0}
+};
+function addTotal(p){
+  const before = titleFor(total);
+  total += p;
+  document.getElementById('totalScore').textContent = total;
+  const after = titleFor(total);
+  updateRank();
+  if(after !== before) showToast('🎉 Yeni ünvan: ' + after.icon + ' ' + after.name + ' — ' + after.msg);
+}
+function updateRank(){
+  const t = titleFor(total);
+  document.getElementById('playerTitle').textContent = t.icon + ' ' + t.name;
+  document.getElementById('rankIcon').textContent = t.icon;
+  document.getElementById('rankName').textContent = t.name;
+  const next = TITLES[TITLES.indexOf(t) + 1];
+  if(next){
+    document.getElementById('rankBar').style.width = Math.min(100, (total - t.min) / (next.min - t.min) * 100) + '%';
+    document.getElementById('rankNext').textContent = 'Sonraki ünvan: ' + next.icon + ' ' + next.name + ' — ' + (next.min - total) + ' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width = '100%';
+    document.getElementById('rankNext').textContent = 'En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+function registerPlayer(){
+  const v = document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length < 5 || v.split(' ').length < 2){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  playerName = v.replace(/(^|\s)\S/g, c=>c.toLocaleUpperCase('tr'));
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent = playerName;
+  document.getElementById('playerPill').style.display = 'flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id !== 'name') id = 'name';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') refreshBest();
+}
+function refreshBest(){
+  document.getElementById('bestKart').textContent = best.kart!=null ? '⭐ En iyi: '+best.kart+' puan' : '';
+  document.getElementById('bestScen').textContent = best.scen!=null ? '⭐ En iyi: '+best.scen+' puan' : '';
+  document.getElementById('bestQuiz').textContent = best.quiz!=null ? '⭐ En iyi: '+best.quiz+' puan' : '';
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function flashDanger(){ const f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= REHBER ================= */
+function startLearn(){
+  const cats = [...new Set(TERMS.map(x=>x.cat))];
+  let html = '';
+  cats.forEach(c=>{
+    html += '<div class="cat-label">'+c+'</div><div class="steps-grid">';
+    TERMS.filter(x=>x.cat===c).forEach(x=>{
+      html += '<div class="stepcard" onclick="this.classList.toggle(\'open\')">'+
+        '<div class="name">'+x.t+'</div>'+
+        '<div class="desc">'+x.d+'</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('learnList').innerHTML = html;
+  go('learn');
+}
+
+/* ================= HANGİ KART ================= */
+let kartList, kartIdx, kartScore, kartStreak, kartLock;
+function startKart(){
+  kartList = shuffle(KART);
+  kartIdx = 0; kartScore = 0; kartStreak = 0; kartLock = false;
+  document.getElementById('kartScore').textContent = 0;
+  renderKart();
+  go('kart');
+}
+function renderKart(){
+  const k = kartList[kartIdx];
+  document.getElementById('kartProg').textContent = (kartIdx+1)+'/'+kartList.length;
+  document.getElementById('kartBar').style.width = (kartIdx/kartList.length*100)+'%';
+  document.getElementById('kartCard').textContent = k.x;
+  document.getElementById('kartCat').innerHTML = '&nbsp;';
+  document.getElementById('kartCombo').innerHTML = kartStreak>=3 ? '<span class="combo">🔥 Seri x'+kartStreak+'</span>' : '&nbsp;';
+}
+function answerKart(ans){
+  if(kartLock) return;
+  kartLock = true;
+  const k = kartList[kartIdx];
+  stats.kart.answered++;
+  const catEl = document.getElementById('kartCat');
+  if(ans === k.a){
+    stats.kart.correct++;
+    kartStreak++;
+    stats.kart.bestStreak = Math.max(stats.kart.bestStreak, kartStreak);
+    const pts = kartStreak>=3 ? 100 : 75;
+    kartScore += pts;
+    SFX.ding();
+    catEl.innerHTML = '✅ <b style="color:var(--green)">Doğru!</b> '+k.r+' (+'+pts+')';
+  } else {
+    kartStreak = 0;
+    SFX.buzz(); flashDanger();
+    catEl.innerHTML = '❌ <b style="color:var(--red)">Yanlış!</b> '+k.r;
+  }
+  document.getElementById('kartScore').textContent = kartScore;
+  setTimeout(()=>{
+    kartIdx++;
+    kartLock = false;
+    if(kartIdx >= kartList.length){
+      const pct = stats.kart.answered ? kartScore/(kartList.length*75) : 0;
+      finishGame('kart', kartScore, 'Kart turu bitti!',
+        pct>=1 ? 'Renkleri hiç şaşırmadın — kart sistemi avucunun içinde!' :
+        pct>=0.7 ? 'İyi iş! Rehberdeki kart renklerine bir bak, seriyi uzat.' :
+        'Rehbere göz at: Beyaz=Tüprag (kartsız), Sarı=alt işveren, Mavi=grup yetkilisi, Kırmızı=servis dışı.',
+        pct>=1?3:(pct>=0.7?2:1), startKart);
+    } else renderKart();
+  }, 1400);
+}
+
+/* ================= SENARYO ================= */
+let scenIdx, scenScore, scenLives;
+function startScen(){
+  scenIdx = 0; scenScore = 0; scenLives = 3;
+  document.getElementById('scenScore').textContent = 0;
+  renderScen();
+  go('scen');
+}
+function renderScen(){
+  const s = SCEN[scenIdx];
+  document.getElementById('scenLives').textContent = '❤️'.repeat(scenLives) + '🖤'.repeat(3-scenLives);
+  document.getElementById('scenBar').style.width = (scenIdx/SCEN.length*100)+'%';
+  document.getElementById('scenTag').textContent = s.tag;
+  document.getElementById('scenQ').textContent = s.q;
+  document.getElementById('scenExpl').className = 'expl';
+  document.getElementById('scenNext').style.display = 'none';
+  const box = document.getElementById('scenOpts');
+  box.innerHTML = '';
+  shuffle(s.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerScen(d, op.i, s);
+    box.appendChild(d);
+  });
+}
+function answerScen(el, i, s){
+  const opts = document.querySelectorAll('#scenOpts .opt');
+  const ex = document.getElementById('scenExpl');
+  if(i === s.c){
+    opts.forEach(o=>o.classList.add('dim'));
+    el.classList.remove('dim'); el.classList.add('correct');
+    scenScore += 150;
+    SFX.cheer();
+    ex.className = 'expl ok'; ex.innerHTML = '✅ ' + s.ok;
+    document.getElementById('scenScore').textContent = scenScore;
+    document.getElementById('scenNext').style.display = 'inline-block';
+  } else {
+    el.classList.add('incorrect','dim');
+    stats.scen.wrong++;
+    scenLives--;
+    SFX.buzz(); flashDanger();
+    document.getElementById('scenLives').textContent = '❤️'.repeat(scenLives) + '🖤'.repeat(3-scenLives);
+    ex.className = 'expl no'; ex.innerHTML = '⚠️ ' + s.no + (scenLives>0 ? ' <b>Tekrar dene!</b>' : '');
+    if(scenLives <= 0){
+      opts.forEach(o=>o.classList.add('dim'));
+      finishGame('scen', scenScore, 'Grup kilitleme başarısız!',
+        'Üç kritik hata yapıldı. Prosedür Rehberi\'ndeki grup kilitleme adımlarına göz atıp tekrar dene!',
+        0, startScen, '💥');
+    }
+  }
+}
+function nextScen(){
+  scenIdx++;
+  if(scenIdx >= SCEN.length){
+    stats.scen.completed++;
+    scenScore += scenLives * 100;
+    finishGame('scen', scenScore, 'Grup kilitleme tamamlandı!',
+      'Değirmen güvenle devreye alındı. Kalan can bonusu: +'+(scenLives*100)+' puan.',
+      scenLives, startScen, '🦺');
+  } else renderScen();
+}
+
+/* ================= QUIZ ================= */
+let quizIdx, quizScore, quizList;
+function startQuiz(){
+  quizIdx = 0; quizScore = 0;
+  quizList = shuffle(QUIZ);
+  document.getElementById('quizScore').textContent = 0;
+  renderQuiz();
+  go('quiz');
+}
+function renderQuiz(){
+  const q = quizList[quizIdx];
+  document.getElementById('quizProg').textContent = (quizIdx+1)+'/'+quizList.length;
+  document.getElementById('quizBar').style.width = (quizIdx/quizList.length*100)+'%';
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizExpl').className = 'expl';
+  document.getElementById('quizNext').style.display = 'none';
+  const box = document.getElementById('quizOpts');
+  box.innerHTML = '';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerQuiz(d, op.i, q);
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el, i, q){
+  const opts = document.querySelectorAll('#quizOpts .opt');
+  opts.forEach(o=>{ o.classList.add('dim'); if(o.textContent===q.o[q.c]) o.classList.add('correct'); });
+  const ex = document.getElementById('quizExpl');
+  stats.quiz.answered++;
+  if(i === q.c){
+    stats.quiz.correct++;
+    SFX.cheer();
+    quizScore += 100;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ <b>Doğru!</b> ' + q.e;
+  } else {
+    el.classList.add('incorrect');
+    SFX.buzz(); flashDanger();
+    ex.className = 'expl no'; ex.innerHTML = '❌ <b>Yanlış.</b> ' + q.e;
+  }
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizNext').style.display = 'inline-block';
+}
+function nextQuiz(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){
+    const pct = quizScore/(quizList.length*100);
+    finishGame('quiz', quizScore, 'Prosedür Avı tamamlandı!',
+      pct===1 ? 'Tüm soruları bildin — prosedür ezberinde!' :
+      pct>=0.7 ? 'İyi iş! Kaçırdığın konular için rehbere göz at.' :
+      'Prosedür Rehberi seni bekliyor — tazeleyip tekrar gel.',
+      pct===1?3:(pct>=0.7?2:1), startQuiz);
+  } else renderQuiz();
+}
+
+/* ================= SONUÇ ================= */
+function finishGame(mode, pts, title, msg, stars, replayFn, emoji){
+  addTotal(pts);
+  stats[mode].plays++;
+  if(best[mode]==null || pts > best[mode]) best[mode] = pts;
+  const t = titleFor(total);
+  document.getElementById('resPlayer').textContent = playerName + ' · ' + t.icon + ' ' + t.name;
+  document.getElementById('resEmoji').textContent = emoji || (stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'💥');
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resStars').textContent = stars>0 ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : '☆☆☆';
+  document.getElementById('resPts').textContent = '+' + pts + ' puan';
+  document.getElementById('resMsg').textContent = msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick = replayFn;
+  go('result');
+}
+
+/* ================= EĞİTİCİ ================= */
+function openTrainer(){
+  const t = titleFor(total);
+  document.getElementById('trName').textContent = playerName || '—';
+  document.getElementById('trTitle').textContent = 'Ünvan: ' + t.icon + ' ' + t.name;
+  document.getElementById('trTotal').textContent = total + ' puan';
+  document.getElementById('trDate').textContent = new Date().toLocaleString('tr-TR', {dateStyle:'long', timeStyle:'short'});
+  const k = stats.kart, s = stats.scen, q = stats.quiz;
+  const kpct = k.answered ? Math.round(k.correct/k.answered*100) : null;
+  const qpct = q.answered ? Math.round(q.correct/q.answered*100) : null;
+  const row = (l,v)=>'<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';
+  document.getElementById('trCards').innerHTML =
+    '<div class="trcard"><h4>🎨 Hangi Kart?</h4>'+
+      row('Oynama sayısı', k.plays) +
+      row('En iyi puan', best.kart!=null ? best.kart : '—') +
+      row('Doğru / Durum', k.correct+' / '+k.answered) +
+      row('En uzun seri', k.bestStreak) +
+    '</div>'+
+    '<div class="trcard"><h4>🔋 Grup Kilitleme</h4>'+
+      row('Oynama sayısı', s.plays) +
+      row('En iyi puan', best.scen!=null ? best.scen : '—') +
+      row('Kazasız tamamlama', s.completed) +
+      row('Yanlış karar', s.wrong) +
+    '</div>'+
+    '<div class="trcard"><h4>🎯 Prosedür Avı</h4>'+
+      row('Oynama sayısı', q.plays) +
+      row('En iyi puan', best.quiz!=null ? best.quiz : '—') +
+      row('Doğru / Cevap', q.correct+' / '+q.answered) +
+      row('Başarı oranı', qpct!=null ? '%'+qpct : '—') +
+    '</div>';
+  const notes = [];
+  if(!k.plays && !s.plays && !q.plays){
+    notes.push('Katılımcı henüz bölüm oynamadı — rapor, bölümler oynandıkça otomatik dolar.');
+  } else {
+    if(kpct!=null) notes.push(kpct>=70 ? 'Bilgi kartı renk sistemi oranı %'+kpct+' — kart bilgisi iyi.' : 'Bilgi kartı renk sistemi oranı %'+kpct+' — kart renkleri tekrar edilmeli.');
+    if(s.plays) notes.push(s.completed>0 ? 'Grup kilitleme senaryosunu '+s.completed+' kez kazasız tamamladı'+(s.wrong?' ('+s.wrong+' yanlış karar).':'.') : 'Grup kilitleme senaryosu henüz kazasız tamamlanamadı — akış tekrar edilmeli.');
+    if(qpct!=null) notes.push(qpct>=70 ? 'Prosedür bilgisi %'+qpct+' — genel hükümler oturmuş.' : 'Prosedür bilgisi %'+qpct+' — genel hükümler ve paletli ekipman kuralları tekrar edilmeli.');
+    notes.push('Genel seviye: ' + t.icon + ' ' + t.name + '.');
+  }
+  document.getElementById('trNote').innerHTML = '<b>Eğitici değerlendirme notu:</b><br>• ' + notes.join('<br>• ');
+  go('trainer');
+}
+
+/* isim girişi */
+const _ni = document.getElementById('nameInput');
+_ni.addEventListener('keydown', e=>{ if(e.key === 'Enter') registerPlayer(); });
+_ni.addEventListener('input', ()=>{ document.getElementById('nameErr').style.display = 'none'; });
+</script>
+
+</body></html>

@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Tanım Avcısı — Yonga Levha / MDF</title>
+<style>
+  :root{
+    --copper:#9a6b33; --copper-dark:#6f4a1f; --copper-light:#cfa670;
+    --ink:#1d1d1b; --bg:#f8f3e9; --card:#ffffff; --card2:#f6efdf;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e; --blue:#2f6fa8; --blue-bg:#e8f1f9;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(111,74,31,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(111,74,31,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .combo{display:inline-block;background:var(--green);color:#fff;font-weight:800;border-radius:999px;padding:4px 12px;font-size:.8rem;margin-left:8px;animation:pop .3s;}
+  /* MATCH */
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .match-col{display:grid;gap:10px;align-content:start;}
+  .mitem{background:var(--card2);border:2px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;font-size:.88rem;line-height:1.4;}
+  .mitem.term{font-weight:800;font-size:.95rem;}
+  .mitem:hover{border-color:var(--copper);}
+  .mitem.sel{border-color:var(--copper);background:#f3e6dd;}
+  .mitem.done{border-color:var(--green);background:var(--green-bg);opacity:.75;pointer-events:none;}
+  @media (max-width:640px){ .match-grid{grid-template-columns:1fr;} }
+  /* KP (kinetik/potansiyel) */
+  .kp-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:34px 20px;text-align:center;font-size:1.3rem;font-weight:800;margin-bottom:8px;animation:pop .25s ease;line-height:1.4;}
+  .kp-cat{text-align:center;color:var(--muted);font-size:.85rem;font-weight:700;min-height:22px;margin-bottom:14px;}
+  .kp-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .kp-btn{border:none;border-radius:14px;padding:18px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:.15s;color:#fff;}
+  .kp-btn:hover{transform:translateY(-2px);filter:brightness(1.06);}
+  .kp-btn.kin{background:linear-gradient(135deg,#3b82c4,#2f6fa8);}
+  .kp-btn.pot{background:linear-gradient(135deg,#d69e2e,#b3821f);}
+  /* CATALOG */
+  .cat-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;}
+  .stepcard .desc{font-size:.84rem;color:var(--muted);line-height:1.45;display:none;}
+  .stepcard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>LOTOTO</b><small>Tanım Avcısı · Yonga Levha / MDF</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <!-- NAME ENTRY -->
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">🧠</div>
+      <h2>Tanım Avcısı'na Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">LOTOTO / EKED tanımlarını eşleştir, enerjileri sınıflandır, terimleri avla. Hedef: 🏆 Tanım Profesörü!</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Eğitime Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <h1>Terimleri Bil, <span class="accent">Enerjiyi Tanı!</span></h1>
+    <p class="sub">LOTOTO nedir, EKED neyin kısaltması? Tehlikeli, artık ve sıfır enerji ne demek? Tanımları yonga levha / MDF fabrikasında oyunlarla öğren!</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">📖</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Sözlük Çırağı</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu">
+      <div class="mcard" onclick="startLearn()">
+        <div class="ic">📖</div><h3>Tanım Sözlüğü</h3>
+        <p>LOTOTO, EKED, enerji tanımları, roller ve formlar — kartlara dokun, öğren.</p>
+      </div>
+      <div class="mcard" onclick="startMatch()">
+        <div class="ic">🧩</div><h3>Terim Eşleştirme</h3>
+        <p>Soldaki terimi sağdaki tanımıyla eşleştir. 8 çift, yanlış eşleşme puan götürür!</p>
+        <div class="best" id="bestMatch"></div>
+      </div>
+      <div class="mcard" onclick="startKP()">
+        <div class="ic">⚡</div><h3>Kinetik mi, Potansiyel mi?</h3>
+        <p>16 hızlı kart: gerilmiş yay? Döner şaft? Doğru kutuya gönder, seriyi bozma!</p>
+        <div class="best" id="bestKp"></div>
+      </div>
+      <div class="mcard" onclick="startQuiz()">
+        <div class="ic">🎯</div><h3>Tanım Avı</h3>
+        <p>12 soruluk quiz: açılımlar, tanımlar, roller ve enerji örnekleri.</p>
+        <div class="best" id="bestQuiz"></div>
+      </div>
+    </div>
+    <div class="notebox">💡 <b>Unutma:</b> <b>Sıfır enerji</b> sadece "kapalı" demek değildir — tüm kaynaklardan izole edilmiş <b>ve</b> artık/depolanmış enerjisi boşaltılmış demektir. Artık enerji kaynakları, yeniden birikimi önlemek için izlenmelidir!</div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="screen" id="scr-learn">
+    <div class="topbar"><h2>📖 Tanım Sözlüğü</h2><button class="btn ghost small" onclick="go('home')">← Ana Menü</button></div>
+    <p class="sub">Kartlara dokunarak tanımları gör.</p>
+    <div id="learnList"></div>
+    <div class="notebox"><b>EKED uygulanacak enerji türleri:</b> Elektrik, mekanik, hidrolik, pnömatik, buhar, kimyasal, termal, yerçekimi, radyasyon, su — her biri <b>kinetik</b> (akan/hareketli) ya da <b>potansiyel</b> (depolanmış) formda bulunabilir.</div>
+  </section>
+
+  <!-- MATCH -->
+  <section class="screen" id="scr-match">
+    <div class="topbar">
+      <h2>🧩 Terim Eşleştirme</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="matchScore">0</span></span>
+        <span class="pill" id="matchProg">0/8</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <p class="sub">Önce soldan bir <b>terim</b>, sonra sağdan <b>tanımını</b> seç. Doğru çift yeşillenir!</p>
+    <div class="match-grid">
+      <div class="match-col" id="matchTerms"></div>
+      <div class="match-col" id="matchDefs"></div>
+    </div>
+  </section>
+
+  <!-- KP -->
+  <section class="screen" id="scr-kp">
+    <div class="topbar">
+      <h2>⚡ Kinetik mi, Potansiyel mi?</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="kpScore">0</span></span>
+        <span class="pill" id="kpProg">1/16</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="kpBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div style="text-align:center;margin-bottom:8px;" id="kpCombo"></div>
+      <div class="kp-card" id="kpCard"></div>
+      <div class="kp-cat" id="kpCat"></div>
+      <div class="kp-btns">
+        <button class="kp-btn kin" onclick="answerKP('K')">⚡ Kinetik<br><small style="font-weight:600;">akan / hareketli</small></button>
+        <button class="kp-btn pot" onclick="answerKP('P')">🔋 Potansiyel<br><small style="font-weight:600;">depolanmış</small></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2>🎯 Tanım Avı</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="quizScore">0</span></span>
+        <span class="pill" id="quizProg">1/12</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🎉</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <button class="btn" id="resReplay">↻ Tekrar Oyna</button>
+      <button class="btn ghost" onclick="go('home')">Ana Menü</button>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    EKED | LOTOTO Tanım Avcısı · Tanımlar Eğitim Oyunu · Yonga Levha / MDF Fabrikaları
+  </footer>
+</div>
+
+<script>
+/* ================= TANIM VERİSİ ================= */
+const TERMS = [
+ {t:'LOTOTO', d:'Lock Out / Tag Out / Try Out — Kilitleme, Etiketleme, Deneme.', cat:'TEMEL KAVRAMLAR'},
+ {t:'EKED', d:'Etiketle, Kilitle, Emniyete al, Dene — prosedürün Türkçe kısaltması.', cat:'TEMEL KAVRAMLAR'},
+ {t:'Tehlikeli Enerji', d:'Beklenmedik bir anda açığa çıktığında yaralanmalara veya maddi hasara yol açabilecek enerjidir. Serbest (kinetik) veya depolanmış (potansiyel) formda bulunur.', cat:'ENERJİ TANIMLARI'},
+ {t:'Kinetik Enerji', d:'Hareket kaynaklı serbest enerji — döner şaft, akan sıvı, akım gibi.', cat:'ENERJİ TANIMLARI'},
+ {t:'Potansiyel Enerji', d:'Depolanmış enerji — bırakıldığında kinetik enerjiye dönüşür (gerilmiş yay, akü, kondansatör).', cat:'ENERJİ TANIMLARI'},
+ {t:'Artık / Depolanmış Enerji', d:'Makine veya ekipman kapatıldıktan sonra içinde muhafaza edilen enerjidir — tanktaki sıkıştırılmış hava gibi.', cat:'ENERJİ TANIMLARI'},
+ {t:'Sıfır Enerji Durumu', d:'Ekipmanın her türlü tehlikeli enerji kaynağından tam olarak izole edildiği, artık/depolanmış enerjinin giderildiği veya sınırlandığı durumdur. Yeniden birikimi önlemek için denetlenir ve izlenir.', cat:'ENERJİ TANIMLARI'},
+ {t:'Yetkili Çalışan', d:'Ekipmanı kilitleyip etiketleyen, bakım/onarımı gerçekleştiren, LOTOTO eğitimi almış kişidir.', cat:'ROLLER'},
+ {t:'Etkilenen Çalışan', d:'Kilitlenen ekipmanı kullanan veya bakım yapılan bölgede çalışan, uygulamadan etkilenen kişidir.', cat:'ROLLER'},
+ {t:'LOTOTO Koordinatörü', d:'Sahada LOTOTO uygulamasını koordine eden, formları ve kilitleri takip eden kişidir.', cat:'ROLLER'},
+ {t:'LOTOTO Kayıt Formu', d:'Uygulanan kilitleme/etiketleme işlemlerinin kayıt altına alındığı formdur.', cat:'FORMLAR'},
+ {t:'Enerji Kesme Talep Formu', d:'Enerjinin kesilmesi için yapılan talebin kayıt formudur.', cat:'FORMLAR'},
+ {t:'Kilit Kırma / Devre Dışı Bırakma Formu', d:'Sahibine ulaşılamayan kilidin kontrollü şekilde kesilmesini belgeleyen formdur.', cat:'FORMLAR'},
+];
+
+const MATCH_PAIRS = [
+ {t:'LOTOTO', d:'Lock Out / Tag Out / Try Out'},
+ {t:'EKED', d:'Etiketle, Kilitle, Emniyete al, Dene'},
+ {t:'Tehlikeli Enerji', d:'Beklenmedik anda açığa çıkınca yaralanmaya yol açabilen enerji'},
+ {t:'Kinetik Enerji', d:'Hareket kaynaklı serbest enerji (döner şaft gibi)'},
+ {t:'Potansiyel Enerji', d:'Depolanmış, bırakılınca kinetiğe dönüşen enerji (gerilmiş yay)'},
+ {t:'Artık Enerji', d:'Kapatma sonrası ekipmanda muhafaza edilen enerji'},
+ {t:'Sıfır Enerji', d:'Tüm kaynaklardan izole, artık enerjisi giderilmiş durum'},
+ {t:'Yetkili Çalışan', d:'Kilidi takan ve bakımı yapan eğitimli kişi'},
+];
+
+const KP = [
+ {x:'Elektrik akımı', a:'K', c:'Elektrik'},
+ {x:'Akü, batarya ve kapasitörler', a:'P', c:'Elektrik'},
+ {x:'Döner şaft, dişli ve zincirler', a:'K', c:'Mekanik'},
+ {x:'Gerilmiş yay', a:'P', c:'Mekanik'},
+ {x:'Hareketli silindir pistonları', a:'K', c:'Hidrolik'},
+ {x:'Akümülatör basıncı', a:'P', c:'Hidrolik'},
+ {x:'Hareketli aktüatör pistonları', a:'K', c:'Pnömatik'},
+ {x:'Tank ve hatlardaki basınç', a:'P', c:'Pnömatik'},
+ {x:'Buhar akışı', a:'K', c:'Buhar'},
+ {x:'Sıkışmış buhar basıncı', a:'P', c:'Buhar'},
+ {x:'Sıvı ve gaz akışı', a:'K', c:'Kimyasal'},
+ {x:'Sıkışmış gaz ve sıvılar', a:'P', c:'Kimyasal'},
+ {x:'Aşağı yönde hareket eden bileşenler', a:'K', c:'Yerçekimi'},
+ {x:'Yukarı kaldırılmış karşı ağırlık', a:'P', c:'Yerçekimi'},
+ {x:'Açığa çıkmış radyasyon enerjisi', a:'K', c:'Radyasyon'},
+ {x:'Muhafaza edilen kaynak materyal', a:'P', c:'Radyasyon'},
+];
+
+const QUIZ = [
+ {q:"LOTOTO neyin kısaltmasıdır?",
+  o:["Lock Out / Tag Out / Try Out","Lock On / Take Off / Turn On","Low Torque / Total Output","Lock Out / Test Only"], c:0,
+  e:"LOTOTO = Lock Out (kilitle) / Tag Out (etiketle) / Try Out (dene)."},
+ {q:"EKED harfleri neyi ifade eder?",
+  o:["Elektriği Kes, Enerjiyi Durdur","Etiketle, Kilitle, Emniyete al, Dene","Ekipmanı Kapat, Enerjiyi Dağıt","Emniyet, Kontrol, Enerji, Denetim"], c:1,
+  e:"EKED: Etiketle, Kilitle, Emniyete al, Dene."},
+ {q:"Tehlikeli enerji nedir?",
+  o:["Sadece yüksek gerilimli elektrik","Beklenmedik anda açığa çıktığında yaralanma veya hasara yol açabilecek enerji","Sadece yanıcı gazlar","Yalnızca hareket halindeki enerji"], c:1,
+  e:"Tehlikeli enerji, beklenmedik anda açığa çıktığında yaralanmalara veya maddi hasara yol açabilecek her türlü enerjidir."},
+ {q:"Tehlikeli enerjinin iki temel formu nedir?",
+  o:["Sıcak ve soğuk","Kinetik (serbest) ve potansiyel (depolanmış)","Elektrik ve mekanik","Doğal ve yapay"], c:1,
+  e:"Serbest/hareket kaynaklı kinetik enerji ve depolanmış potansiyel enerji — potansiyel enerji bırakıldığında kinetiğe dönüşür."},
+ {q:"Artık (depolanmış) enerji nedir?",
+  o:["Kullanılmayan yedek enerji","Kapatma sonrası makine/ekipmanda muhafaza edilen enerji","Şebekeden gelen enerji","Jeneratör enerjisi"], c:1,
+  e:"Makine kapatıldıktan sonra içinde kalan enerjidir — tanktaki sıkıştırılmış hava klasik örnektir."},
+ {q:"Sıfır enerji durumu ne demektir?",
+  o:["Ekipmanın kapalı olması","Fişin çekilmiş olması","Tüm kaynaklardan tam izolasyon + artık enerjinin giderilmiş/sınırlanmış olması","Sayaç değerinin sıfır olması"], c:2,
+  e:"Sıfır enerji: her türlü tehlikeli enerji kaynağından tam izolasyon ve potansiyel/artık/kalıntı enerjinin ortadan kaldırılması veya sınırlanması."},
+ {q:"Sıfır enerji durumunda artık enerji kaynakları neden izlenir?",
+  o:["Fatura takibi için","Yeniden enerji birikimini önlemek için","Isınmayı ölçmek için","Gürültüyü azaltmak için"], c:1,
+  e:"Artık/depolanmış enerji kaynakları, yeniden enerji birikimini önlemek için denetim altında tutulmalı ve izlenmelidir."},
+ {q:"Yetkili çalışan kimdir?",
+  o:["Vardiya amiri","Ekipmanı kilitleyip etiketleyen ve bakımı yapan eğitimli kişi","Sadece elektrikçiler","Güvenlik görevlisi"], c:1,
+  e:"Yetkili çalışan, LOTOTO uygulayan — kilidi takan, etiketleyen ve bakım/onarımı yapan eğitimli kişidir."},
+ {q:"Etkilenen çalışan kimdir?",
+  o:["İşe yeni başlayan","Kilitlenen ekipmanı kullanan veya o bölgede çalışan kişi","Sadece alt işveren","Bakımı yapan kişi"], c:1,
+  e:"Etkilenen çalışan, kilitleme uygulanan ekipmanı kullanan ya da bakım bölgesinde çalışan kişidir — bildirim ona yapılır."},
+ {q:"Hangisi LOTOTO'da kullanılan formlardan DEĞİLDİR?",
+  o:["LOTOTO kayıt formu","Enerji kesme talep formu","Kilit kırma / devre dışı bırakma formu","Yıllık izin talep formu"], c:3,
+  e:"LOTOTO formları: kayıt formu, enerji kesme talep formu ve kilit kırma/devre dışı bırakma formudur."},
+ {q:"Gerilmiş bir yay hangi enerji türüne örnektir?",
+  o:["Kinetik enerji","Potansiyel (depolanmış) enerji","Termal enerji","Radyasyon"], c:1,
+  e:"Gerilmiş yay depolanmış potansiyel enerjidir — bırakıldığında kinetik enerjiye dönüşür."},
+ {q:"Makine kapatıldı ama tankında sıkıştırılmış hava var. Durum nedir?",
+  o:["Sıfır enerji sağlanmıştır","Artık enerji vardır, sıfır enerji sağlanmamıştır","Tehlike yoktur","Ekipman izole edilmiştir"], c:1,
+  e:"Sıkıştırılmış hava artık/depolanmış enerjidir; boşaltılmadan sıfır enerji durumuna ulaşılmaz."},
+];
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+/* ================= ÜNVANLAR ================= */
+const TITLES = [
+ {min:0,    icon:"📖", name:"Sözlük Çırağı",       msg:"Herkes bir yerden başlar — sözlüğe göz at!"},
+ {min:600,  icon:"🔤", name:"Terim Toplayıcı",     msg:"Terimler cebine girmeye başladı!"},
+ {min:1400, icon:"🧠", name:"Tanım Avcısı",         msg:"Tanımlar senden kaçamıyor!"},
+ {min:2400, icon:"⚡", name:"Enerji Bilgini",       msg:"Kinetik mi potansiyel mi? Sana sorulur!"},
+ {min:3400, icon:"🛡️", name:"EKED Uzmanı",          msg:"Tanımlar artık refleksin!"},
+ {min:4500, icon:"🏆", name:"Tanım Profesörü",      msg:"Efsane! Kürsü senindir, profesör."},
+];
+function titleFor(p){ let t = TITLES[0]; for(const x of TITLES){ if(p >= x.min) t = x; } return t; }
+
+/* ================= STATE ================= */
+let total = 0;
+let playerName = "";
+const best = {match:null, kp:null, quiz:null};
+const stats = {
+  match:{plays:0, wrong:0},
+  kp:{plays:0, correct:0, answered:0, bestStreak:0},
+  quiz:{plays:0, correct:0, answered:0}
+};
+function addTotal(p){
+  const before = titleFor(total);
+  total += p;
+  document.getElementById('totalScore').textContent = total;
+  const after = titleFor(total);
+  updateRank();
+  if(after !== before) showToast('🎉 Yeni ünvan: ' + after.icon + ' ' + after.name + ' — ' + after.msg);
+}
+function updateRank(){
+  const t = titleFor(total);
+  document.getElementById('playerTitle').textContent = t.icon + ' ' + t.name;
+  document.getElementById('rankIcon').textContent = t.icon;
+  document.getElementById('rankName').textContent = t.name;
+  const next = TITLES[TITLES.indexOf(t) + 1];
+  if(next){
+    document.getElementById('rankBar').style.width = Math.min(100, (total - t.min) / (next.min - t.min) * 100) + '%';
+    document.getElementById('rankNext').textContent = 'Sonraki ünvan: ' + next.icon + ' ' + next.name + ' — ' + (next.min - total) + ' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width = '100%';
+    document.getElementById('rankNext').textContent = 'En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+function registerPlayer(){
+  const v = document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length < 5 || v.split(' ').length < 2){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  playerName = v.replace(/(^|\s)\S/g, c=>c.toLocaleUpperCase('tr'));
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent = playerName;
+  document.getElementById('playerPill').style.display = 'flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id !== 'name') id = 'name';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') refreshBest();
+}
+function refreshBest(){
+  document.getElementById('bestMatch').textContent = best.match!=null ? '⭐ En iyi: '+best.match+' puan' : '';
+  document.getElementById('bestKp').textContent    = best.kp!=null    ? '⭐ En iyi: '+best.kp+' puan' : '';
+  document.getElementById('bestQuiz').textContent  = best.quiz!=null  ? '⭐ En iyi: '+best.quiz+' puan' : '';
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function flashDanger(){ const f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= SÖZLÜK ================= */
+function startLearn(){
+  const cats = [...new Set(TERMS.map(x=>x.cat))];
+  let html = '';
+  cats.forEach(c=>{
+    html += '<div class="cat-label">'+c+'</div><div class="steps-grid">';
+    TERMS.filter(x=>x.cat===c).forEach(x=>{
+      html += '<div class="stepcard" onclick="this.classList.toggle(\'open\')">'+
+        '<div class="name">'+x.t+'</div>'+
+        '<div class="desc">'+x.d+'</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('learnList').innerHTML = html;
+  go('learn');
+}
+
+/* ================= EŞLEŞTİRME ================= */
+let mScore, mFound, mSel, mWrong;
+function startMatch(){
+  mScore = 0; mFound = 0; mSel = null; mWrong = 0;
+  document.getElementById('matchScore').textContent = 0;
+  document.getElementById('matchProg').textContent = '0/8';
+  const terms = shuffle(MATCH_PAIRS);
+  const defs = shuffle(MATCH_PAIRS);
+  const tc = document.getElementById('matchTerms');
+  const dc = document.getElementById('matchDefs');
+  tc.innerHTML = ''; dc.innerHTML = '';
+  terms.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'mitem term'; el.textContent = p.t; el.dataset.t = p.t;
+    el.onclick = ()=>pickTerm(el);
+    tc.appendChild(el);
+  });
+  defs.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'mitem'; el.textContent = p.d; el.dataset.t = p.t;
+    el.onclick = ()=>pickDef(el);
+    dc.appendChild(el);
+  });
+  go('match');
+}
+function pickTerm(el){
+  document.querySelectorAll('#matchTerms .mitem').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  mSel = el;
+  SFX.init();
+}
+function pickDef(el){
+  if(!mSel){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),400); return; }
+  if(el.dataset.t === mSel.dataset.t){
+    el.classList.add('done'); mSel.classList.add('done'); mSel.classList.remove('sel');
+    mSel = null; mFound++; mScore += 100;
+    SFX.cheer();
+    document.getElementById('matchScore').textContent = mScore;
+    document.getElementById('matchProg').textContent = mFound+'/8';
+    if(mFound >= 8){
+      const bonus = mWrong===0 ? 300 : Math.max(0, 200 - mWrong*40);
+      mScore += bonus;
+      finishGame('match', mScore, 'Tüm çiftler eşleşti!',
+        mWrong===0 ? 'Hiç yanlış eşleşme yapmadın! Mükemmellik bonusu: +'+bonus+' puan.' :
+        mWrong+' yanlış eşleşme yaptın. Bonus: +'+bonus+' puan. Hatasız tur için tekrar dene!',
+        mWrong===0?3:(mWrong<=3?2:1), startMatch);
+    }
+  } else {
+    mWrong++;
+    mScore = Math.max(0, mScore - 20);
+    document.getElementById('matchScore').textContent = mScore;
+    el.classList.add('shake'); mSel.classList.add('shake');
+    SFX.buzz(); flashDanger();
+    setTimeout(()=>{ el.classList.remove('shake'); document.querySelectorAll('.mitem.shake').forEach(x=>x.classList.remove('shake')); }, 450);
+  }
+}
+
+/* ================= KİNETİK / POTANSİYEL ================= */
+let kpList, kpIdx, kpScore, kpStreak, kpLock;
+function startKP(){
+  kpList = shuffle(KP);
+  kpIdx = 0; kpScore = 0; kpStreak = 0; kpLock = false;
+  document.getElementById('kpScore').textContent = 0;
+  renderKP();
+  go('kp');
+}
+function renderKP(){
+  const k = kpList[kpIdx];
+  document.getElementById('kpProg').textContent = (kpIdx+1)+'/'+kpList.length;
+  document.getElementById('kpBar').style.width = (kpIdx/kpList.length*100)+'%';
+  document.getElementById('kpCard').textContent = k.x;
+  document.getElementById('kpCat').textContent = '';
+  document.getElementById('kpCombo').innerHTML = kpStreak>=3 ? '<span class="combo">🔥 Seri x'+kpStreak+'</span>' : '&nbsp;';
+}
+function answerKP(ans){
+  if(kpLock) return;
+  kpLock = true;
+  const k = kpList[kpIdx];
+  stats.kp.answered++;
+  const catEl = document.getElementById('kpCat');
+  if(ans === k.a){
+    stats.kp.correct++;
+    kpStreak++;
+    stats.kp.bestStreak = Math.max(stats.kp.bestStreak, kpStreak);
+    const pts = kpStreak>=3 ? 100 : 75;
+    kpScore += pts;
+    SFX.ding();
+    catEl.innerHTML = '✅ <b style="color:var(--green)">Doğru!</b> '+k.c+' — '+(k.a==='K'?'kinetik':'potansiyel')+' enerji (+'+pts+')';
+  } else {
+    kpStreak = 0;
+    SFX.buzz(); flashDanger();
+    catEl.innerHTML = '❌ <b style="color:var(--red)">Yanlış!</b> '+k.c+' — bu '+(k.a==='K'?'KİNETİK':'POTANSİYEL')+' enerjidir.';
+  }
+  document.getElementById('kpScore').textContent = kpScore;
+  setTimeout(()=>{
+    kpIdx++;
+    kpLock = false;
+    if(kpIdx >= kpList.length){
+      const pct = stats.kp.answered ? kpScore/(kpList.length*75) : 0;
+      finishGame('kp', kpScore, 'Enerji turu bitti!',
+        pct>=1 ? 'Serileri hiç bozmadın — enerji türleri avucunun içinde!' :
+        pct>=0.7 ? 'İyi iş! Sözlükteki kinetik/potansiyel tablosuna bir bak, seriyi uzat.' :
+        'Sözlüğe göz at: akan/hareketli = kinetik, depolanmış = potansiyel. Tekrar dene!',
+        pct>=1?3:(pct>=0.7?2:1), startKP);
+    } else renderKP();
+  }, 1100);
+}
+
+/* ================= TANIM AVI (QUIZ) ================= */
+let quizIdx, quizScore, quizList;
+function startQuiz(){
+  quizIdx = 0; quizScore = 0;
+  quizList = shuffle(QUIZ);
+  document.getElementById('quizScore').textContent = 0;
+  renderQuiz();
+  go('quiz');
+}
+function renderQuiz(){
+  const q = quizList[quizIdx];
+  document.getElementById('quizProg').textContent = (quizIdx+1)+'/'+quizList.length;
+  document.getElementById('quizBar').style.width = (quizIdx/quizList.length*100)+'%';
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizExpl').className = 'expl';
+  document.getElementById('quizNext').style.display = 'none';
+  const box = document.getElementById('quizOpts');
+  box.innerHTML = '';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerQuiz(d, op.i, q);
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el, i, q){
+  const opts = document.querySelectorAll('#quizOpts .opt');
+  opts.forEach(o=>{ o.classList.add('dim'); if(o.textContent===q.o[q.c]) o.classList.add('correct'); });
+  const ex = document.getElementById('quizExpl');
+  stats.quiz.answered++;
+  if(i === q.c){
+    stats.quiz.correct++;
+    SFX.cheer();
+    quizScore += 100;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ <b>Doğru!</b> ' + q.e;
+  } else {
+    el.classList.add('incorrect');
+    SFX.buzz(); flashDanger();
+    ex.className = 'expl no'; ex.innerHTML = '❌ <b>Yanlış.</b> ' + q.e;
+  }
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizNext').style.display = 'inline-block';
+}
+function nextQuiz(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){
+    const pct = quizScore/(quizList.length*100);
+    finishGame('quiz', quizScore, 'Tanım Avı tamamlandı!',
+      pct===1 ? 'Tüm tanımları avladın — kusursuz!' :
+      pct>=0.7 ? 'İyi iş! Kaçırdığın tanımlar için sözlüğe göz at.' :
+      'Sözlük seni bekliyor — tanımları tazeleyip tekrar gel.',
+      pct===1?3:(pct>=0.7?2:1), startQuiz);
+  } else renderQuiz();
+}
+
+/* ================= SONUÇ ================= */
+function finishGame(mode, pts, title, msg, stars, replayFn, emoji){
+  addTotal(pts);
+  stats[mode].plays++;
+  if(best[mode]==null || pts > best[mode]) best[mode] = pts;
+  const t = titleFor(total);
+  document.getElementById('resPlayer').textContent = playerName + ' · ' + t.icon + ' ' + t.name;
+  document.getElementById('resEmoji').textContent = emoji || (stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'💥');
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resStars').textContent = stars>0 ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : '☆☆☆';
+  document.getElementById('resPts').textContent = '+' + pts + ' puan';
+  document.getElementById('resMsg').textContent = msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick = replayFn;
+  go('result');
+}
+
+/* ================= EĞİTİCİ ================= */
+function openTrainer(){
+  const t = titleFor(total);
+  document.getElementById('trName').textContent = playerName || '—';
+  document.getElementById('trTitle').textContent = 'Ünvan: ' + t.icon + ' ' + t.name;
+  document.getElementById('trTotal').textContent = total + ' puan';
+  document.getElementById('trDate').textContent = new Date().toLocaleString('tr-TR', {dateStyle:'long', timeStyle:'short'});
+  const m = stats.match, k = stats.kp, q = stats.quiz;
+  const kpct = k.answered ? Math.round(k.correct/k.answered*100) : null;
+  const qpct = q.answered ? Math.round(q.correct/q.answered*100) : null;
+  const row = (l,v)=>'<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';
+  document.getElementById('trCards').innerHTML =
+    '<div class="trcard"><h4>🧩 Terim Eşleştirme</h4>'+
+      row('Oynama sayısı', m.plays) +
+      row('En iyi puan', best.match!=null ? best.match : '—') +
+      row('Yanlış eşleşme', m.wrong) +
+    '</div>'+
+    '<div class="trcard"><h4>⚡ Kinetik / Potansiyel</h4>'+
+      row('Oynama sayısı', k.plays) +
+      row('En iyi puan', best.kp!=null ? best.kp : '—') +
+      row('Doğru / Soru', k.correct+' / '+k.answered) +
+      row('En uzun seri', k.bestStreak) +
+    '</div>'+
+    '<div class="trcard"><h4>🎯 Tanım Avı</h4>'+
+      row('Oynama sayısı', q.plays) +
+      row('En iyi puan', best.quiz!=null ? best.quiz : '—') +
+      row('Doğru / Cevap', q.correct+' / '+q.answered) +
+      row('Başarı oranı', qpct!=null ? '%'+qpct : '—') +
+    '</div>';
+  const notes = [];
+  if(!m.plays && !k.plays && !q.plays){
+    notes.push('Katılımcı henüz bölüm oynamadı — rapor, bölümler oynandıkça otomatik dolar.');
+  } else {
+    if(m.plays) notes.push(m.wrong<=3 ? 'Terim-tanım eşleştirmede akıcı ('+m.wrong+' yanlış eşleşme).' : 'Eşleştirmede '+m.wrong+' hata — temel tanımlar tekrar edilmeli.');
+    if(kpct!=null) notes.push(kpct>=70 ? 'Enerji sınıflandırma oranı %'+kpct+' — kinetik/potansiyel ayrımı oturmuş.' : 'Enerji sınıflandırma oranı %'+kpct+' — kinetik/potansiyel tablosu tekrar edilmeli.');
+    if(qpct!=null) notes.push(qpct>=70 ? 'Tanım Avı başarı oranı %'+qpct+' — kavram bilgisi iyi.' : 'Tanım Avı başarı oranı %'+qpct+' — LOTOTO/EKED tanımları tekrar edilmeli.');
+    notes.push('Genel seviye: ' + t.icon + ' ' + t.name + '.');
+  }
+  document.getElementById('trNote').innerHTML = '<b>Eğitici değerlendirme notu:</b><br>• ' + notes.join('<br>• ');
+  go('trainer');
+}
+
+/* isim girişi */
+const _ni = document.getElementById('nameInput');
+_ni.addEventListener('keydown', e=>{ if(e.key === 'Enter') registerPlayer(); });
+_ni.addEventListener('input', ()=>{ document.getElementById('nameErr').style.display = 'none'; });
+</script>
+
+
+</html>

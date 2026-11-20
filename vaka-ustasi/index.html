@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Vaka Ustası — Yonga Levha / MDF</title>
+<style>
+  :root{
+    --copper:#9a6b33; --copper-dark:#6f4a1f; --copper-light:#cfa670;
+    --ink:#1d1d1b; --bg:#f8f3e9; --card:#ffffff; --card2:#f6efdf;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),
+      var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(111,74,31,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(111,74,31,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  /* LEARN */
+  .phase-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .num{font-size:.72rem;font-weight:800;color:var(--copper);letter-spacing:1px;}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;}
+  .stepcard .desc{font-size:.82rem;color:var(--muted);line-height:1.4;display:none;}
+  .stepcard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* ORDER GAME */
+  .seq-line{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;background:var(--card2);border:1px dashed var(--copper-light);border-radius:12px;padding:8px;margin-bottom:16px;}
+  .seq-chip{background:var(--green);color:#fff;font-weight:800;font-size:.78rem;border-radius:8px;padding:6px 9px;animation:fadein .25s;}
+  .pool{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;font-weight:700;font-size:.9rem;text-align:center;transition:.15s;user-select:none;box-shadow:0 2px 6px rgba(29,29,27,.04);}
+  .pcard:hover{border-color:var(--copper);transform:translateY(-2px);}
+  .pcard .hint{display:block;font-size:.72rem;color:var(--muted);font-weight:600;margin-top:4px;}
+  .pcard.done{opacity:0;pointer-events:none;transform:scale(.7);transition:.3s;}
+  .pcard.wrong{border-color:var(--red);background:var(--red-bg);}
+  /* QUIZ + SCENARIO */
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .lives{font-size:1.05rem;letter-spacing:2px;}
+  .scene-tag{display:inline-block;background:#f3e6dd;color:var(--copper-dark);font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+  /* RESULT */
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  @media print{
+    body{background:#fff;}
+    header,footer,.no-print{display:none !important;}
+    .screen{display:none !important;}
+    #scr-trainer{display:block !important;}
+    .trhead,.trcard,.notebox{box-shadow:none;}
+  }
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>LOTOTO</b><small>Vaka Ustası · Yonga Levha / MDF</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <!-- NAME ENTRY -->
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">🕵️</div>
+      <h2>Vaka Ustası'na Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">yonga levha / MDF fabrikasında geçen 5 gerçekçi vakayı sen yöneteceksin. Her vakada 3 canın var — yanlış karar sahada kazaya yol açar! Hedef: 🏆 Vaka Ustası!</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Eğitime Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <h1>Vakayı Yönet, <span class="accent">Kazayı Önle!</span></h1>
+    <p class="sub">5 vaka, 5 farklı tuzak: sıcak pres, yonga konveyörü, toz silosu, zımpara hattı ve kurutucu. Her adımda EKED gözüyle karar ver — Etiketle, Kilitle, Emniyete Al, Dene!</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">🥾</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Vaka Çaylağı</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu" id="vakaMenu"></div>
+    <div class="notebox">⚠️ <b>Unutma:</b> Vakalardaki her yanlış karar gerçek sahada bir kaza raporudur. Acil stop, PLC ve lokal butonlar <b>izolasyon noktası değildir;</b> kilitsiz "küçük iş" yoktur!</div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <!-- CASE -->
+  <section class="screen" id="scr-case">
+    <div class="topbar">
+      <h2 id="caseTitle">Vaka</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="pill">Puan: <b id="caseScore">0</b></span>
+        <span class="pill lives" id="caseLives">❤️❤️❤️</span>
+        <button class="btn ghost small" onclick="go('home')">← Vazgeç</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="caseBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <span class="scene-tag" id="caseTag"></span>
+      <div class="qtext" id="caseQ"></div>
+      <div class="opts" id="caseOpts"></div>
+      <div class="expl" id="caseExpl"></div>
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn" id="caseNext" style="display:none;" onclick="nextStep()">Devam →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🏆</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" id="resReplay">🔁 Tekrar Oyna</button>
+        <button class="btn ghost" onclick="go('home')">Vaka Listesi</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    EKED | LOTOTO Vaka Ustası · 5 Saha Vakası Eğitim Oyunu · Yonga Levha / MDF Fabrikaları
+  </footer>
+</div>
+
+<script>
+/* ================= VAKALAR ================= */
+const VAKALAR = [
+ {id:'v1', ic:'🔥', name:'Vaka 1 · Sıcak Preste Gece Bakımı',
+  desc:'Kontinü preste hidrolik kaçağı. Termik yağ, basınç ve tonlarca çelik — gece vardiyasında her karar kritik.',
+  steps:[
+   {tag:'GECE 02:10 · İHBAR', q:'Kontinü preste hidrolik kaçağı bildirildi, hat durdu, iş emri sende. Bakıma başlamadan önce ilk işin ne?',
+    o:['Kaçağı hızlıca bulmak için hemen presin altına girerim','Presi etkileyen tüm enerji kaynaklarını tespit ederim: elektrik, hidrolik, termik yağ, ısı, mekanik yük','Hidrolik pompayı kapatıp işe başlarım','Vardiya amirine "sabah bakarız" derim'], c:1,
+    ok:'Doğru! Önce TESPİT: MCC beslemesi, hidrolik güç ünitesi, termik yağ sirkülasyonu, pres plakalarının ağırlığı (yerçekimi) ve 200°C üzeri sıcak yüzeyler listelenmeli.',
+    no:'Kaza riski! Enerji kaynaklarını tespit etmeden presin altına yaklaşılmaz. Sıcak pres; elektrik, hidrolik, termik yağ, ısı ve asılı yük demektir.'},
+   {tag:'DURDURMA', q:'Hat zaten duruşta ama pres hâlâ enerjili. Ekipmanı bakıma nasıl hazırlarsın?',
+    o:['Acil stop butonuna basarım, yeterli','Kumanda ekranından (PLC) "off" yaparım, yeterli','Normal durdurma prosedürüyle durdurup enerjileri fiziksel kesme noktalarından izole ederim','Sigortayı çekip hemen başlarım'], c:2,
+    ok:'Doğru! Normal durdurma + fiziksel izolasyon: MCC şalteri, hidrolik pompa beslemesi ve termik yağ vanaları. Acil stop ve PLC izolasyon noktası değildir.',
+    no:'Yanlış! Acil stop, PLC ve ekran komutları izolasyon sayılmaz — enerji fiziksel kesme noktalarından (şalter, vana) kesilmelidir.'},
+   {tag:'ARTIK ENERJİ', q:'İzolasyon tamam. Ama akümülatörlerde hidrolik basınç var ve pres plakası yukarıda asılı. Ne yaparsın?',
+    o:['Kilidimi takıp girerim, nasılsa elektrik kesik','Akümülatör basıncını tahliye eder, plakayı mekanik destek/takoz ile emniyete alır, sıcak bölgenin soğumasını beklerim','Basınç nasılsa zamanla düşer, beklemem','Plakanın altına girmem yeter, destek gerekmez'], c:1,
+    ok:'Doğru! EMNİYETE AL: basınç tahliyesi + asılı yüke mekanik destek + soğuma. İzolasyon depolanmış enerjiyi yok etmez.',
+    no:'Kaza! Akümülatördeki basınç ve asılı pres plakası, elektrik kesik olsa bile öldürebilir. Önce artık enerjiyi boşalt ve yükü destekle.'},
+   {tag:'KİLİTLE · ETİKETLE', q:'Enerjiler kesildi, basınç tahliye edildi. Kilitleme nasıl olmalı?',
+    o:['Ekipten bir kişinin kilidi yeterli, o bizim adımıza takar','Çalışacak herkes her izolasyon noktasına kendi kilidini ve etiketini takar, anahtarını yanında taşır','Etiket yazıp asarız, kilide gerek yok','Kilidi takıp anahtarı panonun üstüne bırakırız'], c:1,
+    ok:'Doğru! Bir kişi, bir kilit: herkes kendi kilidini takar, anahtar kişide kalır. Etiket kilidin yerini tutmaz.',
+    no:'Yanlış! Tek kilitle ekip korunmaz; etiket tek başına enerjiyi kesmez. Herkes kendi kilidini takmalı, anahtar kişide kalmalı.'},
+   {tag:'DENE', q:'Kilitler ve etiketler tamam. Presin altına girmeden önce son adım ne?',
+    o:['Fotoğraf çekip İSG\'ye gönderirim','Start butonundan çalıştırmayı DENErim; ekipman tepki vermiyorsa izolasyon doğrulanmıştır','Direkt girerim, kilit taktım ya','5 dakika bekleyip girerim'], c:1,
+    ok:'Doğru! DENE adımı: kumanda ile koordineli start denemesi yapılır; pres tepkisizse sıfır enerji doğrulanmıştır.',
+    no:'Eksik! Kilit takmak yetmez — DENE adımıyla enerjinin gerçekten kesildiği doğrulanmadan presin altına girilmez.'},
+   {tag:'SABAH 06:40 · İŞ BİTTİ', q:'Kaçak giderildi, iş bitti. Devreye alma sırası hangisi?',
+    o:['Enerji ver → çalıştır → koruyucuları sonra tak','Koruyucuları tak → bölgeyi düzenle ve personeli çıkar → kilitleri sök → bildir → enerji ver → izleyerek çalıştır','Kilitleri sök → kahvaltıya git → operatör halleder','Sadece kendi kilidimi söker giderim, gerisi beni ilgilendirmez'], c:1,
+    ok:'Doğru sıra! Koruyucular ve bölge doğrulanmadan kilit sökülmez; enerji en son verilir ve pres izlenerek devreye alınır. Vaka kazasız kapandı!',
+    no:'Tehlikeli sıra! Koruyucular takılmadan ve bölgede kimse kalmadığı doğrulanmadan kilit sökülmez; enerji en son verilir.'}
+  ]},
+ {id:'v2', ic:'🪵', name:'Vaka 2 · Yonga Konveyöründe Sıkışma',
+  desc:'"30 saniyelik iş" tuzağı: sıkışan yongayı elle almak isteyen operatör ve uzaktan start riski.',
+  steps:[
+   {tag:'VARDİYA ORTASI', q:'Serme hattına yonga taşıyan konveyörde sıkışma oldu. Operatör: "Bandı durdurdum, 30 saniyede elimle alırım" diyor. Kararın ne?',
+    o:['Haklı, 30 saniyelik iş için prosedür işletilmez','Durdurmak yetmez: kilitleme yapılmadan kimse banda müdahale edemez','Ben başında beklerim, o alsın','Eldiven taksın yeter'], c:1,
+    ok:'Doğru! Süresi ne olursa olsun kilitsiz müdahale yok. Durdurulan bant, kumandadan veya otomasyondan her an yeniden başlayabilir.',
+    no:'Kaza raporlarının klasiği! "Küçük iş" diye kilitsiz girilen bantlar uzaktan start ile çalışır ve uzuv kaybettirir. Kilitleme şart.'},
+   {tag:'BİLDİRİM', q:'Kilitleme kararı alındı. Müdahaleden önce kimlere haber verilmeli?',
+    o:['Kimseye — işi uzatır','Kumanda odasına ve hattan etkilenen çalışanlara; bildirim bölüm yöneticisi/yetkilisi koordinasyonunda yapılır','Sadece yemekhaneye','Sadece İK departmanına'], c:1,
+    ok:'Doğru! Kumanda odası ve etkilenen herkes bilgilendirilir; serme hattı beslemesi kesileceği için üretim de koordine edilir.',
+    no:'Yanlış! Kumanda odası bilmeden hatta müdahale, uzaktan start demektir. Bildirim adımı atlanamaz.'},
+   {tag:'İZOLASYON NOKTASI', q:'Konveyörü nereden izole edersin?',
+    o:['Bandın yanındaki lokal stop butonundan','İpli acil stop şalterinden','MCC\'deki motor besleme şalterini kapatıp kilitleyerek','Kumanda ekranından "manuel" moda alarak'], c:2,
+    ok:'Doğru! İzolasyon noktası MCC\'deki besleme şalteridir. Lokal stop, ipli şalter ve ekran modları izolasyon değildir.',
+    no:'Yanlış! Lokal stop, ipli şalter ve yazılım modları her an geri alınabilir — fiziksel kesme noktası MCC şalteridir, kilit oraya takılır.'},
+   {tag:'DENE', q:'Şalter kilitli, etiket asılı. Banda uzanmadan önce?',
+    o:['Kumanda ile koordineli olarak start denemesi yapılır; bant tepkisizse müdahale başlar','Bandı elle çevirip bakarım','Deneme gereksiz, şalter kapalı ya','Operatör banda tekme atsın'], c:0,
+    ok:'Doğru! DENE adımı burada hayat kurtarır: kumandadan start verilir, bant kımıldamıyorsa sıfır enerji doğrulanmıştır.',
+    no:'Eksik! Yanlış şalter kilitlenmiş olabilir — DENE adımı olmadan banda uzanılmaz.'},
+   {tag:'BEKLENMEDİK ZİYARETÇİ', q:'Sıkışıklığı temizlerken başka bölümden bir operatör geldi: "Serme hattı yonga bekliyor, bandı başlatıyorum!" Etiketi gösterdin, ısrar ediyor. Ne yaparsın?',
+    o:['Üretim önemli, çabuk bitiririm, başlatsın','Kilit ve etiket varken kimse start veremez; işlemi durdurur, nezaretçiye/vardiya amirine bildiririm','Kilidimi söküp ona kolaylık sağlarım','Tartışmamak için kenara çekilirim'], c:1,
+    ok:'Doğru! "ÇALIŞTIRMAYIN" etiketi ve kilit varken start girişimi ciddi ihlaldir — iş durdurulur ve amire bildirilir.',
+    no:'Asla! Kilitli ekipmana start girişimi seni bandın üzerindeyken çalıştırabilir. İhlal derhal amire bildirilir.'},
+   {tag:'İŞ BİTTİ', q:'Sıkışma giderildi. Doğru kapanış hangisi?',
+    o:['Kilidi söker sökmez bandı uzaktan başlatsınlar','Muhafazaları tak → bölgede kimse kalmadığını doğrula → kilidini sök → kumandaya bildir → bant izlenerek devreye alınsın','Kilidi akşama kadar unutur, bant kilitli kalır','Anahtarı kumandaya bırakırım, onlar söker'], c:1,
+    ok:'Doğru! Muhafaza + bölge kontrolü + kilit söküm + bildirim + izleyerek devreye alma. Vaka kazasız kapandı!',
+    no:'Yanlış! Muhafazalar takılmadan ve bölge doğrulanmadan bant devreye alınmaz; kilidi sahibi söker.'}
+  ]},
+ {id:'v3', ic:'🌀', name:'Vaka 3 · Toz Silosu ve Filtre Bakımı',
+  desc:'Jet-pulse filtre, rotary valf ve toz patlaması riski: grup kilitleme + kapalı alan bir arada.',
+  steps:[
+   {tag:'PLANLI BAKIM', q:'Aspirasyon filtresinin torbaları değişecek, silo seviye sensörü arızalı. Bu işte hangi enerji kaynakları seni bekliyor?',
+    o:['Sadece fan motoru elektriği','Fan ve rotary valf elektriği, jet-pulse basınçlı havası, dönen mekanik parçalar ve ortamdaki patlayıcı ahşap tozu','Sadece basınçlı hava','Toz tehlikesizdir, sadece kirlenirim'], c:1,
+    ok:'Doğru! Elektrik + pnömatik + mekanik + toz patlaması (ATEX) riski. Ahşap tozu bulutu kıvılcımla patlayabilir — enerji listesi eksiksiz olmalı.',
+    no:'Eksik tespit! Filtrede fan, rotary valf, jet-pulse havası ve patlayıcı ahşap tozu bir aradadır. Birini atlamak kaza demektir.'},
+   {tag:'GRUP KİLİTLEME', q:'Fan, rotary valf ve hava hattı: 3 izolasyon noktası, 4 çalışan. Kilitleme nasıl kurgulanır?',
+    o:['Ekip şefi 3 noktaya kendi kilidini takar, yeter','Grup kilitleme: yetkili, noktaları kilitleyip anahtarları kilitleme kutusuna koyar; 4 çalışanın her biri kutuya kendi kilidini takar','Her nokta için kura çekilir','Kilit yerine 3 etiket asılır'], c:1,
+    ok:'Doğru! Grup kilitlemede nokta anahtarları kutuya konur, herkes kutuya kendi kilidini takar — kutu, son kilit sökülmeden açılamaz.',
+    no:'Yanlış! Tek kişinin kilidi ekibi korumaz. Grup kilitleme: anahtarlar kutuda, herkesin kilidi kutunun üzerinde.'},
+   {tag:'ARTIK ENERJİ', q:'Elektrik kesildi. Jet-pulse hava tankı ve hatlar hâlâ basınçlı. Ne yapılır?',
+    o:['Hava vanasını kapatıp kilitler, tank ve hatları tahliye ederim; manometreden sıfırı doğrularım','Hava zararsızdır, torbalara başlarız','Tahliyeyi işin sonuna bırakırım','Vanayı kapatmam yeter, tahliye gerekmez'], c:0,
+    ok:'Doğru! Pnömatik hat izole edilir VE tahliye edilir; manometre sıfırı göstermeden iş başlamaz. Jet-pulse ani darbesi parmak koparır.',
+    no:'Tehlike! Kapalı vana arkasındaki basınç artık enerjidir — tahliye edilmeden filtre içine el sokulmaz.'},
+   {tag:'KAPALI ALAN', q:'Silo içine de girilecek. EKED adımları tamamlandı. Girmek için yeterli mi?',
+    o:['Evet, kilitler tamam, girebiliriz','Hayır: kapalı alan çalışma izni, gaz/oksijen ölçümü, gözcü ve kurtarma planı olmadan siloya girilmez','Hayır: sadece baret yeterli değil, gözlük de lazım','Evet, kısa süreli girişlerde izin gerekmez'], c:1,
+    ok:'Doğru! EKED kapalı alan iznini ikame etmez: ölçüm, gözcü, haberleşme ve kurtarma planı da şarttır. Köprüleşen yonga ayrıca gömülme riskidir.',
+    no:'Yanlış! Silo kapalı alandır: izinsiz, ölçümsüz ve gözcüsüz giriş — kilitler takılı olsa bile — ölümcül olabilir.'},
+   {tag:'İHLAL ANI', q:'Sen filtredeyken bir operatör "üretim tozdan boğuldu" diyerek jet-pulse hava vanasını açmaya geliyor. Vana kilitli. Ne olur?',
+    o:['Vanayı açamaz — anahtar kutuda, kutu da ekibin kilitleri altında; durumu nezaretçiye bildiririm','Ricayla açtırabilir','Kilidi keser, sonra özür diler','Üretim öncelikli: ben dışarı çıkana kadar açsın'], c:0,
+    ok:'Doğru! Grup kilitleme sistemi tam da bunun için var: kimse tek başına vanayı açamaz. Girişim ihlaldir, amire bildirilir.',
+    no:'Asla! Sen filtre içindeyken açılan hava hattı ciddi yaralanma demektir. Kilitleme düzeni kimsenin ricasıyla bozulmaz.'},
+   {tag:'TESLİM', q:'Torbalar değişti, silodan çıkıldı. Grup kilitleme nasıl sonlandırılır?',
+    o:['Kutu kırılır, anahtarlar dağıtılır','Herkes işinin bittiğini teyit edip kutudaki kendi kilidini söker; son kilit sökülünce yetkili, noktaları bildirimle ve denemeyle devreye alır','Yetkili tüm kilitleri tek başına söker','Kilitler haftaya sökülür'], c:1,
+    ok:'Doğru! Sıra: herkes kendi kilidini söker → kutu açılır → nokta kilitleri sökülür → bildirim → izleyerek devreye alma. Vaka kazasız kapandı!',
+    no:'Yanlış! Kutudaki kilitler sahipleri tarafından sökülmeden noktalara dokunulamaz; devreye alma bildirimle yapılır.'}
+  ]},
+ {id:'v4', ic:'🪚', name:'Vaka 4 · Zımpara Hattında Bant Değişimi',
+  desc:'Usta-çırak ikilisi, vardiya değişimi ve unutulmuş kilit: "bir kişi, bir kilit" kuralının sınavı.',
+  steps:[
+   {tag:'İŞ BAŞI', q:'Zımpara bandı değişecek; usta ve çırak birlikte çalışacak. Usta: "Ben kilidimi taktım, sen uğraşma evlat." Çırak ne yapmalı?',
+    o:['Ustaya güvenir, işe başlar','"Bir kişi, bir kilit" der; kendi kilidini ve etiketini takmadan hatta elini sürmez','Ustanın anahtarını cebine koyar','İşi tek başına ustaya bırakır'], c:1,
+    ok:'Doğru! Herkes kendi kilidini takar. Ustanın kilidi yalnızca ustayı korur — usta kilidini söktüğü an çırak korumasız kalır.',
+    no:'Yanlış! Başkasının kilidi seni korumaz: o kilit sökülünce hat, sen içindeyken enerjilenebilir.'},
+   {tag:'EKSİK EKİPMAN', q:'Çırağın üzerinde kilidi yok. Ne yapmalı?',
+    o:['Etiket yazıp asar, yeterli','Kilitleme istasyonundan kendine zimmetli kilit ve etiket alır; bulamazsa amirine bildirir ve kilitsiz işe başlamaz','Ustanın yedek kilidini takar','Bugünlük kilitsiz çalışır, yarın alır'], c:1,
+    ok:'Doğru! Kilit kişiseldir ve istasyondan temin edilir; kilitsiz çalışmaya başlamak seçenek değildir.',
+    no:'Yanlış! Etiket kilit değildir, başkasının kilidi de senin değildir. Kilit yoksa iş yok.'},
+   {tag:'MOLA', q:'Öğle molası: usta yemekhaneye gidiyor, iş sürecek. Ustanın kilidi ne olacak?',
+    o:['Söker, anahtarı çırağa bırakır','Kilidi takılı kalır, anahtar cebinde yemeğe gider','Söker, dönünce tekrar takar — "mola kısa"','Kilidi söker, yerine etiket asar'], c:1,
+    ok:'Doğru! İş bitmeden kilit sökülmez; anahtar sahibiyle gezer. Mola, kilidi sökme nedeni değildir.',
+    no:'Yanlış! Anahtar devredilmez, kilit iş bitmeden sökülmez. Usta yemekte bile hattı onun kilidi korur.'},
+   {tag:'VARDİYA DEĞİŞİMİ', q:'İş uzadı, vardiya değişiyor. Yeni ekip işi devralacak. Doğru devir-teslim hangisi?',
+    o:['Eski ekip kilitleri söker, yeni ekip sonra takar — arada hat kilitsiz kalır','Yeni ekip önce kendi kilitlerini takar, eski ekip ondan sonra kendi kilitlerini söker; devir amir nezaretinde yapılır','Eski ekip kilitlerini yeni ekibe hediye eder','Kilitler değişmez, anahtarlar el değiştirir'], c:1,
+    ok:'Doğru! Hat hiçbir an kilitsiz kalmaz: önce yeni kilitler takılır, sonra eskiler sökülür. Anahtar asla el değiştirmez.',
+    no:'Yanlış! Aradaki "kilitsiz an" kazaların doğduğu andır; anahtar devretmek de yasaktır. Önce yeni kilit, sonra eski söküm.'},
+   {tag:'UNUTULAN KİLİT', q:'Gece 23:00 — gündüz vardiyasından bir çalışanın kilidi hâlâ takılı, kendisi evde ve telefona çıkmıyor. Hat çalışmak zorunda. Nezaretçi ne yapar?',
+    o:['Kilidi pense ile keser, iş gecikmesin','Çalışanın sahada/tehlikeli bölgede olmadığını teyit eder, dönemeyeceğini doğrular, Kilit Kesme Formu doldurur; kilit tutanakla İSG\'ye teslim edilir','Yedek anahtar bulur, sessizce açar','Sabaha kadar bekletir, kimseye söylemez'], c:1,
+    ok:'Doğru! Kilit kesme bir prosedürdür: teyit + form + tutanak + İSG. Belki o kişi hâlâ hattın içindedir — teyitsiz kesim ölüm riskidir.',
+    no:'Asla! Formsuz ve teyitsiz kilit kesilmez. Önce kişinin güvende olduğu doğrulanır, sonra Kilit Kesme Formu işletilir.'},
+   {tag:'DEVREYE ALMA', q:'Bant değişti, kilitler usulünce söküldü. Zımpara hattını devreye alırken son kontrol ne?',
+    o:['Muhafazalar takılı, bölgede kimse yok, bildirim yapıldı — hat izlenerek çalıştırılır ve titreşim/ses kontrol edilir','Direkt tam hızda çalıştırılır','Koruyucusuz kısa bir test yapılır','Operatöre "bas gitsin" denir'], c:0,
+    ok:'Doğru! Muhafaza + bölge + bildirim + izleyerek çalıştırma. Yeni bant ilk dakikalarda izlenir. Vaka kazasız kapandı!',
+    no:'Yanlış! Koruyucusuz test ve kontrolsüz tam hız, yeni bantta kopma/fırlama riskidir. İzleyerek devreye al.'}
+  ]},
+ {id:'v5', ic:'♨️', name:'Vaka 5 · Kurutucu ve Termik Yağ Hattı',
+  desc:'280°C termik yağ, dönen tambur ve "eldiven var, sorun olmaz" tuzağı: DENE adımı sınavda.',
+  steps:[
+   {tag:'ARIZA', q:'Kurutucu çıkışında termik yağ flanşından sızıntı var. İşe başlamadan tespit listesi hangisi?',
+    o:['Sadece termik yağ pompası','Termik yağ (yüksek sıcaklık + basınç), brülör/yakıt hattı, tambur tahrik motoru, dönen mekanik parçalar ve sıcak yüzeyler','Sadece elektrik panosu','Koku yoksa risk yoktur'], c:1,
+    ok:'Doğru! Kurutucu hattında termik yağ, yakıt, elektrik, mekanik ve ısı bir aradadır. 280°C yağ, kıyafetten geçip ağır yanık yapar.',
+    no:'Eksik! Termik yağ hattında sadece pompa değil; brülör, tahrik, basınç ve sıcak yüzeyler de enerji kaynağıdır.'},
+   {tag:'İZOLASYON', q:'Hangi noktalar izole edilip kilitlenmeli?',
+    o:['Sadece pompa start butonu','Sirkülasyon pompası MCC beslemesi, hat giriş-çıkış vanaları, brülör yakıt hattı ve tambur tahrik şalteri — hepsi fiziksel olarak','Sadece kumanda ekranındaki "bakım modu"','Vanaları kapatmak yeterli, kilide gerek yok'], c:1,
+    ok:'Doğru! Pompa + vanalar + yakıt + tahrik: hepsi fiziksel kesme noktasından izole edilir ve kilitlenir. Ekran modları izolasyon değildir.',
+    no:'Yanlış! Start butonu ve "bakım modu" izolasyon değildir; vanalar kilitsiz kalırsa biri açabilir.'},
+   {tag:'ARTIK ENERJİ', q:'Usta: "Eldivenim kalın, yağ biraz sıcak olsa da flanşı sökerim." Kararın?',
+    o:['Eldiven varsa sorun yok','Hat basıncı tahliye edilmeden ve yağ sıcaklığı güvenli seviyeye düşmeden flanş sökülmez — basınçlı 280°C yağ eldiven dinlemez','Yarım tur gevşetip bakarız','Üstüne soğuk su dökeriz, hızlanır'], c:1,
+    ok:'Doğru! EMNİYETE AL: tahliye + soğuma. Basınçlı sıcak yağ, flanş gevşerken püskürür — KKD bunu durduramaz.',
+    no:'Ağır yanık vakası! Basınç ve sıcaklık düşmeden flanşa dokunulmaz. Eldiven, püsküren termik yağa karşı koruma değildir.'},
+   {tag:'DENE', q:'Kilitler takıldı, basınç sıfır görünüyor. Arkadaşın: "Deneme adımını atla, geç oldu." Ne yaparsın?',
+    o:['Haklı, manometre zaten sıfır','DENE atlanmaz: pompa ve tambur start denemesi yapılır, vanaların doğru hat üzerinde olduğu doğrulanır — sonra iş başlar','Atlarım ama hızlı çalışırım','Yazı tura atarız'], c:1,
+    ok:'Doğru! Yanlış hat, yanlış vana, yanlış şalter… DENE adımı bu hataları iş başlamadan yakalar. Asla atlanmaz.',
+    no:'Eksik! Manometre arızalı olabilir, yanlış hat izole edilmiş olabilir. DENE adımı olmadan sıfır enerji doğrulanmış sayılmaz.'},
+   {tag:'DEĞİŞİKLİK', q:'Çalışma sürerken kumanda, yedek sirkülasyon hattını devreye almak istiyor. Bu senin izolasyonunu etkileyebilir. Ne yapılır?',
+    o:['Beni etkilemez, devam','İş durdurulur; yedek hattın senin çalışma bölgene yağ basıp basmayacağı nezaretçi ile birlikte değerlendirilir, gerekiyorsa o hat da izolasyona dahil edilir','Kumanda bilir, karışmam','Sadece daha kalın eldiven giyerim'], c:1,
+    ok:'Doğru! Devredeki her değişiklik izolasyonu geçersiz kılabilir. Değerlendirme yapılmadan yedek hat devreye alınmaz.',
+    no:'Tehlike! Yedek hat senin açtığın flanşa yağ basabilir. Değişiklik olduğunda iş durur, izolasyon yeniden değerlendirilir.'},
+   {tag:'KAPANIŞ', q:'Conta değişti, iş bitti. Devreye alma nasıl olmalı?',
+    o:['Vanaları aç, pompayı bas, olan olur','Muhafazalar + bölge kontrolü + bildirim + kilit söküm; hat yavaşça doldurulup flanş sızıntı kontrolüyle izlenir, brülör en son devreye girer','Brülörü önce yak, yağ sonra ısınır','Kilitleri sök, gerisini sabahçılar düşünsün'], c:1,
+    ok:'Doğru! Hat kontrollü doldurulur, yeni conta gözlenir, brülör en son. Vaka kazasız kapandı — Vaka Ustası selamlar! 🫡',
+    no:'Yanlış! Hat kontrolsüz doldurulursa yeni conta kaçırabilir; brülör her zaman en son devreye girer.'}
+  ]}
+];
+
+/* ================= TITLES ================= */
+const TITLES = [
+ {min:0,    icon:"🥾", name:"Vaka Çaylağı",        msg:"Her usta ilk vakasıyla başlar!"},
+ {min:800,  icon:"🔍", name:"Saha Gözlemcisi",     msg:"Tehlikeleri görmeye başladın!"},
+ {min:1800, icon:"🧭", name:"Vaka Çözücü",         msg:"Kararların sahaya güven veriyor!"},
+ {min:3000, icon:"🕵️", name:"Kök Neden Avcısı",    msg:"Tuzaklar sana işlemiyor!"},
+ {min:4200, icon:"🛡️", name:"Saha Komutanı",       msg:"Ekipler vakayı sana soruyor!"},
+ {min:5500, icon:"🏆", name:"Vaka Ustası",          msg:"Efsane! 5 vaka 5 zafer — kazasız saha senin eserin."},
+];
+function titleFor(p){ let t = TITLES[0]; for(const x of TITLES){ if(p >= x.min) t = x; } return t; }
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+
+/* ================= STATE ================= */
+let total = 0;
+let playerName = "";
+const best = {}; const stats = {};
+VAKALAR.forEach(v=>{ best[v.id]=null; stats[v.id]={plays:0, wrong:0, completed:0}; });
+
+function addTotal(p){
+  const before = titleFor(total);
+  total += p;
+  document.getElementById('totalScore').textContent = total;
+  const after = titleFor(total);
+  updateRank();
+  if(after !== before){
+    showToast('🎉 Yeni ünvan: ' + after.icon + ' ' + after.name + ' — ' + after.msg);
+  }
+}
+function updateRank(){
+  const t = titleFor(total);
+  document.getElementById('playerTitle').textContent = t.icon + ' ' + t.name;
+  document.getElementById('rankIcon').textContent = t.icon;
+  document.getElementById('rankName').textContent = t.name;
+  const next = TITLES[TITLES.indexOf(t) + 1];
+  if(next){
+    document.getElementById('rankBar').style.width = Math.min(100, (total - t.min) / (next.min - t.min) * 100) + '%';
+    document.getElementById('rankNext').textContent = 'Sonraki ünvan: ' + next.icon + ' ' + next.name + ' — ' + (next.min - total) + ' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width = '100%';
+    document.getElementById('rankNext').textContent = 'En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+function registerPlayer(){
+  const v = document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length < 5 || v.split(' ').length < 2){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  playerName = v.replace(/(^|\s)\S/g, c=>c.toLocaleUpperCase('tr'));
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent = playerName;
+  document.getElementById('playerPill').style.display = 'flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id !== 'name') id = 'name';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') renderMenu();
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function flashDanger(){ const f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= MENÜ ================= */
+function renderMenu(){
+  const box = document.getElementById('vakaMenu');
+  box.innerHTML = '';
+  VAKALAR.forEach(v=>{
+    const st = stats[v.id];
+    const d = document.createElement('div');
+    d.className = 'mcard';
+    d.onclick = ()=>startCase(v.id);
+    d.innerHTML = '<div class="ic">'+v.ic+'</div><h3>'+v.name+'</h3><p>'+v.desc+'</p>'+
+      '<div class="best">'+
+        (best[v.id]!=null ? '⭐ En iyi: '+best[v.id]+' puan' : '') +
+        (st.completed>0 ? (best[v.id]!=null?' · ':'')+'🦺 '+st.completed+' kez kazasız' : '') +
+      '</div>';
+    box.appendChild(d);
+  });
+}
+
+/* ================= VAKA OYNANIŞI ================= */
+let curCase=null, stepIdx=0, caseScore=0, caseLives=3;
+function startCase(id){
+  curCase = VAKALAR.find(v=>v.id===id);
+  stepIdx = 0; caseScore = 0; caseLives = 3;
+  document.getElementById('caseTitle').textContent = curCase.ic+' '+curCase.name;
+  document.getElementById('caseScore').textContent = 0;
+  renderStep();
+  go('case');
+}
+function renderStep(){
+  const s = curCase.steps[stepIdx];
+  document.getElementById('caseLives').textContent = '❤️'.repeat(caseLives) + '🖤'.repeat(3-caseLives);
+  document.getElementById('caseBar').style.width = (stepIdx/curCase.steps.length*100)+'%';
+  document.getElementById('caseTag').textContent = s.tag;
+  document.getElementById('caseQ').textContent = s.q;
+  document.getElementById('caseExpl').className = 'expl';
+  document.getElementById('caseNext').style.display = 'none';
+  const box = document.getElementById('caseOpts');
+  box.innerHTML = '';
+  shuffle(s.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerStep(d, op.i, s);
+    box.appendChild(d);
+  });
+}
+function answerStep(el, i, s){
+  const opts = document.querySelectorAll('#caseOpts .opt');
+  const ex = document.getElementById('caseExpl');
+  if(i === s.c){
+    opts.forEach(o=>o.classList.add('dim'));
+    el.classList.remove('dim'); el.classList.add('correct');
+    SFX.cheer();
+    caseScore += 150;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ ' + s.ok;
+    document.getElementById('caseScore').textContent = caseScore;
+    document.getElementById('caseNext').style.display = 'inline-block';
+  } else {
+    el.classList.add('incorrect','dim');
+    stats[curCase.id].wrong++;
+    caseLives--;
+    flashDanger();
+    SFX.buzz();
+    document.getElementById('caseLives').textContent = '❤️'.repeat(caseLives) + '🖤'.repeat(3-caseLives);
+    ex.className = 'expl no'; ex.innerHTML = '⚠️ ' + s.no + (caseLives>0 ? ' <b>Tekrar dene!</b>' : '');
+    if(caseLives <= 0){
+      opts.forEach(o=>o.classList.add('dim'));
+      const cid = curCase.id;
+      finishGame(cid, caseScore, 'Vaka kazayla sonuçlandı!',
+        'Üç kritik hata üst üste geldi ve sanal bir kaza yaşandı. Gerçek sahada ikinci şans yok — vakayı baştan al ve tuzaklara dikkat et.',
+        0, ()=>startCase(cid), '💥');
+    }
+  }
+}
+function nextStep(){
+  stepIdx++;
+  if(stepIdx >= curCase.steps.length){
+    stats[curCase.id].completed++;
+    caseScore += caseLives * 100;
+    const cid = curCase.id;
+    const doneAll = VAKALAR.every(v=>stats[v.id].completed>0);
+    finishGame(cid, caseScore, 'Vaka kazasız kapatıldı!',
+      'Doğru kararlarla ekip güvende, hat devrede. Kalan can bonusu: +'+(caseLives*100)+' puan.'+(doneAll?' 🏅 5 vakanın tamamını kazasız yönettin!':''),
+      caseLives, ()=>startCase(cid), doneAll?'🏅':'🦺');
+  } else renderStep();
+}
+
+/* ================= RESULT ================= */
+function finishGame(mode, pts, title, msg, stars, replayFn, emoji){
+  addTotal(pts);
+  stats[mode].plays++;
+  if(best[mode]==null || pts > best[mode]) best[mode] = pts;
+  const t = titleFor(total);
+  document.getElementById('resPlayer').textContent = playerName + ' · ' + t.icon + ' ' + t.name;
+  document.getElementById('resEmoji').textContent = emoji || (stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'💥');
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resStars').textContent = stars>0 ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : '☆☆☆';
+  document.getElementById('resPts').textContent = '+' + pts + ' puan';
+  document.getElementById('resMsg').textContent = msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick = replayFn;
+  go('result');
+}
+
+/* ================= TRAINER ================= */
+function openTrainer(){
+  const t = titleFor(total);
+  document.getElementById('trName').textContent = playerName || '—';
+  document.getElementById('trTitle').textContent = 'Ünvan: ' + t.icon + ' ' + t.name;
+  document.getElementById('trTotal').textContent = total + ' puan';
+  document.getElementById('trDate').textContent = new Date().toLocaleString('tr-TR', {dateStyle:'long', timeStyle:'short'});
+  const row = (l,v)=>'<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';
+  document.getElementById('trCards').innerHTML = VAKALAR.map(v=>{
+    const s = stats[v.id];
+    return '<div class="trcard"><h4>'+v.ic+' '+v.name.replace(/^Vaka \d+ · /,'')+'</h4>'+
+      row('Oynama sayısı', s.plays) +
+      row('En iyi puan', best[v.id]!=null ? best[v.id] : '—') +
+      row('Kazasız tamamlama', s.completed) +
+      row('Yanlış karar', s.wrong) +
+    '</div>';
+  }).join('');
+  const played = VAKALAR.filter(v=>stats[v.id].plays>0);
+  const notes = [];
+  if(!played.length){
+    notes.push('Katılımcı henüz vaka oynamadı — rapor, vakalar oynandıkça otomatik dolar.');
+  } else {
+    const done = VAKALAR.filter(v=>stats[v.id].completed>0).length;
+    const wrong = VAKALAR.reduce((a,v)=>a+stats[v.id].wrong,0);
+    notes.push(done+' / 5 vaka kazasız tamamlandı, toplam '+wrong+' yanlış karar.');
+    VAKALAR.forEach(v=>{
+      const s = stats[v.id];
+      if(s.plays && !s.completed) notes.push(v.name+' henüz kazasız tamamlanamadı — bu vakanın konusu tekrar edilmeli.');
+      else if(s.completed && s.wrong>=3) notes.push(v.name+' tamamlandı ama '+s.wrong+' yanlış karar var — ilgili kurallar pekiştirilmeli.');
+    });
+    if(done===5 && wrong<=3) notes.push('Mükemmel saha muhakemesi: vaka yönetimi eğitici desteği gerektirmiyor.');
+    notes.push('Genel seviye: ' + t.icon + ' ' + t.name + '.');
+  }
+  document.getElementById('trNote').innerHTML = '<b>Eğitici değerlendirme notu:</b><br>• ' + notes.join('<br>• ');
+  go('trainer');
+}
+
+/* name input */
+const _ni = document.getElementById('nameInput');
+_ni.addEventListener('keydown', e=>{ if(e.key === 'Enter') registerPlayer(); });
+_ni.addEventListener('input', ()=>{ document.getElementById('nameErr').style.display = 'none'; });
+</script>
+
+</html>

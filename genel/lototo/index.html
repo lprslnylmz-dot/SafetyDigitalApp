@@ -1,0 +1,819 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>LOTOTO — Kilitle Etiketle Test Et</title>
+<style>
+  :root{
+    --copper:#b57b5e; --copper-dark:#8f5c43; --copper-light:#d9a78e;
+    --ink:#1d1d1b; --bg:#f7f4f1; --card:#ffffff; --card2:#f8f2ee;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),
+      var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(143,92,67,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(143,92,67,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  /* LEARN */
+  .phase-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .num{font-size:.72rem;font-weight:800;color:var(--copper);letter-spacing:1px;}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;}
+  .stepcard .desc{font-size:.82rem;color:var(--muted);line-height:1.4;display:none;}
+  .stepcard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* ORDER GAME */
+  .seq-line{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;background:var(--card2);border:1px dashed var(--copper-light);border-radius:12px;padding:8px;margin-bottom:16px;}
+  .seq-chip{background:var(--green);color:#fff;font-weight:800;font-size:.78rem;border-radius:8px;padding:6px 9px;animation:fadein .25s;}
+  .pool{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;font-weight:700;font-size:.9rem;text-align:center;transition:.15s;user-select:none;box-shadow:0 2px 6px rgba(29,29,27,.04);}
+  .pcard:hover{border-color:var(--copper);transform:translateY(-2px);}
+  .pcard .hint{display:block;font-size:.72rem;color:var(--muted);font-weight:600;margin-top:4px;}
+  .pcard.done{opacity:0;pointer-events:none;transform:scale(.7);transition:.3s;}
+  .pcard.wrong{border-color:var(--red);background:var(--red-bg);}
+  /* QUIZ + SCENARIO */
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .lives{font-size:1.05rem;letter-spacing:2px;}
+  .scene-tag{display:inline-block;background:#f3e6dd;color:var(--copper-dark);font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+  /* RESULT */
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  @media print{
+    body{background:#fff;}
+    header,footer,.no-print{display:none !important;}
+    .screen{display:none !important;}
+    #scr-trainer{display:block !important;}
+    .trhead,.trcard,.notebox{box-shadow:none;}
+  }
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>LOTOTO</b><small>Kilitle · Etiketle · Test Et</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <!-- NAME ENTRY -->
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">🔒</div>
+      <h2>LOTOTO'ya Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">Eğitime başlamadan önce kendini tanıt. Puan topladıkça ünvanın yükselecek!</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Eğitime Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <h1>Kilitle, Etiketle, <span class="accent">Test Et!</span></h1>
+    <p class="sub">EKED / LOTO prosedürünün 16 adımını oyunlarla öğren. Üç bölümü de tamamla, usta ol!</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">🥾</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Çaylak</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu">
+      <div class="mcard" onclick="startLearn()">
+        <div class="ic">📖</div><h3>Adımları Öğren</h3>
+        <p>16 adımı ve genel kuralları hızlıca gözden geçir. Oyunlara hazırlan.</p>
+      </div>
+      <div class="mcard" onclick="startOrder()">
+        <div class="ic">🧩</div><h3>Sıralama Oyunu</h3>
+        <p>Karışık verilen 16 adımı doğru sıraya diz. Hata yaptıkça puan düşer!</p>
+        <div class="best" id="bestOrder"></div>
+      </div>
+      <div class="mcard" onclick="startQuiz()">
+        <div class="ic">❓</div><h3>Bilgi Yarışması</h3>
+        <p>12 soruluk quiz: enerji türleri, izolasyon, kilit kuralları ve daha fazlası.</p>
+        <div class="best" id="bestQuiz"></div>
+      </div>
+      <div class="mcard" onclick="startScenario()">
+        <div class="ic">⚙️</div><h3>Senaryo: Türbin Bakımı</h3>
+        <p>Sanal bir bakım işini yönet. 3 canın var — yanlış karar kazaya yol açar!</p>
+        <div class="best" id="bestScen"></div>
+      </div>
+    </div>
+    <div class="notebox">⚠️ <b>Unutma:</b> Acil durdurma butonları, interlocklar, PLC'ler, ipli şalterler veya kontrol sistemleri <b>izolasyon noktası değildir!</b></div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="screen" id="scr-learn">
+    <div class="topbar"><h2>📖 16 Adım</h2><button class="btn ghost small" onclick="go('home')">← Ana Menü</button></div>
+    <p class="sub">Kartlara dokunarak açıklamaları gör.</p>
+    <div id="learnList"></div>
+    <div class="notebox">
+      <b>Kilidi takan kişi bulunamıyorsa:</b> Nezaretçi kişiye ulaşmaya çalışır → fabrika dışında olduğu teyit edilir → işin bittiğinden / kişinin tehlikeli bölgede olmadığından emin olunur → <b>"Kilit Kesme Formu"</b> doldurulur → kırılan kilit tutanakla <b>İSG birimine</b> verilir. Form 1 yıl saklanır.
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section class="screen" id="scr-order">
+    <div class="topbar">
+      <h2>🧩 Sıralama Oyunu</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="orderScore">0</span></span>
+        <span class="pill">⏱ <span id="orderTime">0</span> sn</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <p class="sub">Sıradaki adım hangisi? Kartlara <b>doğru sırayla</b> dokun. Yanlış kart puan götürür.</p>
+    <div class="seq-line" id="seqLine"></div>
+    <div class="pool" id="orderPool"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2>❓ Bilgi Yarışması</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="quizScore">0</span></span>
+        <span class="pill" id="quizProg">1/12</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- SCENARIO -->
+  <section class="screen" id="scr-scen">
+    <div class="topbar">
+      <h2>⚙️ Türbin Bakımı</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="pill">Puan: <span id="scenScore">0</span></span>
+        <span class="pill lives" id="scenLives">❤️❤️❤️</span>
+        <button class="btn ghost small" onclick="go('home')">Çık</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="scenBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <span class="scene-tag" id="scenTag"></span>
+      <div class="qtext" id="scenQ"></div>
+      <div class="opts" id="scenOpts"></div>
+      <div class="expl" id="scenExpl"></div>
+      <div style="margin-top:18px;text-align:right;"><button class="btn" id="scenNext" style="display:none;" onclick="nextScen()">Devam →</button></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🎉</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <button class="btn" id="resReplay">↻ Tekrar Oyna</button>
+      <button class="btn ghost" onclick="go('home')">Ana Menü</button>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    EKED | LOTOTO 16 Adım · Etiketle, Kilitle, Emniyete Al, Dene
+  </footer>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const STEPS = [
+ {n:1, name:"TESPİT", phase:"HAZIRLIK", desc:"Enerji türlerini, tehlikeleri ve kontrolleri belirle; kilitleme yöntemini tanımla."},
+ {n:2, name:"BİLDİRİM", phase:"HAZIRLIK", desc:"Etkilenen çalışanları ve alt işverenleri bilgilendir (bölüm yöneticisi veya yetkilendirdiği kişi)."},
+ {n:3, name:"DURDUR", phase:"HAZIRLIK", desc:"Durdurma butonu kullanılarak tüm ekipmanları durdur."},
+ {n:4, name:"İZOLE", phase:"HAZIRLIK", desc:"Tüm enerji kaynaklarını izole et: MCC ve pano beslemelerini, vanaları, hava beslemesini kapat."},
+ {n:5, name:"ARTIK ENERJİ", phase:"HAZIRLIK", desc:"Depolanan veya artık enerjileri boşalt: basıncı sıfırla, hatları tahliye et, yükleri indir, sıcak parçaların soğumasını bekle."},
+ {n:6, name:"KİLİTLE / ETİKETLE", phase:"HAZIRLIK", desc:"Prosedüre uygun olarak kilitleme ve etiketleme yap."},
+ {n:7, name:"DENE", phase:"HAZIRLIK", desc:"Çalıştırma girişiminde bulunarak enerjinin gerçekten kesildiğini doğrula."},
+ {n:8, name:"KORUYUCU KALDIR", phase:"HAZIRLIK", desc:"Sabit ve hareketli makine koruyucularını kaldır."},
+ {n:9, name:"FAALİYET", phase:"FAALİYETİ GERÇEKLEŞTİRME", desc:"Bakım/onarım aktivitesini gerçekleştir."},
+ {n:10, name:"KORUYUCU TAK", phase:"DEVREYE ALMA", desc:"Sabit ve hareketli makine koruyucularını geri tak."},
+ {n:11, name:"DÜZENLE", phase:"DEVREYE ALMA", desc:"Bölgenin temiz ve düzenli olduğunu doğrula."},
+ {n:12, name:"KİLİT SÖK", phase:"DEVREYE ALMA", desc:"Kilitleri, etiketleri ve kontrol cihazlarını kaldır."},
+ {n:13, name:"GÜVENLİ BÖLGE", phase:"DEVREYE ALMA", desc:"Personeli emniyetli bir lokasyona taşı."},
+ {n:14, name:"BİLDİRİM (DEVREYE ALMA)", phase:"DEVREYE ALMA", desc:"Etkilenen çalışanlara ekipmanın devreye alınacağını bildir."},
+ {n:15, name:"ENERJİ VER", phase:"DEVREYE ALMA", desc:"Bağlantı kesme cihazını / valfini açarak enerjiyi ver."},
+ {n:16, name:"ÇALIŞTIR", phase:"DEVREYE ALMA", desc:"Doğru çalıştığından emin olmak için izle."},
+];
+
+const QUIZ = [
+ {q:"LOTO prosedürünün İLK adımı hangisidir?",
+  o:["Kilitle / Etiketle","Tespit — enerji kaynaklarını belirle","Durdur","Bildirim"], c:1,
+  e:"Her şey TESPİT ile başlar: enerji türleri, tehlikeler ve kontroller belirlenmeden hiçbir işlem yapılmaz."},
+ {q:"Hangisi bir izolasyon noktası DEĞİLDİR?",
+  o:["Ana besleme şalteri","Hat üzerindeki kesme vanası","Acil durdurma butonu","Bağlantı kesme cihazı"], c:2,
+  e:"Acil durdurma butonları, interlocklar, PLC'ler ve ipli şalterler izolasyon noktası değildir — enerjiyi fiziksel olarak kesmezler."},
+ {q:"KİLİTLE/ETİKETLE adımından hemen ÖNCE hangi adım gelir?",
+  o:["Dene","Artık enerjiyi boşalt","İzole","Koruyucuları kaldır"], c:1,
+  e:"Sıra: İzole (4) → Artık Enerji (5) → Kilitle/Etiketle (6). Depolanan enerji boşaltılmadan kilit takılmaz."},
+ {q:"DENE adımında ne yapılır?",
+  o:["Ekipman tam güçte çalıştırılır","Çalıştırma girişiminde bulunularak enerjinin kesildiği doğrulanır","Kilitlerin sağlamlığı çekilerek test edilir","Etiketlerin okunabilirliği kontrol edilir"], c:1,
+  e:"Start'a basılarak ekipmanın çalışmadığı, yani izolasyonun başarılı olduğu doğrulanır."},
+ {q:"Hangisi DEPOLANMIŞ enerji kaynağıdır?",
+  o:["Akümülatörler ve yaylı mekanizmalar","Doğal gaz hattı","MCC panosu","Enstrüman havası"], c:0,
+  e:"Akümülatörler ve yaylı mekanizmalar, izolasyondan sonra bile tehlikeli enerji depolar — mutlaka boşaltılmalıdır."},
+ {q:"Çalışan kilidini unutup gitmiş ve ulaşılamıyor. İLK yapılması gereken nedir?",
+  o:["Kilit hemen kesilir","Nezaretçi kilidi takan kişiye ulaşmaya çalışır","Yedek anahtarla açılır","Ekipman kilitli şekilde çalıştırılır"], c:1,
+  e:"Önce kişiye ulaşılmaya çalışılır; dönemeyeceği teyit edilir, tehlikeli bölgede olmadığından emin olunur, sonra form doldurulur."},
+ {q:"Kırılan / kesilen kilit ne yapılır?",
+  o:["Çöpe atılır","Tamir edilip tekrar kullanılır","Tutanakla birlikte İSG birimine verilir","Çalışanın dolabına bırakılır"], c:2,
+  e:"Kırılan/kesilen kilit, tutanakla beraber İSG birimine teslim edilir. Kilit Kesme Formu 1 yıl saklanır."},
+ {q:"Faaliyet (9. adım) tamamlandıktan sonra İLK yapılacak iş nedir?",
+  o:["Enerji verilir","Kilitler sökülür","Makine koruyucuları geri takılır","Ekipman çalıştırılır"], c:2,
+  e:"Devreye alma, koruyucuların geri takılmasıyla (10) başlar; enerji verme en sona yakındır (15)."},
+ {q:"ENERJİ VER (15) adımından hemen ÖNCE ne yapılmalıdır?",
+  o:["Etkilenen çalışanlara bildirim yapılmalı","Koruyucular sökülmeli","Kilitler takılmalı","Faaliyet raporu yazılmalı"], c:0,
+  e:"Sıra: Güvenli Bölge (13) → Bildirim (14) → Enerji Ver (15). Herkes haberdar olmadan enerji verilmez."},
+ {q:"Hidrolik enerjinin izolasyonu nasıl yapılır?",
+  o:["PLC'den kapatılır","Hidrolik güç ünitesi durdurulur ve vanalar kapatılır","Acil stop'a basılır","Hortum sökülür"], c:1,
+  e:"Hidrolik için güç ünitesi durdurulur, vanalar kapatılır; ardından basınç sıfırlanıp hatlar tahliye edilir."},
+ {q:"Artık enerji boşaltmada sıcak parçalar için ne yapılır?",
+  o:["Su dökülerek soğutulur","Eldivenle çalışılır","Soğuması beklenir","İşlem gerekmez"], c:2,
+  e:"Sıcak parçaların (yanma odası, egzoz vb.) kendiliğinden soğuması beklenir."},
+ {q:"Etkilenen çalışanlara ve alt işverenlere bildirimi kim yapar?",
+  o:["Herhangi bir operatör","Bölüm yöneticisi veya yetkilendirdiği kişi","Güvenlik görevlisi","Alt işveren temsilcisi"], c:1,
+  e:"Bildirim (2. adım) bölüm yöneticisi veya onun yetkilendirdiği kişi tarafından yapılır."},
+];
+
+const SCEN = [
+ {tag:"SABAH 08:00", q:"Gaz türbininde bakım yapılacak. İş emri elinde. İlk hamlen ne olur?",
+  o:["Vakit kaybetmeden ekipmanı durdururum","Enerji türlerini, tehlikeleri ve kontrolleri tespit ederim","Hemen kilidimi takarım","Aletlerimi alıp sahaya inerim"], c:1,
+  ok:"Doğru! Önce TESPİT: yakıt, elektrik, mekanik, pnömatik, hidrolik, buhar, ısı, basınç, depolanmış enerji… hepsi listelenmeli.",
+  no:"Kaza riski! Enerji kaynaklarını tespit etmeden yapılan her işlem sürpriz enerjiyle karşılaşmak demektir. İlk adım her zaman TESPİT."},
+ {tag:"ADIM 2-3", q:"Enerji kaynaklarını belirledin. Bölüm yöneticisi etkilenen çalışanlara ve alt işverene bildirim yaptı. Ekipmanı nasıl durdurursun?",
+  o:["Acil stop butonuna basarım","Ana şalteri direkt indiririm","Durdurma butonu ile normal şekilde durdururum","Yakıt vanasını aniden kapatırım"], c:2,
+  ok:"Doğru! Ekipman normal DURDURMA butonu ile durdurulur; acil stop bu iş için kullanılmaz.",
+  no:"Yanlış! Ekipman, kontrollü şekilde durdurma butonu ile durdurulmalıdır. Acil stop ve ani müdahaleler ekipmana ve sana zarar verebilir."},
+ {tag:"İZOLASYON", q:"Sıra izolasyonda. Hangi yaklaşım doğru?",
+  o:["PLC'den 'off' komutu vermek yeterli","Interlock devrede, ekstra işleme gerek yok","MCC ve pano beslemelerini kapat, vanaları ve hava beslemesini kes","Sadece acil stop'u basılı kilitle"], c:2,
+  ok:"Doğru! Enerji fiziksel kesme noktalarından izole edilir: MCC/pano, vanalar, hava beslemesi. Kontrol sistemleri izolasyon sayılmaz.",
+  no:"Tehlike! Acil stop, interlock, PLC ve kontrol sistemleri İZOLASYON NOKTASI DEĞİLDİR. Enerji fiziksel olarak kesilmelidir."},
+ {tag:"ARTIK ENERJİ", q:"İzolasyon tamam. Ama sistemde hidrolik basınç, basınçlı hava ve sıcak parçalar var. Ne yaparsın?",
+  o:["Kilidimi takar işe başlarım — nasılsa izole ettim","Basıncı sıfırlar, hatları tahliye eder, yükleri indirir, sıcak parçaların soğumasını beklerim","Sadece sıcak bölgeden uzak dururum","Basınç kendi kendine düşer, beklemeye gerek yok"], c:1,
+  ok:"Doğru! Depolanan/artık enerji boşaltılmadan sistem güvenli değildir: SIFIRLAMA yap, tahliye et, indir, soğumasını bekle.",
+  no:"Kaza! İzolasyon depolanmış enerjiyi yok etmez. Hidrolik basınç veya sıcak parça, kilit taksan bile seni yaralayabilir. Önce artık enerjiyi boşalt."},
+ {tag:"KİLİTLE / DENE", q:"Kilidini ve etiketini taktın. İşe başlamadan önce son bir şey kaldı. Nedir?",
+  o:["Fotoğraf çekip yöneticiye göndermek","Start butonuna basıp ekipmanın çalışmadığını DENEmek","Arkadaşının da kilit takmasını beklemeden başlamak","Etikete tarih yazmak yeterli, direkt başlarım"], c:1,
+  ok:"Doğru! DENE adımı: çalıştırma girişiminde bulun; ekipman çalışmıyorsa izolasyon başarılı demektir. Şimdi koruyucuları kaldırıp işe başlayabilirsin.",
+  no:"Eksik! Kilit takmak yetmez — DENE adımıyla enerjinin gerçekten kesildiğini doğrulamadan işe başlanmaz."},
+ {tag:"ÖĞLEN 13:30", q:"Bakım sürerken bir çalışanın kilidini unutup mesaisini bitirip gittiği fark ediliyor; telefonla ulaşılamıyor. Nezaretçi ne yapmalı?",
+  o:["Kilidi hemen keser, iş gecikmesin","Dönemeyeceğini teyit eder, kişinin tehlikeli bölgede olmadığından emin olur, Kilit Kesme Formu doldurup kilidi İSG'ye teslim eder","Yedek anahtar bulup açar, form gerekmez","Kilidi görmezden gelir, ertesi gün çözülür"], c:1,
+  ok:"Doğru! Prosedür: ulaşmaya çalış → dışarıda olduğunu teyit et → tehlikeli bölgede kimse yok mu kontrol et → Kilit Kesme Formu → kilit tutanakla İSG'ye.",
+  no:"Yanlış! Kilit asla formsuz ve teyitsiz kesilmez/açılmaz. Belki o kişi hâlâ tehlikeli bölgededir. Prosedür: teyit + Kilit Kesme Formu + İSG'ye teslim."},
+ {tag:"İŞ BİTTİ 16:00", q:"Faaliyet tamamlandı. Devreye almaya geçiyorsun. Doğru sıralama hangisi?",
+  o:["Enerji ver → kilit sök → koruyucu tak","Koruyucuları tak → bölgeyi düzenle → kilitleri sök","Kilitleri sök → enerji ver → temizlik sonra","Direkt çalıştır, gerisi detay"], c:1,
+  ok:"Doğru! Devreye alma: Koruyucu Tak (10) → Düzenle (11) → Kilit Sök (12) → Güvenli Bölge (13) → Bildirim (14) → Enerji Ver (15) → Çalıştır (16).",
+  no:"Tehlikeli sıra! Koruyucular takılmadan ve bölge doğrulanmadan kilit sökülmez; enerji vermek son adımlardandır."},
+ {tag:"SON ADIM", q:"Kilitler söküldü, personel güvenli bölgede, bildirim yapıldı, enerji verildi. Görev bitti mi?",
+  o:["Evet, eve gidebilirim","Hayır — ekipmanın doğru çalıştığından emin olmak için izlerim","Hayır — kilitleri geri takarım","Hayır — acil stop testine geçerim"], c:1,
+  ok:"Doğru! 16. adım ÇALIŞTIR: ekipman izlenir, doğru çalıştığı teyit edilir. Tebrikler, prosedürü kazasız tamamladın! 🎉",
+  no:"Henüz değil! Son adım ÇALIŞTIR ve İZLE'dir: ekipmanın doğru çalıştığından emin olmadan iş bitmiş sayılmaz."},
+];
+
+/* ================= TITLES ================= */
+const TITLES = [
+ {min:0,    icon:"🥾", name:"Çaylak",               msg:"Herkes bir yerden başlar — adımları öğrenmeye devam!"},
+ {min:500,  icon:"🔰", name:"Güvenlik Gönüllüsü",   msg:"Temeli attın, sahada artık gözün açık!"},
+ {min:1200, icon:"🛠️", name:"Saha Teknisyeni",      msg:"Prosedür elinde şekillenmeye başladı!"},
+ {min:2000, icon:"🗝️", name:"Kilit Ustası Adayı",   msg:"Kilitler yakında senden sorulacak!"},
+ {min:3000, icon:"🔒", name:"Kilit Ustası",          msg:"16 adım artık senin için refleks!"},
+ {min:4000, icon:"🛡️", name:"EKED Uzmanı",          msg:"Enerji sana asla sürpriz yapamaz!"},
+ {min:5000, icon:"🏆", name:"LOTOTO Şampiyonu",      msg:"Efsane! Bu sahada güvenliğin adı sensin."},
+];
+function titleFor(p){ let t = TITLES[0]; for(const x of TITLES){ if(p >= x.min) t = x; } return t; }
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+/* ================= STATE ================= */
+let total = 0;
+let playerName = "";
+const best = {order:null, quiz:null, scen:null};
+const stats = {
+  order:{plays:0, mistakes:0, lastTime:null},
+  quiz:{plays:0, correct:0, answered:0},
+  scen:{plays:0, wrong:0, completed:0}
+};
+function addTotal(p){
+  const before = titleFor(total);
+  total += p;
+  document.getElementById('totalScore').textContent = total;
+  const after = titleFor(total);
+  updateRank();
+  if(after !== before){
+    showToast('🎉 Yeni ünvan: ' + after.icon + ' ' + after.name + ' — ' + after.msg);
+  }
+}
+function updateRank(){
+  const t = titleFor(total);
+  document.getElementById('playerTitle').textContent = t.icon + ' ' + t.name;
+  document.getElementById('rankIcon').textContent = t.icon;
+  document.getElementById('rankName').textContent = t.name;
+  const next = TITLES[TITLES.indexOf(t) + 1];
+  if(next){
+    document.getElementById('rankBar').style.width = Math.min(100, (total - t.min) / (next.min - t.min) * 100) + '%';
+    document.getElementById('rankNext').textContent = 'Sonraki ünvan: ' + next.icon + ' ' + next.name + ' — ' + (next.min - total) + ' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width = '100%';
+    document.getElementById('rankNext').textContent = 'En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+function registerPlayer(){
+  const v = document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length < 5 || v.split(' ').length < 2){
+    document.getElementById('nameErr').style.display = 'block';
+    return;
+  }
+  playerName = v.replace(/(^|\s)\S/g, c=>c.toLocaleUpperCase('tr'));
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent = playerName;
+  document.getElementById('playerPill').style.display = 'flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id !== 'name') id = 'name';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') refreshBest();
+  if(orderTimer && id!=='order'){ clearInterval(orderTimer); orderTimer=null; }
+}
+function refreshBest(){
+  document.getElementById('bestOrder').textContent = best.order!=null ? '⭐ En iyi: '+best.order+' puan' : '';
+  document.getElementById('bestQuiz').textContent  = best.quiz!=null  ? '⭐ En iyi: '+best.quiz+' puan' : '';
+  document.getElementById('bestScen').textContent  = best.scen!=null  ? '⭐ En iyi: '+best.scen+' puan' : '';
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function flashDanger(){ const f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= LEARN ================= */
+function startLearn(){
+  const phases = ["HAZIRLIK","FAALİYETİ GERÇEKLEŞTİRME","DEVREYE ALMA"];
+  let html = '';
+  phases.forEach(ph=>{
+    html += '<div class="phase-label">'+ph+'</div><div class="steps-grid">';
+    STEPS.filter(s=>s.phase===ph).forEach(s=>{
+      html += '<div class="stepcard" onclick="this.classList.toggle(\'open\')">'+
+        '<div class="num">ADIM '+String(s.n).padStart(2,'0')+'</div>'+
+        '<div class="name">'+s.name+'</div>'+
+        '<div class="desc">'+s.desc+'</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('learnList').innerHTML = html;
+  go('learn');
+}
+
+/* ================= ORDER GAME ================= */
+let orderNext, orderScore, orderTimer, orderSec, orderMistakes;
+function startOrder(){
+  orderNext = 1; orderScore = 0; orderSec = 0; orderMistakes = 0;
+  document.getElementById('orderScore').textContent = 0;
+  document.getElementById('orderTime').textContent = 0;
+  document.getElementById('seqLine').innerHTML = '';
+  const pool = document.getElementById('orderPool');
+  pool.innerHTML = '';
+  shuffle(STEPS).forEach(s=>{
+    const d = document.createElement('div');
+    d.className = 'pcard'; d.dataset.n = s.n;
+    d.innerHTML = s.name + '<span class="hint">' + s.phase + '</span>';
+    d.onclick = ()=>pickOrder(d, s);
+    pool.appendChild(d);
+  });
+  if(orderTimer) clearInterval(orderTimer);
+  orderTimer = setInterval(()=>{ orderSec++; document.getElementById('orderTime').textContent = orderSec; }, 1000);
+  go('order');
+}
+function pickOrder(el, s){
+  if(s.n === orderNext){
+    el.classList.add('done');
+    SFX.ding();
+    orderScore += 100;
+    const chip = document.createElement('span');
+    chip.className = 'seq-chip';
+    chip.textContent = s.n + '. ' + s.name;
+    document.getElementById('seqLine').appendChild(chip);
+    orderNext++;
+    document.getElementById('orderScore').textContent = orderScore;
+    if(orderNext > 16){
+      clearInterval(orderTimer); orderTimer = null;
+      stats.order.mistakes += orderMistakes;
+      stats.order.lastTime = orderSec;
+      const bonus = Math.max(0, 300 - orderSec*2);
+      orderScore += bonus;
+      finishGame('order', orderScore,
+        'Sıralama tamamlandı!',
+        orderMistakes===0 ? 'Hatasız dizdin! Süre bonusu: +'+bonus+' puan.' :
+        orderMistakes+' hata yaptın. Süre bonusu: +'+bonus+' puan. Tekrar dene, hatasız yapabilirsin!',
+        orderMistakes===0?3:(orderMistakes<=4?2:1), startOrder);
+    }
+  } else {
+    orderMistakes++;
+    orderScore = Math.max(0, orderScore - 20);
+    document.getElementById('orderScore').textContent = orderScore;
+    el.classList.add('wrong','shake');
+    flashDanger();
+    SFX.buzz();
+    setTimeout(()=>el.classList.remove('wrong','shake'), 500);
+  }
+}
+
+/* ================= QUIZ ================= */
+let quizIdx, quizScore, quizList;
+function startQuiz(){
+  quizIdx = 0; quizScore = 0;
+  quizList = shuffle(QUIZ);
+  document.getElementById('quizScore').textContent = 0;
+  renderQuiz();
+  go('quiz');
+}
+function renderQuiz(){
+  const q = quizList[quizIdx];
+  document.getElementById('quizProg').textContent = (quizIdx+1)+'/'+quizList.length;
+  document.getElementById('quizBar').style.width = (quizIdx/quizList.length*100)+'%';
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizExpl').className = 'expl';
+  document.getElementById('quizNext').style.display = 'none';
+  const box = document.getElementById('quizOpts');
+  box.innerHTML = '';
+  q.o.forEach((t,i)=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = t;
+    d.onclick = ()=>answerQuiz(d, i, q);
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el, i, q){
+  const opts = document.querySelectorAll('#quizOpts .opt');
+  opts.forEach((o,k)=>{ o.classList.add('dim'); if(k===q.c) o.classList.add('correct'); });
+  const ex = document.getElementById('quizExpl');
+  stats.quiz.answered++;
+  if(i === q.c){
+    stats.quiz.correct++;
+    SFX.cheer();
+    quizScore += 100;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ <b>Doğru!</b> ' + q.e;
+  } else {
+    el.classList.add('incorrect');
+    flashDanger();
+    SFX.buzz();
+    ex.className = 'expl no'; ex.innerHTML = '❌ <b>Yanlış.</b> ' + q.e;
+  }
+  document.getElementById('quizScore').textContent = quizScore;
+  document.getElementById('quizNext').style.display = 'inline-block';
+}
+function nextQuiz(){
+  quizIdx++;
+  if(quizIdx >= quizList.length){
+    const pct = quizScore/(quizList.length*100);
+    finishGame('quiz', quizScore, 'Quiz tamamlandı!',
+      pct===1 ? 'Tüm soruları doğru bildin — LOTO ustasısın!' :
+      pct>=0.7 ? 'İyi iş! Kaçırdığın konulara "Adımları Öğren" bölümünden göz at.' :
+      'Biraz daha çalışmalısın. "Adımları Öğren" bölümü tam sana göre.',
+      pct===1?3:(pct>=0.7?2:1), startQuiz);
+  } else renderQuiz();
+}
+
+/* ================= SCENARIO ================= */
+let scenIdx, scenScore, scenLives;
+function startScenario(){
+  scenIdx = 0; scenScore = 0; scenLives = 3;
+  document.getElementById('scenScore').textContent = 0;
+  renderScen();
+  go('scen');
+}
+function renderScen(){
+  const s = SCEN[scenIdx];
+  document.getElementById('scenLives').textContent = '❤️'.repeat(scenLives) + '🖤'.repeat(3-scenLives);
+  document.getElementById('scenBar').style.width = (scenIdx/SCEN.length*100)+'%';
+  document.getElementById('scenTag').textContent = s.tag;
+  document.getElementById('scenQ').textContent = s.q;
+  document.getElementById('scenExpl').className = 'expl';
+  document.getElementById('scenNext').style.display = 'none';
+  const box = document.getElementById('scenOpts');
+  box.innerHTML = '';
+  shuffle(s.o.map((t,i)=>({t,i}))).forEach(op=>{
+    const d = document.createElement('div');
+    d.className = 'opt'; d.textContent = op.t;
+    d.onclick = ()=>answerScen(d, op.i, s);
+    box.appendChild(d);
+  });
+}
+function answerScen(el, i, s){
+  const opts = document.querySelectorAll('#scenOpts .opt');
+  const ex = document.getElementById('scenExpl');
+  if(i === s.c){
+    opts.forEach(o=>{ o.classList.add('dim'); });
+    el.classList.remove('dim'); el.classList.add('correct');
+    SFX.cheer();
+    scenScore += 150;
+    ex.className = 'expl ok'; ex.innerHTML = '✅ ' + s.ok;
+    document.getElementById('scenScore').textContent = scenScore;
+    document.getElementById('scenNext').style.display = 'inline-block';
+  } else {
+    el.classList.add('incorrect','dim');
+    stats.scen.wrong++;
+    scenLives--;
+    flashDanger();
+    SFX.buzz();
+    document.getElementById('scenLives').textContent = '❤️'.repeat(scenLives) + '🖤'.repeat(3-scenLives);
+    ex.className = 'expl no'; ex.innerHTML = '⚠️ ' + s.no + (scenLives>0 ? ' <b>Tekrar dene!</b>' : '');
+    if(scenLives <= 0){
+      opts.forEach(o=>o.classList.add('dim'));
+      finishGame('scen', scenScore, 'Vardiya kazayla bitti!',
+        'Üç kritik hata yaptın ve sanal bir kaza yaşandı. Gerçek hayatta ikinci şans yok — "Adımları Öğren" bölümüne göz atıp tekrar dene.',
+        0, startScenario, '💥');
+    }
+  }
+}
+function nextScen(){
+  scenIdx++;
+  if(scenIdx >= SCEN.length){
+    stats.scen.completed++;
+    scenScore += scenLives * 100;
+    finishGame('scen', scenScore, 'Bakım kazasız tamamlandı!',
+      'Türbin güvenle devreye alındı. Kalan can bonusu: +'+(scenLives*100)+' puan.',
+      scenLives, startScenario, '🦺');
+  } else renderScen();
+}
+
+/* ================= RESULT ================= */
+function finishGame(mode, pts, title, msg, stars, replayFn, emoji){
+  addTotal(pts);
+  stats[mode].plays++;
+  if(best[mode]==null || pts > best[mode]) best[mode] = pts;
+  const t = titleFor(total);
+  document.getElementById('resPlayer').textContent = playerName + ' · ' + t.icon + ' ' + t.name;
+  document.getElementById('resEmoji').textContent = emoji || (stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'💥');
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resStars').textContent = stars>0 ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : '☆☆☆';
+  document.getElementById('resPts').textContent = '+' + pts + ' puan';
+  document.getElementById('resMsg').textContent = msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick = replayFn;
+  go('result');
+}
+
+/* ================= TRAINER ================= */
+function openTrainer(){
+  const t = titleFor(total);
+  document.getElementById('trName').textContent = playerName || '—';
+  document.getElementById('trTitle').textContent = 'Ünvan: ' + t.icon + ' ' + t.name;
+  document.getElementById('trTotal').textContent = total + ' puan';
+  document.getElementById('trDate').textContent = new Date().toLocaleString('tr-TR', {dateStyle:'long', timeStyle:'short'});
+  const q = stats.quiz, o = stats.order, s = stats.scen;
+  const pct = q.answered ? Math.round(q.correct / q.answered * 100) : null;
+  const row = (l,v)=>'<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';
+  document.getElementById('trCards').innerHTML =
+    '<div class="trcard"><h4>🧩 Sıralama Oyunu</h4>'+
+      row('Oynama sayısı', o.plays) +
+      row('En iyi puan', best.order!=null ? best.order : '—') +
+      row('Toplam hata', o.mistakes) +
+      row('Son süre', o.lastTime!=null ? o.lastTime+' sn' : '—') +
+    '</div>'+
+    '<div class="trcard"><h4>❓ Bilgi Yarışması</h4>'+
+      row('Oynama sayısı', q.plays) +
+      row('En iyi puan', best.quiz!=null ? best.quiz : '—') +
+      row('Doğru / Cevap', q.correct+' / '+q.answered) +
+      row('Başarı oranı', pct!=null ? '%'+pct : '—') +
+    '</div>'+
+    '<div class="trcard"><h4>⚙️ Senaryo</h4>'+
+      row('Oynama sayısı', s.plays) +
+      row('En iyi puan', best.scen!=null ? best.scen : '—') +
+      row('Kazasız tamamlama', s.completed) +
+      row('Yanlış karar', s.wrong) +
+    '</div>';
+  const notes = [];
+  if(!o.plays && !q.plays && !s.plays){
+    notes.push('Katılımcı henüz bölüm oynamadı — rapor, bölümler oynandıkça otomatik dolar.');
+  } else {
+    if(pct!=null) notes.push(pct>=70 ? 'Quiz başarı oranı %'+pct+' — bilgi düzeyi iyi.' : 'Quiz başarı oranı %'+pct+' — enerji türleri ve kilit kuralları tekrar edilmeli.');
+    if(o.plays) notes.push(o.mistakes<=4 ? 'Adım sıralamasında akıcı ('+o.mistakes+' hata).' : 'Adım sıralamasında '+o.mistakes+' hata — 16 adımın akışı tekrar çalışılmalı.');
+    if(s.plays) notes.push(s.completed>0 ? 'Senaryoyu '+s.completed+' kez kazasız tamamladı'+(s.wrong?' ('+s.wrong+' yanlış karar).':'.') : 'Senaryo henüz kazasız tamamlanamadı — saha uygulaması üzerinde durulmalı.');
+    notes.push('Genel seviye: ' + t.icon + ' ' + t.name + '.');
+  }
+  document.getElementById('trNote').innerHTML = '<b>Eğitici değerlendirme notu:</b><br>• ' + notes.join('<br>• ');
+  go('trainer');
+}
+
+/* name input: Enter ile başla, yazarken hatayı gizle */
+const _ni = document.getElementById('nameInput');
+_ni.addEventListener('keydown', e=>{ if(e.key === 'Enter') registerPlayer(); });
+_ni.addEventListener('input', ()=>{ document.getElementById('nameErr').style.display = 'none'; });
+</script>
+
+</body></html>

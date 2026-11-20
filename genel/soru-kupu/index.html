@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Soru Küpü</title>
+<style>
+  :root{
+    --copper:#b57b5e; --copper-dark:#8f5c43; --copper-light:#d9a78e;
+    --ink:#1d1d1b; --bg:#f7f4f1; --card:#ffffff; --card2:#f8f2ee;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),
+      var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(143,92,67,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(143,92,67,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  /* LEARN */
+  .phase-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .num{font-size:.72rem;font-weight:800;color:var(--copper);letter-spacing:1px;}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;}
+  .stepcard .desc{font-size:.82rem;color:var(--muted);line-height:1.4;display:none;}
+  .stepcard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* ORDER GAME */
+  .seq-line{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;background:var(--card2);border:1px dashed var(--copper-light);border-radius:12px;padding:8px;margin-bottom:16px;}
+  .seq-chip{background:var(--green);color:#fff;font-weight:800;font-size:.78rem;border-radius:8px;padding:6px 9px;animation:fadein .25s;}
+  .pool{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;font-weight:700;font-size:.9rem;text-align:center;transition:.15s;user-select:none;box-shadow:0 2px 6px rgba(29,29,27,.04);}
+  .pcard:hover{border-color:var(--copper);transform:translateY(-2px);}
+  .pcard .hint{display:block;font-size:.72rem;color:var(--muted);font-weight:600;margin-top:4px;}
+  .pcard.done{opacity:0;pointer-events:none;transform:scale(.7);transition:.3s;}
+  .pcard.wrong{border-color:var(--red);background:var(--red-bg);}
+  /* QUIZ + SCENARIO */
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .lives{font-size:1.05rem;letter-spacing:2px;}
+  .scene-tag{display:inline-block;background:#f3e6dd;color:var(--copper-dark);font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+  /* RESULT */
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  @media print{
+    body{background:#fff;}
+    header,footer,.no-print{display:none !important;}
+    .screen{display:none !important;}
+    #scr-trainer{display:block !important;}
+    .trhead,.trcard,.notebox{box-shadow:none;}
+  }
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>GÜVENLİK LİGİ</b><small>Soru Küpü · 12 Kategori · 122 Soru</small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;">🎲</div>
+      <h2>Soru Küpü'ne Hoş Geldin!</h2>
+      <p class="sub" style="margin-bottom:0;">Günlük güvenlik sohbetlerinden derlenen 122 soruluk dev havuz! Kategorini seç, küpü at: her maçta 10 rastgele soru. Yanlışta doğrusunu öğrenirsin, puanlar bölümünün hanesine yazılır; her 100 puan, Eğitim Ormanı için 1 damla can suyudur! 💧</p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Maça Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-home">
+    <h1>Kategorini Seç, <span class="accent">Küpü At!</span></h1>
+    <p class="sub">Her maç: seçtiğin kategoriden rastgele 10 soru, soru başına 120 puan. 🎲 Karma Mod tüm havuzdan sorar — derbi haftasının oyunu budur!</p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">🥾</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Çaylak</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu" id="catMenu"></div>
+    <div class="notebox">⚠️ <b>Not:</b> Sorular işyerlerinin günlük güvenlik sohbeti takvimlerinden derlenmiştir; her sorunun açıklamasında kural ve gerekçe verilir. Yanlış cevap can yakmaz ama doğrusunu mutlaka oku!</div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2 id="quizTitle">❓ Soru Küpü</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="pill">Soru <b id="quizNo">1</b>/10</span>
+        <span class="pill">Puan: <b id="quizScore">0</b></span>
+        <button class="btn ghost small" onclick="go('home')">← Vazgeç</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <span class="scene-tag" id="quizCat"></span>
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🏆</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" id="resReplay">🔁 Tekrar Oyna</button>
+        <button class="btn ghost" onclick="go('home')">Kategori Seç</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    GÜVENLİK LİGİ · Soru Küpü — 122 Soruluk İSG Bilgi Arenası · Safety Digital Games
+  </footer>
+</div>
+
+<script id="pool" type="application/json">[{"k": "Yangın ve Acil Durum", "q": "Yangının oluşması için bir araya gelmesi gereken üç unsur hangileridir?", "o": ["Isı, oksijen, yanıcı madde", "Duman, alev, kıvılcım", "Benzin, hava, rüzgâr", "Elektrik, su, yakıt"], "c": 0, "e": "Yangın üçgeni ısı + oksijen + yanıcı maddeden oluşur; tetikleme kaynağı kıvılcım veya statik elektrik olabilir. Üçgenden biri kaldırılırsa yangın söner.", "s": "2021 • 97. gün"}, {"k": "Yangın ve Acil Durum", "q": "Taşınabilir söndürücü kullanımındaki P-A-S-S (ÇEK-TUT-SIK-SÜPÜR) tekniğinde ilk adım nedir?", "o": ["Mandala basmak", "Pimi çekmek", "Hortumu sallamak", "Tüpü ters çevirmek"], "c": 1, "e": "Sıra: Pimi çek → ağzı yangının temeline (köküne) doğru tut → kolu sıkıştır → sağa sola süpür.", "s": "2021 • 136. gün"}, {"k": "Yangın ve Acil Durum", "q": "Birçok taşınabilir yangın söndürücünün kesintisiz söndürme kapasitesi yaklaşık ne kadardır?", "o": ["10 saniye", "2 dakika", "10 dakika", "30 dakika"], "c": 0, "e": "Çoğu taşınabilir söndürücü yalnızca yaklaşık 10 saniye püskürtme yapabilir; bu yüzden alevin köküne isabetli kullanılmalıdır.", "s": "2021 • 136. gün"}, {"k": "Yangın ve Acil Durum", "q": "Benzin, gres ve yanıcı sıvı yangınları hangi sınıftır ve tipik söndürme maddesi nedir?", "o": ["A sınıfı — su", "B sınıfı — köpük, CO2 veya kuru kimyevi toz", "C sınıfı — su", "D sınıfı — köpük"], "c": 1, "e": "B sınıfı yanıcı sıvı/gres/gaz yangınlarında köpük, karbondioksit veya KKT kullanılır; su yanan sıvıyı yayar.", "s": "2021 • 352. gün"}, {"k": "Yangın ve Acil Durum", "q": "Magnezyum ve sodyum gibi yanabilen metal yangınlarında (D sınıfı) ne kullanılmalıdır?", "o": ["Bol su", "Standart ABC toz", "Onaylı özel D sınıfı söndürme maddesi", "Köpük"], "c": 2, "e": "D sınıfı metal yangınları özel onaylı söndürme maddeleri gerektirir; su ve standart söndürücüler şiddetli tepkimeye yol açabilir.", "s": "2021 • 352. gün"}, {"k": "Yangın ve Acil Durum", "q": "Elektrik panosunda çıkan yangında ilk doğru yaklaşım hangisidir?", "o": ["Hemen su sıkmak", "CO2 veya kuru kimyevi tozla müdahale etmek (mümkünse önce enerjiyi kesmek)", "Köpükle bastırmak", "Kapağı açıp beklemek"], "c": 1, "e": "C sınıfı (elektrik) yangınlarda CO2 veya KKT kullanılır; su çarpılma riski taşır. Araç yangınlarında da kısa devreyi önlemek için akü kabloları kesilir.", "s": "2021 • 352. gün / 2020-05 • 138. gün"}, {"k": "Yangın ve Acil Durum", "q": "İçi boşaltılmış yanıcı sıvı varili üzerinde kaynak/kesme yapmak neden tehlikelidir?", "o": ["Varil ağırlaştığı için", "Boş görünen kapta kalan buharlar dolu kaptan bile daha patlayıcı olabildiği için", "Kaynak makinesi bozulacağı için", "Tehlikeli değildir"], "c": 1, "e": "Boşalan kapta sıvının yerini buhar-hava karışımı alır; kıvılcım veya ısı ile patlar. Temizlenip gaz detektörüyle test edilmeden kapta sıcak iş yapılmaz.", "s": "2021 • 285. gün"}, {"k": "Yangın ve Acil Durum", "q": "Yanıcı parlayıcı sıvı depolarında statik elektriğe karşı temel önlem nedir?", "o": ["Kapıları açık tutmak", "Rafları ve varilleri topraklamak", "Aydınlatmayı artırmak", "Zemini halıyla kaplamak"], "c": 1, "e": "Statik elektrik en önemli yangın nedenlerindendir; raflar ve variller topraklanır, yanında ateşli iş yapılmaz, kaplar ağzı kapalı tutulur.", "s": "2020-05 • 124. gün"}, {"k": "Yangın ve Acil Durum", "q": "Kaynak işi sırasında yangın gözcülüğü için doğru uygulama hangisidir?", "o": ["Kaynakçı işine bakar, gerisi önemli değil", "Yanıcılar alandan kaldırılır; gerekirse elinde söndürücüyle bir gözcü hazır bekletilir", "Kıvılcımlar kendiliğinden söner, önlem gerekmez", "Sadece mesai sonunda kontrol edilir"], "c": 1, "e": "Kaynak yangınları kıvılcım, sıcak çapak ve hamlaç aleviyle başlar; yanıcılar uzaklaştırılır, battaniye serilir, söndürücülü gözcü görevlendirilebilir.", "s": "2021 • 337-338. gün"}, {"k": "Yangın ve Acil Durum", "q": "Evde/işyerinde duman dedektörü bulundurmak ölüm riskini yaklaşık ne kadar azaltır?", "o": ["%5", "%15", "%50", "Hiç etkisi yoktur"], "c": 2, "e": "Duman dedektörü, özellikle uykuda yakalanan yangınlarda erken uyarı vererek ölüm riskini yaklaşık %50 azaltır; zehirli gazlar uyuyan kişiyi uyandırmayabilir.", "s": "2020-12 • 336. gün"}, {"k": "Yangın ve Acil Durum", "q": "Patlama ihtimali olan yük taşıyan bir araçta yangın çıktı. Çevre için doğru önlem hangisidir?", "o": ["50 metre yeterlidir", "Trafiği durdurup yaklaşık 600 metrelik alanı boşaltmak", "Sadece aracın şeridini kapatmak", "Yangını video kaydına almak"], "c": 1, "e": "Patlayıcı yük varsa tüm trafik durdurulur ve 600 metrelik alan boşaltılır; söndürme itfaiyeye bırakılır.", "s": "2020-05 • 138. gün"}, {"k": "Yangın ve Acil Durum", "q": "Acil durumlara kişisel hazırlığın ilk adımlarından biri hangisidir?", "o": ["Her şeyi amire bırakmak", "Alarm anlamlarını, tahliye güzergâhını ve acil durumu kime nasıl bildireceğini önceden bilmek", "Kriz anında plan yapmak", "Sosyal medyadan duyurmak"], "c": 1, "e": "Acil durum planını düzenli gözden geçirmek, alarm ve tahliye yollarını bilmek gerekir; kriz anında plan yapacak zaman olmaz.", "s": "2021 • 180-181. gün"}, {"k": "Kapalı Alanlar", "q": "Aşağıdakilerden hangisi kapalı alan tanımına girer?", "o": ["Açık otopark", "Su tankı, rögar, silo, baca ve 1,5 metreyi aşan derin kazılar", "Ofis koridoru", "Yemekhane"], "c": 1, "e": "Sınırlı hacim ve havası olan, giriş-çıkışı kısıtlı, sürekli çalışmaya göre tasarlanmamış yerler kapalı alandır: tanklar, değirmenler, siklonlar, bacalar, tüneller, derin kazılar…", "s": "2021 • 92. gün"}, {"k": "Kapalı Alanlar", "q": "Kapalı alanda 'tehlikeli atmosfer' için oksijen sınırları hangi aralığın dışına çıkmaktır?", "o": ["%19,5 – %23,5", "%10 – %15", "%25 – %30", "%5 – %95"], "c": 0, "e": "Oksijen %19,5'in altına veya %23,5'in üstüne çıktığında atmosfer tehlikelidir; yanıcı buhar ve H2S sınır aşımı da tehlikeli atmosfer yaratır.", "s": "2021 • 256. gün"}, {"k": "Kapalı Alanlar", "q": "Kapalı alana solunum cihazı olmadan girmeden önce ne yapılmalıdır?", "o": ["Kapıyı açık bırakmak yeterli", "Gaz testi yapılmalı; iş sürerken en geç 4 saatte bir ve alan yarım saatten uzun terk edildiyse tekrar edilmeli", "Bir kez koklamak", "Hızlı girip çıkmak"], "c": 1, "e": "Kapalı Yere Giriş İzni alınır ve gaz ölçümleri yapılır; kesintisiz işlerde maksimum 4 saat arayla, alan 30 dakikadan uzun terk edilince yeniden test edilir.", "s": "2021 • 256. gün"}, {"k": "Kapalı Alanlar", "q": "Kazı derinliği kaç metreyi aştığında Kapalı Alan Giriş İzni gerekir?", "o": ["0,5 m", "1 m", "1,5 m", "3 m"], "c": 2, "e": "0,5 m'yi aşan kazı için kazı iş izni, 1,5 m ve daha derin kazılara girişte Kapalı Alan Giriş İzni gerekir; 1,25 m'yi aşan kazılarda şevlendirme/destekleme yapılır.", "s": "2021 • 257. gün"}, {"k": "Kapalı Alanlar", "q": "Soluduğumuz havanın yaklaşık %78'ini oluşturan ve kapalı hacimlerde oksijenin yerini alabilen gaz hangisidir?", "o": ["Oksijen", "Azot", "Karbon monoksit", "Hidrojen sülfür"], "c": 1, "e": "Azot renksiz-kokusuzdur ve basit boğucudur; sınırlı hacimde oksijenin yerini alır. Oksijen %18'in altına düşerse hemen güvenli ortama geçilmelidir.", "s": "2020-07 • 207. gün"}, {"k": "Kapalı Alanlar", "q": "Ortamda azot kaçağı varken standart gaz maskesi neden korumaz?", "o": ["Maske pahalı olduğu için", "Sorun zehir değil oksijensizliktir; filtre oksijen üretmez, temiz hava beslemeli cihaz gerekir", "Azot maskeyi eritir", "Korur, sorun yoktur"], "c": 1, "e": "Azot oranı yükselip oksijen ~%11'e düşerse filtreli maske işe yaramaz; yalnızca hava beslemeli solunum cihazları (SCBA) koruma sağlar.", "s": "2020-07 • 207. gün"}, {"k": "Kapalı Alanlar", "q": "Kapalı alanda biri baygın yatıyor. İlk refleksiniz ne olmalı?", "o": ["Hemen içeri dalıp çıkarmak", "Korumasız girmemek; 112/yardım çağırıp ancak SCBA (solunum cihazı) ile kurtarmaya girmek", "Su dökmek", "Bağırarak uyandırmak"], "c": 1, "e": "Kapalı alan ölümlerinin önemli kısmı plansız kurtarıcılarda görülür; cihazsız girilmez, yardım çağrılır, SCBA ile girilir.", "s": "2020-07 • 207. gün"}, {"k": "Kapalı Alanlar", "q": "Kapalı ortamdaki 'kirli hava' türlerinden zehirli havaya örnek gazlar hangileridir?", "o": ["Oksijen ve azot", "Karbon monoksit, hidrojen sülfür, kükürt dioksit", "Su buharı", "Helyum ve argon"], "c": 1, "e": "Zehirli hava CO, H2S, SO2, azot oksitleri gibi gazlardan oluşur; patlayıcı hava ise metan, propan, hidrojen gibi yanıcı gazları içerir.", "s": "2021 • 95. gün"}, {"k": "Kapalı Alanlar", "q": "NIOSH kapalı alan sınıflandırmasında 'A sınıfı' ne anlama gelir?", "o": ["Potansiyel tehlike", "Tehlikeli ama hayati risk yok", "Ciddi hayati tehlike", "Tamamen güvenli"], "c": 2, "e": "A sınıfı ciddi hayati tehlikeyi (örn. O2 ≤ %16 veya ≥ %25), B sınıfı tehlikeli ancak ciddi hayati tehlike olmayan durumu, C sınıfı potansiyel tehlikeyi ifade eder.", "s": "2021 • 93. gün"}, {"k": "Kapalı Alanlar", "q": "Boya tankı gibi kapalı alanda çalışmada EKED kilitleri takılı olsa bile ayrıca ne gerekir?", "o": ["Hiçbir şey", "Kapalı alan izni, gaz/oksijen ölçümü, gözcü ve uygun solunum koruması", "Sadece baret", "Sadece el feneri"], "c": 1, "e": "Enerji izolasyonu kapalı alan iznini ikame etmez; izin, ölçüm, gözcü ve kurtarma planı olmadan girilmez.", "s": "2021 • 256. gün"}, {"k": "Elektrik Güvenliği", "q": "İnsan vücudundan geçen 20-30 mA akımın tipik etkisi nedir?", "o": ["Sadece karıncalanma", "Diyafram kasılması — solunum alamama", "Hiçbir etki", "Saç dökülmesi"], "c": 1, "e": "10 mA altı karıncalanma, 10-20 mA kasılma (iletkene yapışma), 20-30 mA diyafram kasılması, 50 mA üzeri kalpte düzensizlik ve durma riski oluşturur.", "s": "2020-02 • 39. gün"}, {"k": "Elektrik Güvenliği", "q": "Kaynak makinesi boştayken voltaj yaklaşık hangi aralığa çıkar?", "o": ["5-10 V", "20-30 V", "65-100 V", "500-600 V"], "c": 2, "e": "Kaynak sırasında 20-30 V olan gerilim, makine boşta çalışırken 65-100 V'a çıkar; çarpılmaların çoğu makine boştayken yaşanır.", "s": "2020-02 • 39. gün"}, {"k": "Elektrik Güvenliği", "q": "Çift yalıtımlı elektrikli el aletinin uluslararası sembolü nedir?", "o": ["Üçgen içinde ünlem", "İç içe geçmiş iki kare", "Kırmızı daire", "Yıldırım işareti"], "c": 1, "e": "Çift yalıtım iç içe iki kare (veya UL) ile gösterilir; aktif ve pasif bölümler iki bağımsız yalıtım katmanıyla korunur.", "s": "2020-02 • 41. gün"}, {"k": "Elektrik Güvenliği", "q": "Üç damarlı (topraklı) uzatma kablosu hangi prize takılmalıdır?", "o": ["Herhangi bir prize", "Yalnızca topraklı prize", "Topraksız prize adaptörle", "Fark etmez"], "c": 1, "e": "Üçüncü tel topraklamadır; topraklı kablo asla topraksız çıkışa takılmamalı, güç aletlerinde (çift yalıtımlı değilse) topraklı uzatma kullanılmalıdır.", "s": "2021 • 327. gün"}, {"k": "Elektrik Güvenliği", "q": "Uzatma kablosunu prizden çıkarırken doğru davranış hangisidir?", "o": ["Kablodan hızla çekmek", "Fişten tutup çekmek", "Ayakla bastırıp çekmek", "Kabloyu sallamak"], "c": 1, "e": "Kablodan çekmek iletkenleri ve fişi yıpratır; fişten tutulur. Kablolar halı altından, kapı ve pencere aralıklarından geçirilmez.", "s": "2021 • 327. gün"}, {"k": "Elektrik Güvenliği", "q": "Priz veya lamba değiştirmeden önce yapılması gereken nedir?", "o": ["Eldiven giymek yeterli", "Sigortayı kapatmak ve kimse açmasın diye işaret/kilit koymak", "Hızlı çalışmak", "Islak bezle silmek"], "c": 1, "e": "Önce ana sigorta kapatılır ve üzerine uyarı işareti veya kilit konur — bu, kilitleme-etiketlemenin evdeki basit halidir.", "s": "2020-03 • 72. gün"}, {"k": "Elektrik Güvenliği", "q": "Statik elektriğin tutuşturucu kaynak olmasını önlemenin iki temel yolu nedir?", "o": ["Boya ve cila", "Maddeleri birbirine bağlama (bonding) ve topraklama", "Havalandırma ve ışıklandırma", "Eldiven ve gözlük"], "c": 1, "e": "İletken cisimler birbirine bağlanır ve toprağa bağlanır; mümkün değilse madde daha az tehlikeli olanla değiştirilir.", "s": "2021 • 125. gün"}, {"k": "Elektrik Güvenliği", "q": "Dış sahada kullanılacak uzatma kablosunun onaylı olduğunu ne gösterir?", "o": ["Rengi", "Üzerindeki 'outdoor' ibaresi veya 'WA' işareti", "Uzunluğu", "Fiyatı"], "c": 1, "e": "İnşaat sahaları ve dış ortam için elektrik koduna uygun, üzerinde dış saha ibaresi/işareti bulunan kablolar kullanılır; hasar yönünden düzenli kontrol edilir.", "s": "2021 • 327. gün"}, {"k": "Elektrik Güvenliği", "q": "Elektrikli ekipman kablolarının mekanik hasardan korunması için hangisi doğrudur?", "o": ["Kapı aralığından geçirmek", "Koruyucu kılıf içine almak, gömmek veya duvara/tavana sabitlemek", "Bantla sarıp kullanmak", "Islak zemine sermek"], "c": 1, "e": "Kablolar ezilme ve kesilmeye karşı kılıfla korunur veya güzergâhı değiştirilir; kapı-pencere aralıklarından geçirilmez, hasarlı kablo değiştirilir.", "s": "2020-05 • 151. gün"}, {"k": "Elektrik Güvenliği", "q": "Islak elle elektrikli cihaza dokunmak neden daha tehlikelidir?", "o": ["Cihaz kirlenir", "Su iletkenliği artırır, vücuttan daha büyük akım geçer", "Daha pahalıya mal olur", "Tehlike aynıdır"], "c": 1, "e": "Islaklık derinin direncini düşürür; aynı gerilimde geçen akım büyür ve çarpılma ağırlaşır. Elektrikle çalışırken su ile temastan kaçınılır.", "s": "2020-03 • 72. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "İnşaat sektöründeki önemli yaralanmaların yaklaşık yüzde kaçı bir seviyeden diğerine düşme kaynaklıdır?", "o": ["%10", "%25", "%40", "%80"], "c": 2, "e": "Önemli yaralanmaların yaklaşık %40'ı yüksekten düşmedir; zemin açıklıklarının kapatılması ve korkuluklar bu kazaları önler.", "s": "2020-04 • 114. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Raporlanmış yüksekten düşme kazalarının ne kadarı merdivenlerle ilişkilidir?", "o": ["Onda biri", "Üçte biri", "Tamamı", "Yüzde beşi"], "c": 1, "e": "Düşme kazalarının üçte biri merdiven/seyyar merdiven kaynaklıdır; çoğu hatalı veya uygun olmayan kullanım sonucudur.", "s": "2020-03 • 74. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Seyyar merdiven hangi işler için uygundur?", "o": ["Her türlü ağır iş", "Tek pozisyonda en fazla ~30 dakika sürecek, 10 kg'ı aşmayan hafif işler", "İki kişiyle çıkılan işler", "Rüzgârlı havada çatı işleri"], "c": 1, "e": "Merdiven yalnızca kısa süreli ve hafif işlerde kullanılır; 10 kg'dan fazla yük taşınacaksa ayrıca değerlendirme gerekir.", "s": "2021 • 241. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Merdivende çalışırken 'üç temas noktası' ne demektir?", "o": ["Üç basamak atlamak", "İki el + bir ayak veya iki ayak + bir elin daima merdivende olması", "Üç kişiyle çalışmak", "Merdiveni üç yerinden bağlamak"], "c": 1, "e": "Güvenli çalışma pozisyonunda eller ve ayaklardan üçü daima temas halindedir; bir şey taşınacaksa bir el mutlaka serbest kalmalıdır.", "s": "2021 • 241. gün / 2020-03 • 76. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Asma kat ve platform korkuluklarının standart yüksekliği yaklaşık kaç cm olmalıdır?", "o": ["50 cm", "75 cm", "107 cm", "150 cm"], "c": 2, "e": "Standart korkuluk yüksekliği 107 cm'dir; orta parmaklık, dikme ve süpürgelik (ayaklık) bulunmalıdır. Dört ve üzeri basamaklı merdivenlere korkuluk gerekir.", "s": "2021 • 66. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Sökülen korkuluk veya açılan zemin kapağı için doğru davranış hangisidir?", "o": ["İş bitince yerine koymak ve açıklığı işaretleyip korumak", "Nasılsa biri koyar demek", "Üzerine kontrplak atıp bırakmak", "Fotoğrafını çekmek"], "c": 0, "e": "Zemin açıklıkları sağlam şekilde kapatılır, işaretlenir; sökülen korkuluk iş biter bitmez yerine takılır. Zayıf korkuluk, yanlış güven verdiği için hiç olmamasından tehlikelidir.", "s": "2020-04 • 114-115. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Manlift/makaslı platform kullanımında hangisi zorunludur?", "o": ["Herkes kullanabilir", "Yalnızca eğitimli-yetkili operatör; her vardiya öncesi görsel ve fonksiyon kontrolü", "Sadece yazın kullanım", "Çift kişi binme yasağı yoktur"], "c": 1, "e": "Platformları sadece eğitimli kişiler kullanır; kullanım öncesi baş üstü engeller kontrol edilir, vardiya başı güvenlik kontrolü yapılır, platform ancak sabit düz zeminde kaldırılır.", "s": "2020-01 • 9. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Merdiven ve yürüyüş yollarında kazaları önlemek için hangisi doğrudur?", "o": ["Trabzan tutmak zaman kaybıdır", "İnerken-çıkarken bir el daima trabzanda olmalı; yollar yağ, buz ve malzemeden arındırılmalı", "Kestirme yollar tercih edilmeli", "Malzeme geçişlerde depolanabilir"], "c": 1, "e": "Trabzan tutulur, geçiş yolları temiz tutulur, geçişlere alet-malzeme bırakılmaz; birkaç saniye kazanmak için kestirme kullanılmaz.", "s": "2021 • 66. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Merdivenin yüksekten düşme dışında en kritik kurulum kuralı hangisidir (seyyar dayama merdiveni)?", "o": ["Dik açıyla dayamak", "4:1 oranına göre kurmak (4 birim yüksekliğe 1 birim açıklık)", "Islak zemine koymak", "En üst basamakta çalışmak"], "c": 1, "e": "Dayama merdiveni 4:1 eğim kuralına göre kurulursa kaymaz; ayrıca en kötü zemin koşuluna uygun, dengesi üreticice doğrulanmış merdiven seçilmelidir.", "s": "2020-04 • 99. gün / 2020-03 • 76. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Yukarıda vinç, asılı yük veya yüksekte çalışma varken aşağıda ne yapılmalıdır?", "o": ["Altında durulmamalı, barikatlı alanlara girilmemeli", "Hızlıca altından geçilebilir", "Baret varsa sorun olmaz", "Ses duyunca koşulmalı"], "c": 0, "e": "Asılı yüklerin ve yüksekte çalışılan yerlerin altında durulmaz; uyarı seslerinde görünür güvenli noktada durulur, baret ve iş ayakkabısı kullanılır.", "s": "2021 • 340. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Düşen cisimler her yıl yaklaşık kaç çalışanı işinden alıkoyuyor?", "o": ["2.000", "20.000", "200.000'den fazla", "2 milyon"], "c": 2, "e": "Düşen ve hareket eden cisimler yılda 200.000'den fazla çalışanı etkiler; yaralanan her 100 çalışandan 14'üne bir cisim çarpmaktadır.", "s": "2021 • 340. gün"}, {"k": "Yüksekte Çalışma ve Merdivenler", "q": "Suyun kenarında/üzerinde çalışırken temel güvence nedir?", "o": ["Şapka takmak", "Yüzme bilmek, asla yalnız çalışmamak ve can yeleği/yüzdürücü ekipman kullanmak", "Telefonu su geçirmez yapmak", "Kıyıya sırt dönmek"], "c": 1, "e": "Su kenarında yalnız çalışılmaz; iskelede/botta yüzdürücü giysi giyilir. Boğulana yardım sırası: uzan → at → kürek çek → (son çare) git.", "s": "2020-11 • 312. gün / 2021 • 122. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Risk kontrol hiyerarşisinde KKD hangi sıradadır?", "o": ["İlk sırada", "Ortada", "Son sırada — diğer önlemlerden sonra", "Hiyerarşide yer almaz"], "c": 2, "e": "KKD kazayı önlemez; kaza anında zararı ortadan kaldırır veya azaltır. Tehlike önleme adımları arasında son sırada yer alır.", "s": "2020-03 • 73. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Göz yaralanmalarına uğrayan her 5 çalışandan kaçı kaza anında göz koruyucusu kullanmıyordu?", "o": ["1", "2", "3", "5"], "c": 2, "e": "Beş yaralanmadan üçünde koruyucu hiç kullanılmamıştı; kullananların önemli kısmında ise yanlış tip seçilmişti (ör. yüz siperi eksikti).", "s": "2020-04 • 95. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Göz yaralanmalarının yaklaşık %70'inin kaynağı nedir?", "o": ["Kimyasal buhar", "Uçan veya düşen nesneler ve kıvılcımlar", "Güneş ışığı", "Ekran parlaması"], "c": 1, "e": "%70'i uçan/düşen nesnelerdir ve bu nesnelerin %60'a yakını toplu iğne başından küçüktür; %20'ye yakını kimyasal temastır. Uygun koruyucu, yaralanmaların ~%90'ını önler.", "s": "2020-04 • 95. gün / 2020-11 • 322. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Toz maskesinin (FFP) koruması en çok neye bağlıdır?", "o": ["Rengine", "Yüze tam oturmasına — burun bandının sıkılması ve lastiklerin ayarlanmasına", "Markasına", "İki maske üst üste takmaya"], "c": 1, "e": "Maske yüze tam oturmazsa korumaz; her takışta burun parçası bastırılır, sızdırmazlık el ile kuvvetli soluk verilerek test edilir. Soluk almak zorlaşınca maske değiştirilir.", "s": "2020-07 • 186. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Gaz maskesinde kartuşun değiştirilme zamanını ne belli eder?", "o": ["Takvimdeki ay sonu", "Çalışma ortamındaki maddenin tadını/kokusunu almaya başlamak veya solumanın güçleşmesi", "Kartuşun rengi", "Maskenin ağırlaşması"], "c": 1, "e": "Tat veya koku hissedildiğinde ya da soluk alıp verme güçleştiğinde kartuş değiştirilir; organik kartuşlu maske açıkta bırakılırsa kirleticileri emerek etkisizleşir.", "s": "2020-07 • 186. gün / 2021 • 138. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Hangi durumda kulak koruyucu kullanmanız gerektiğinin pratik işareti nedir?", "o": ["Müzik duyulmuyorsa", "Çalıştığınız ortamda sesinizi duyurmak için bağırmak zorunda kalıyorsanız", "Kulak kaşınıyorsa", "Vardiya uzadıysa"], "c": 1, "e": "Sesinizi duyurmak için bağırmak gerekiyorsa gürültü tehlikeli düzeydedir; tıkaç/kulaklık gerekir. Pamuk etkili koruma sağlamaz, atılabilir tıkaç bir kez kullanılır.", "s": "2020-10 • 278. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Aşırı gürültüye uzun süre maruz kalmanın tipik sonucu nedir?", "o": ["Geçici öksürük", "Aşamalı ve kalıcı işitme kaybı; öncesinde tinnitus (kulak çınlaması)", "Göz sulanması", "Hiçbir etki"], "c": 1, "e": "Gürültü, aşamalı ama kesin işitme kaybına yol açabilir; sürekli çınlama (tinnitus) erken uyarıdır.", "s": "2020-10 • 278. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Birden fazla kişinin kullandığı KKD için doğru uygulama nedir?", "o": ["Kullanım sırası önemli değil", "Her kullanımdan sonra temizlenmeli ve uygun şartlarda saklanmalı", "Ayda bir silinmeli", "Ortak KKD kullanılamaz"], "c": 1, "e": "KKD'ler üretici talimatına göre düzenli temizlenir; ortak kullanılan ekipman her kullanım sonrası temizlenir ve hijyenik saklanır. Kirli gözlükten göze toz kaçabilir.", "s": "2021 • 138. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Taşlama işinde göz-yüz koruması nasıl olmalıdır?", "o": ["Numaralı gözlük yeterli", "Darbeye dayanıklı gözlük, gerekli hallerde yüz siperiyle birlikte", "Güneş gözlüğü", "Koruma gerekmez"], "c": 1, "e": "Çapak riskli işlerde uygun göz koruyucu (goggle) ve gerektiğinde yüz siperi birlikte kullanılır; hasarlı, çizilmiş koruyucular değiştirilir.", "s": "2021 • 10. gün"}, {"k": "Kişisel Koruyucu Donanım", "q": "Kaynak ışınlarından (UV/IR) korunmak için ne gereklidir?", "o": ["Normal güneş gözlüğü", "Uygun filtreli kaynak maskesi/başlığı, deri eldiven ve uygun giysi", "Sadece eldiven", "Islak bez"], "c": 1, "e": "Kaynak ışınları gözde 'ark alması', katarakt ve ciltte yanık yapar; filtresi kaynak türüne ve akıma göre seçilmiş maske, deri eldiven-önlük ve pamuklu giysi kullanılır, alan paravanla çevrilir.", "s": "2020-07 • 204. gün"}, {"k": "El Aletleri", "q": "Maket bıçağı kullanırken bıçak ne kadar açılmalıdır?", "o": ["Tamamen", "En fazla bir dilim (segment)", "Yarısı", "Önemi yok"], "c": 1, "e": "Bıçak olabildiğince az, en fazla bir dilim açılmalı; yalnızca ucu otomatik içeri çeken güvenli tipler kullanılmalıdır.", "s": "2021 • 1. gün"}, {"k": "El Aletleri", "q": "Körelmiş maket bıçağı ucu neden daha tehlikelidir?", "o": ["Daha pahalıdır", "Kesmek için daha fazla baskı gerektirir, kontrol kaybı ve kaza ihtimali artar", "Paslanır", "Tehlikeli değildir"], "c": 1, "e": "Kör uç fazla güç gerektirir; bıçak kayar ve yaralar. Körelen uçlar değiştirilir, bıçak kazıma gibi amaç dışı kullanılmaz.", "s": "2021 • 1. gün"}, {"k": "El Aletleri", "q": "Çekiçle çalışmada hangisi doğrudur?", "o": ["Çekice çekiçle vurulabilir", "Darbe daima çekicin kafasıyla yapılır; yan darbeler ve çekice çekiçle vurmak yasaktır", "Sap gevşekse bantlanır", "Sapın ucundan tutmak yanlıştır"], "c": 1, "e": "Sertleştirilmiş çelik kafalar yan darbede veya çekice vurulunca parçalanıp fırlayabilir; sapın alt ucundan tutulur, iş için doğru tip ve boy seçilir, gözlük takılır.", "s": "2021 • 286. gün"}, {"k": "El Aletleri", "q": "Tornavida için hangisi yanlış kullanım örneğidir?", "o": ["Vida başına uygun uç seçmek", "Manivela, keski veya kazıma aleti olarak kullanmak", "Mengeneyle parçayı sabitlemek", "EN 388 eldiven kullanmak"], "c": 1, "e": "Tornavida yatay basınca dayanıklı üretilmez; manivela yapılmaz, çekiçle vurulmaz, parça elde tutulurken vida sıkılmaz, hasarlı tornavida değiştirilir.", "s": "2021 • 322. gün"}, {"k": "El Aletleri", "q": "Anahtarla (somun anahtarı) çalışırken doğru teknik hangisidir?", "o": ["Anahtarı iterek zorlamak", "Anahtarı kendinize doğru çekerek çalışmak ve cıvataya uygun ağız seçmek", "Boru takıp uzatmak", "Çekiçle vurmak"], "c": 1, "e": "Anahtar çekilerek kullanılır, ağzı bozuk anahtar kullanılmaz, boruyla uzatma ve çekiçle vurma yasaktır.", "s": "2020-03 • 83. gün"}, {"k": "El Aletleri", "q": "Atölyede el aletleriyle çalışırken giyim için hangisi doğrudur?", "o": ["Bol ve parçalı giysi rahatlık sağlar", "Kollar sıvanmalı/kısa olmalı, kravat ve aksesuar takılmamalı", "Eşarp serbesttir", "Yüzük sorun olmaz"], "c": 1, "e": "Dönen ve hareketli parçalara kapılmamak için bol giysi, kravat, takı ve aksesuardan kaçınılır; uygun KKD kullanılır.", "s": "2020-03 • 82. gün"}, {"k": "El Aletleri", "q": "Basınçlı hortumun 'kırbaç gibi savrulmasına' karşı hangisi doğrudur?", "o": ["Takılan hortumu kuvvetle çekmek", "Kullanım öncesi kontrol etmek, keskin dönüşlerden kaçınmak, güvenlik kablosu (whip check) kullanmak", "Hortumu bükerek akışı kesmek", "Pense ile sıkıştırmak"], "c": 1, "e": "Hortum patlaması savrulma ve püskürtmeyle yaralar; hortum kontrol edilir, bükerek/pense ile akış kesilmez, kırbaç önleyici güvenlik kablosu değerlendirilir.", "s": "2020-05 • 137. gün / 2020-11 • 308. gün"}, {"k": "El Aletleri", "q": "Sivri uçlu el aletleri (pergel, biz vb.) nasıl taşınmalıdır?", "o": ["Cepte", "Uçları korunmuş şekilde, asla cepte değil", "Ağızda", "Kemerde açıkta"], "c": 1, "e": "Sivri uçlu aletler cepte taşınmaz; eğe mutlaka saplı kullanılır, talaşlar fırçayla temizlenir.", "s": "2020-03 • 82-83. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Sentetik sapan ne zaman kontrol edilmelidir?", "o": ["Sadece satın alırken", "Kullanımdan önce, kullanım sırasında ve sonrasında", "Yılda bir", "Koptuğunda"], "c": 1, "e": "Sapan her kullanım öncesi/sırası/sonrası elle gezdirilerek kontrol edilir: kopma, delinme, aşınma ve bağlantı elemanları incelenir.", "s": "2021 • 317. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Sapanın merkezindeki kırmızı uyarı sicimi görünür hale geldiyse ne yapılır?", "o": ["Bantlanıp kullanılır", "Derhal kullanımdan kaldırılır, parçalanıp atılır — evde bile kullanılmaz", "Ters çevrilir", "Yağlanır"], "c": 1, "e": "Kırmızı sicimin görünmesi ileri yıpranma işaretidir; deforme sapan tek bir işte dahi kullanılmaz, imha edilir.", "s": "2021 • 317. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Tel halatı makaraya sararken hangisi doğrudur?", "o": ["Metal çekiçle hizalamak", "Germe aleti kullanmak; gerekirse plastik/kauçuk yüzeyli tokmak kullanmak", "Gevşek sarmak", "Düğümleri çekerek açmak"], "c": 1, "e": "Tel halata metal çekiçle vurulmaz; germe aletiyle sarılır, düğüm oluşursa durulur (çekmek düğümü kalıcılaştırır), son tabaka makara kenarından en az iki halat çapı aşağıda kalır.", "s": "2020-11 • 328. gün / 2021 • 128. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Tel halatın yağlanmasının amacı nedir?", "o": ["Parlak görünmesi", "Pas ve sürtünmeyi önleyip yükün tüm tellere dağılmasını sağlamak", "Ağırlaştırmak", "Renklendirmek"], "c": 1, "e": "Yağ, tellerin birlikte hareket etmesini ve yükün tek tel yerine tüm tellerce taşınmasını sağlar; kontrol öncesi halat temizlenir, sonra iyice yağlanır.", "s": "2020-11 • 328. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Elle kaldırmada doğru vücut pozisyonu hangisidir?", "o": ["Dizler kilitli, bel bükük", "Sırt dik, dizler bükülü, yük vücuda yakın, bir ayak hafif önde", "Kollar gergin, yük uzakta", "Hızlı ve sarsarak kaldırma"], "c": 1, "e": "Plan yap, ayakları yerleştir, sırtı dik tutup dizleri bük, yükü kucakla, yumuşak hareket et; dönerken gövdeyi bükme — omuzlar ve göğüs aynı yöne bakmalı.", "s": "2020-09 • 264. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "'İki kere kaldır' prensibinde ilk kaldırma nedir?", "o": ["Deneme kaldırışı", "Zihinsel kaldırma: nasıl kaldıracağını, yardım gerekip gerekmediğini ve güzergâhı düşünmek", "Yükü sallamak", "Isınma hareketi"], "c": 1, "e": "Önce zihinsel kaldırma yapılır: yükün ağırlığı, tutuş yeri, yol ve yardım ihtiyacı planlanır; sonra fiziksel kaldırmaya geçilir.", "s": "2020-04 • 100. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Ahşap platform/palet ile çalışmada hangisi doğrudur?", "o": ["Çatlak palet kullanılabilir", "Kullanım öncesi kontrol edilir; hasarlıysa etiketlenip ayrılır, yük merkezde ve dengede olmalı", "Yük kenara yüklenir", "İstif ne kadar yüksek o kadar iyi"], "c": 1, "e": "Paletler kontrol programıyla denetlenir; hasarlı palet işaretlenir, yük merkezlenir, ayrı yükler bandajlanır, palanga/forklift kapasitesi aşılmaz.", "s": "2020-11 • 330. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Kamyon/tır yükleme-boşaltmasında takozlamanın amacı nedir?", "o": ["Lastikleri korumak", "Aracın kendiliğinden hareketini önlemek — özellikle forklift girip çıkarken", "Süsleme", "Yakıt tasarrufu"], "c": 1, "e": "Takoz, tekerleği sabitleyip aracın yuvarlanmasını önler; tekerleğe en yakın ve doğru pozisyonda yerleştirilmelidir. Takozsuz araçta çalışmaya başlanmaz.", "s": "2021 • 325. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Vinçle asılı yük altında durmak konusunda kural nedir?", "o": ["Kısa süreli durulabilir", "Asla durulmaz; yük güzergâhındaki kişiler uzaklaştırılır", "Baretle durulabilir", "Sadece operatör duramaz"], "c": 1, "e": "Asılı yüklerin ve kaldırma operasyonlarının altında durulmaz; depolanmış enerji ve yük düşmesi riskine karşı güvenli alanda kalınır.", "s": "2021 • 340. gün / 2020-11 • 308. gün"}, {"k": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "q": "Bir işte tehlikeleri kontrol edemiyorsanız ne yapmalısınız?", "o": ["Daha hızlı çalışıp bitirmek", "İşi durdurup durumu derhal amirinize bildirmek", "Kimseye söylememek", "Tehlikeyi görmezden gelmek"], "c": 1, "e": "Mevcut güvenlik koşullarında iş yapılamıyorsa derhal amire bildirilir; güvensiz koşullarda çalışmayı kabul etmemek ve raporlamak temel kuraldır.", "s": "2020-11 • 308. gün / 2021 • 60. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Forklift kimler tarafından kullanılabilir?", "o": ["Ehliyeti olan herkes", "Yetkili kurumdan eğitim almış, sertifikalı operatörler", "En kıdemli çalışan", "İsteyen herkes kısa mesafede"], "c": 1, "e": "Forklift operatörü sertifikası zorunludur; sertifikasız forklift kullanmak ehliyetsiz araç kullanmak kadar tehlikelidir.", "s": "2020-03 • 78. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Forklift periyodik muayeneleri hangi sıklıkta yapılmalıdır?", "o": ["Beş yılda bir", "Yılda en az bir kez", "Sadece arızalanınca", "Ayda bir boyanır"], "c": 1, "e": "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği'ne göre forklift muayeneleri yılda en az bir kez yapılır; eksiklikler hızla giderilir.", "s": "2020-03 • 78. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Forklift kazalarının en önemli nedenlerinden biri nedir?", "o": ["Yavaş sürüş", "Forklift ve yayaların aynı alanda çalışması", "Fazla aydınlatma", "Yeni lastikler"], "c": 1, "e": "Çalışma alanları ve yaya yolları ayrılmalıdır; forklift ile yayaların aynı alanı paylaşması kazaların başlıca nedenidir.", "s": "2020-03 • 78. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Forklift devrilirken operatörün doğru davranışı nedir?", "o": ["Hemen dışarı atlamak", "Araçtan atlamayıp içinde kalmak ve tutunmak", "Yüke tutunmak", "Gözlerini kapatmak"], "c": 1, "e": "Devrilmede atlamak genellikle ölümcüldür; operatör içeride kalırsa yaralanma çoğunlukla küçük olur. Devrilmeyi önlemek için yük olabildiğince alçakta taşınır.", "s": "2020-10 • 299. gün"}, {"k": "Forklift ve İş Makineleri", "q": "İş makinelerinin çevresinde çalışan yayalar için hangisi doğrudur?", "o": ["Operatör nasılsa görür", "Operatörün sizi gördüğünden asla emin olmayın; göz teması kurun, yüksek görünürlüklü yelek giyin", "Kestirme olarak makine alanından geçin", "Korna duyunca koşun"], "c": 1, "e": "Operatörlerin kör noktaları vardır; sadece korna/sinyale güvenilmez, makine çalışma alanı kestirme yol yapılmaz, geri manevralarda özellikle dikkat edilir.", "s": "2020-05 • 123. gün / 2021 • 292. gün"}, {"k": "Forklift ve İş Makineleri", "q": "İş makinesi operatörü için hangisi doğrudur?", "o": ["Yüksek yükle görüş kapanabilir, sorun değil", "Görüşü kapatan yükseklikte yük taşınmaz ve kullanım sırasında cep telefonuna bakılmaz", "Telefon kulaklıkla serbesttir", "Yakında işçi varken çalışılabilir"], "c": 1, "e": "Çalışmaya başlamadan yakın çevre kontrol edilir, görüşü engelleyen yük taşınmaz, cep telefonu kullanımından kaçınılır.", "s": "2021 • 292. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Hareket halindeki iş makinesine binmeye çalışmak neden yasaktır?", "o": ["Yorucu olduğu için", "Altında kalmak çok kolay ve ölümcül olduğu için", "Koltuk kirleneceği için", "Yasak değildir"], "c": 1, "e": "Hareketli kabine binme girişimi altında kalmayla sonuçlanabilir; yüklü kamyon üzerine de binilmez (yük kayması, baş mesafesi).", "s": "2020-05 • 123. gün"}, {"k": "Forklift ve İş Makineleri", "q": "Lastiğe basınçlı hava basılırken yanıcı gaz girmesi neden tehlikelidir?", "o": ["Lastik rengi solar", "Sürtünme ısısıyla lastik içindeki gaz-hava karışımı patlayabilir", "Jant paslanır", "Önemsizdir"], "c": 1, "e": "Lastik içine giren yanıcı buhar/gazlar, seyir halinde ısınınca şiddetli patlamaya yol açabilir; kompresörler yanıcı madde depolanan yerlerde bulundurulmaz.", "s": "2020-11 • 315. gün"}, {"k": "Güvenli Sürüş", "q": "Lastik diş derinliği için doğru kural hangisidir?", "o": ["5 mm altında değiştir", "Yasal sınır olan 1,6 mm'ye inmeden değiştir", "Dişler bitince değiştir", "Derinlik önemsizdir"], "c": 1, "e": "Diş derinliği 1,6 mm'ye aşınmadan lastik değiştirilmelidir; dişler suyu tahliye ederek kızaklamayı (hidroplan) önler ve fren mesafesini kısaltır.", "s": "2021 • 104. gün"}, {"k": "Güvenli Sürüş", "q": "Doğru lastik hava basıncı neden önemlidir?", "o": ["Sadece yakıt için", "Araç kontrolünü artırır, erken aşınmayı ve iç yapı hasarını önler", "Lastik parlar", "Önemi yoktur"], "c": 1, "e": "Düşük basınç kontrol kaybı ve kalıcı iç hasar yaratır; basınç zamanla doğal olarak düşer, yedek dâhil düzenli kontrol edilir.", "s": "2021 • 104. gün"}, {"k": "Güvenli Sürüş", "q": "Sürüş sırasında cep telefonu kullanmanın temel riski nedir?", "o": ["Batarya biter", "Dikkat dağılır, tepki süresi uzar; işaretler ve öndeki araç fark edilmeyebilir", "Ses kısılır", "Risk yoktur"], "c": 1, "e": "Telefondaki kişi trafiği göremediği için konuşma, yolcuyla sohbetten daha dikkat dağıtıcıdır; gerekiyorsa araç güvenli yere çekilip konuşulur.", "s": "2020-09 • 260. gün"}, {"k": "Güvenli Sürüş", "q": "Uykulu sürüşün belirtilerinden biri hangisidir?", "o": ["Hızlı refleksler", "Sürekli esneme, göz kapaklarında ağırlık, tabela/ışıkları karıştırma", "Keskin görüş", "Enerjik hissetme"], "c": 1, "e": "Bu belirtiler ortaya çıktığında araç kenara çekilip dinlenilmelidir; kimse uykuya karşı savaşı kazanamaz.", "s": "2021 • 305. gün"}, {"k": "Güvenli Sürüş", "q": "Virajlarda temel sürüş kuralı nedir?", "o": ["Viraj içinde fren yapmak", "Hızı viraja girmeden önce azaltmak", "Virajda hızlanmak", "Debriyaja basmak"], "c": 1, "e": "Hız viraja girmeden düşürülür; hız yol şartlarına göre ayarlanır, hız arttıkça daha uzağa bakılır ve takip mesafesi korunur.", "s": "2021 • 105. gün"}, {"k": "Güvenli Sürüş", "q": "Yorgunlukla mücadelede vardiyalı çalışan için hangisi doğrudur?", "o": ["Her gün farklı saatte uyumak", "Her gün aynı saatte yatmak, yatak odasını karanlık ve sessiz tutmak", "Uyku öncesi kahve içmek", "Vardiyaları sık değiştirmek"], "c": 1, "e": "Beden saati düzen ister: aynı saatte uyku, karanlık-sessiz oda, uyku öncesi alkol-kafein-sigaradan kaçınma önerilir. Şoför uyuklaması yılda 50.000'den fazla araç kazasına yol açmaktadır.", "s": "2021 • 244. gün"}, {"k": "Güvenli Sürüş", "q": "Karayolu kenarında çalışanlar için cep telefonu kuralı nedir?", "o": ["Serbesttir", "Amir izni olmadan kullanmak yasaktır; tüm dikkat işte ve trafikte olmalıdır", "Sadece mesaj atılabilir", "Kulaklıkla serbesttir"], "c": 1, "e": "Yol kenarı çalışmasında telefon çok tehlikelidir; telefonlar araçta/dolapta bırakılır, dikkat tamamen sürücüler, yayalar ve işte olur.", "s": "2021 • 196. gün"}, {"k": "Güvenli Sürüş", "q": "Takip mesafesi için temel kural nedir?", "o": ["Öndeki araca yapışmak", "Her hızda duruş mesafesini hesaplayıp yeterli emniyet mesafesi bırakmak", "Sadece gece mesafe bırakmak", "Kornaya güvenmek"], "c": 1, "e": "Her hız için fren duruş mesafesi bilinmeli ve öndeki araçla yeterli emniyet mesafesi korunmalıdır; trafikle yakın hızda seyredilir.", "s": "2021 • 105. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Çamaşır suyu ile tuz ruhu karıştırıldığında ne açığa çıkar?", "o": ["Oksijen", "Zehirli klor gazı", "Su buharı", "Azot"], "c": 1, "e": "Sodyum hipoklorit (çamaşır suyu) ile hidroklorik asit (tuz ruhu) karışınca klor gazı çıkar; solunması astıma, uzun maruziyette ölüme yol açabilir. Kimyasallar asla karıştırılmaz.", "s": "2020-02 • 40. gün / 2020-01 • 16. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Kimyasal maddeler depoda nasıl yerleştirilmelidir?", "o": ["Alfabetik sıraya göre", "Tehlike sınıflarına ve depolama matrisine göre", "Boyutuna göre", "Renklerine göre"], "c": 1, "e": "Alfabetik depolamadan kaçınılır; tehlike sınıfına göre matrisle depolanır, zehirliler ve patlayıcılar bağımsız bölümlerde tutulur, yanıcılar ısı ve güneşten korunur.", "s": "2021 • 114. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Tehlikeli kimyasalların her biri için işyerinde ne bulunmalıdır?", "o": ["Reklam broşürü", "Güvenlik Bilgi Formu (GBF/MSDS)", "Fatura", "Fotoğraf"], "c": 1, "e": "Tüm tehlikeli kimyasalların GBF'si sağlanmalı; raflarda azami depolama miktarı yazılmalı, uygun tehlike etiketleri asılmalıdır.", "s": "2021 • 114. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Boşalan kimyasal kabı için doğru davranış hangisidir?", "o": ["İçine başka madde doldurmak", "Boş kutuları atmak; kapları asla orijinal içeriği dışında kullanmamak", "Su şişesi yapmak", "Etiketini söküp kullanmak"], "c": 1, "e": "Temizlik malzemeleri orijinal kabında tutulur; boşalan kutulara başka malzeme konmaz — zehirlenmelerin önemli nedenlerindendir.", "s": "2021 • 116. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "LPG sızıntısı fark edildiğinde hangisi yapılmamalıdır?", "o": ["Alevleri söndürmek", "Elektrik şalterlerine/anahtarlarına dokunmak", "Ortamı havalandırmak", "Tüpü ateşten uzaklaştırmak"], "c": 1, "e": "LPG havadan ağırdır, tabana yayılır; sızıntıda kıvılcım yaratacak şalter ve anahtarlara dokunulmaz, alevler söndürülür, ortam havalandırılır. Tüpler kapalı ve bodrum katlarda depolanmaz.", "s": "2021 • 326. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Zehirlenme şüphesinde ilk yapılacak nedir?", "o": ["Kusturmaya çalışmak", "Kişiyi ortamdan uzaklaştırıp temiz havaya çıkarmak ve yardım çağırmak", "Süt içirmek", "Bekleyip izlemek"], "c": 1, "e": "Kimyasal zehirlenmede kişi önce ortamdan uzaklaştırılır, temiz hava sağlanır; belirtiler (göz yanması, bulantı, solunum sıkıntısı) ciddiye alınır.", "s": "2020-01 • 16. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Yanıcı kimyasalların depolandığı bölüm için hangisi doğrudur?", "o": ["Girişler herkese açık olmalı", "Giriş-çıkışlar kontrollü olmalı; yanıcılar tutuşabilir malzemeden uzakta depolanmalı", "Isıtıcı yanına konmalı", "Cam kaplar üst rafa konmalı"], "c": 1, "e": "Tehlikeli kimyasal depolarına giriş kontrollü olur; kolay alev alanlar diğer tutuşabilir malzemelerden olabildiğince uzak ve ısı kaynaklarından korunarak depolanır.", "s": "2021 • 114. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Kaynak dumanının tehlikesi hakkında hangisi doğrudur?", "o": ["Görünmüyorsa zararsızdır", "Birçok toksik duman renksiz-kokusuzdur; duyularla değerlendirilemez, havalandırma/ölçüm gerekir", "Koku yoksa maske gereksizdir", "Sadece kaynakçıyı etkiler"], "c": 1, "e": "Toksik dumanlar duyularla anlaşılamaz; bölgesel egzoz havalandırması, hava kalite ölçümü ve gerekirse başlık tipi maske kullanılır.", "s": "2021 • 127. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Yıkım/söküm işlerinde kimyasal kaynaklı ek tehlikelere örnek nedir?", "o": ["Taze boya kokusu", "Kurşun bazlı boya ve asbest içeriği", "Çim biçme tozu", "Mürekkep"], "c": 1, "e": "Yıkımda kurşunlu boya, asbest gibi içerikler ek risktir; tüm tesisatlar (elektrik, gaz, su) kapatılır, yıkım üstten başlar, uygun KKD seçilir.", "s": "2020-11 • 333. gün"}, {"k": "Kimyasallar ve Tehlikeli Maddeler", "q": "Çalışma giysileri ve hijyen için hangisi doğrudur?", "o": ["Yağlı tulumla haftalarca çalışılır", "Kirli/kimyasal bulaşmış giysiler cilt sorunlarına yol açar; iş giysileri düzenli değiştirilmeli", "Elle yemek sorun olmaz", "Sigara ellerle ilgisizdir"], "c": 1, "e": "Kirli giysiler cilt tahrişi yapar; eller yıkanmadan yemek yenmez, sigara içilmez — ellerdeki kimyasal sigara yoluyla solunabilir.", "s": "2020-09 • 274. gün"}, {"k": "İlkyardım ve Sağlık", "q": "112'yi ararken hangisi doğrudur?", "o": ["Hemen kapatıp beklemek", "Net adres ve yaralı bilgisi vermek; merkez 'bilgiler tamam' deyinceye kadar telefonu kapatmamak", "Sadece 'kaza oldu' demek", "Fotoğraf göndermek"], "c": 1, "e": "Sakin olunur; kesin adres, olay tanımı, yaralı sayısı ve durumu, yapılan ilkyardım bildirilir; karşı taraf tüm bilgileri aldığını söyleyene dek hat kapatılmaz.", "s": "2022-01 • 5. gün"}, {"k": "İlkyardım ve Sağlık", "q": "İlkyardımda ABC neyi ifade eder?", "o": ["Acele-Bağır-Çek", "Hava yolu (Airway), Solunum (Breathing), Dolaşım (Circulation)", "Alarm-Bildirim-Çıkış", "Analiz-Bakım-Çözüm"], "c": 1, "e": "Hasta/yaralı değerlendirmesi ABC ile yapılır ve öncelikli müdahale buna göre belirlenir.", "s": "2022-01 • 5. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Soluk borusu tam tıkanan yetişkinde öksürükle cisim çıkmıyorsa ne uygulanır?", "o": ["Su içirilir", "Heimlich manevrası", "Sırt üstü yatırılır", "Baş geriye itilir"], "c": 1, "e": "Önce öksürmeye teşvik edilir; çıkmazsa Heimlich manevrası uygulanır. Bebeklerde yöntem sırta vurma şeklindedir.", "s": "2020-10 • 294. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Hepatit B virüsü (HBV) çevre yüzeylerindeki kuru kanda ne kadar canlı kalabilir?", "o": ["Birkaç saniye", "En az bir hafta", "Bir saat", "Hiç canlı kalmaz"], "c": 1, "e": "HBV kuru kanda en az bir hafta canlı kalabilir; HIV ise oda sıcaklığında dakikalar içinde ölür. Bu yüzden tüm kan ve vücut sıvıları bulaşıcı kabul edilir (evrensel önlemler).", "s": "2020-09 • 267. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Kan ve vücut sıvılarıyla çalışmada 'evrensel önlem' yaklaşımı nedir?", "o": ["Sadece hasta görünenlere önlem", "Tüm kan ve vücut sıvılarını bulaşıcı kabul edip temastan kaçınmak", "Önlem gereksizdir", "Yalnızca eldiven yeterlidir"], "c": 1, "e": "Enfekte kişiler belirti göstermeyebilir; bu nedenle her kan/vücut sıvısı potansiyel bulaşıcı sayılır ve tüm önlemler alınır.", "s": "2020-09 • 267. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Sigarayı bıraktıktan yaklaşık 12 saat sonra vücutta ne olur?", "o": ["Hiçbir şey", "Zehirli karbonmonoksit kandan temizlenir", "Tat duyusu kaybolur", "Tansiyon yükselir"], "c": 1, "e": "2 saatte nikotin atılmaya başlar, 6 saatte nabız ve tansiyon düşmeye başlar, 12 saatte CO temizlenir, 2 günde tat-koku keskinleşir.", "s": "2021 • 165. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Sıcak çarpmasının tipik belirtileri hangileridir?", "o": ["Üşüme ve titreme", "Aşırı susuzluk, şiddetli baş ağrısı, kuru-sıcak cilt", "İştah artışı", "Kulak çınlaması"], "c": 1, "e": "Isı rahatsızlığı yavaş başlar (baş ağrısı, susuzluk, yorgunluk); önlem alınmazsa hayatı tehdit eden sıcak çarpmasına ilerler. Sık mola ve sıvı alımı gerekir.", "s": "2020-12 • 355. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Ergonominin amacı en doğru hangi ifadeyle özetlenir?", "o": ["İnsanın işe uydurulması", "İşin ve çevrenin insana uydurulması", "Daha hızlı çalışmak", "Makine satın almak"], "c": 1, "e": "Ergonomi 'uyum' demektir; iş sistemlerini insana uygun tasarlar. Karpal tünel sendromu ve tendinit klasik kas-iskelet hastalıklarındandır.", "s": "2021 • 174. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Stresin işyerindeki güvenlik riski nedir?", "o": ["Stres performansı hep artırır", "Dikkat dağınıklığına yol açarak kazaya neden olabilir", "Sadece evi etkiler", "Hiçbir etkisi yoktur"], "c": 1, "e": "Stres dikkat dağıtır ve kazaya zemin hazırlar; belirtileri (baş-boyun ağrısı, yorgunluk, alınganlık) tanımak ve stres kaynaklarını belirlemek ilk adımdır.", "s": "2021 • 32. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Vardiyalı çalışmanın 'bir numaralı problemi' nedir?", "o": ["Trafik", "Yorgunluk (bitkinlik)", "Yemek saatleri", "Kıyafet seçimi"], "c": 1, "e": "Beden saatine aykırı çalışma yorgunluk yaratır; yorgun çalışan tehlikeyi geç fark eder ve acil duruma geç tepki verir.", "s": "2021 • 244. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Gürültülü ortamda pamuk tıkamak neden yanlıştır?", "o": ["Pahalıdır", "Etkin koruma sağlamaz; uygun kulak tıkacı/kulaklık gerekir", "Kulakları büyütür", "Yasal zorunluluktur"], "c": 1, "e": "Pamuk yeterli koruma sağlamaz; tıkacın doğru yerleştirilmesi, kulaklık manşonlarının uygunluğu ve temizliği önemlidir.", "s": "2020-10 • 278. gün"}, {"k": "İlkyardım ve Sağlık", "q": "Dengesiz beslenmenin tanımı hangisidir?", "o": ["Sadece az yemek", "Besin öğelerinin gereğinden az ya da çok alınması", "Üç öğün yemek", "Sebze yememek"], "c": 1, "e": "İnsanın 50'ye yakın besin öğesine ihtiyacı vardır; öğelerin az ya da fazla alınması büyüme-gelişmeyi bozar, fazlası yağ olarak depolanır.", "s": "2020-03 • 81. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Araştırmalara göre iş kazalarının nedenlerinin yaklaşık %88'i nedir?", "o": ["Güvensiz koşullar", "Tehlikeli (güvensiz) hareketler/davranışlar", "Şanssızlık", "Makine arızası"], "c": 1, "e": "İş kazalarının ~%88'i tehlikeli hareketlerden, ~%10'u güvensiz koşullardan kaynaklanır; %2'si bilinmeyen nedenlidir. Bu yüzden davranış gözlemi kritiktir.", "s": "2021 • 72. gün / 2021 • 147. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "İŞ KAZASI = TEHLİKELİ DURUM × TEHLİKELİ HAREKET formülünün anlamı nedir?", "o": ["İkisi de artarsa kaza azalır", "İki çarpandan biri sıfırlanırsa kaza ihtimali sıfıra iner", "Formül yanlış kurulmuştur", "Kaza her durumda olur"], "c": 1, "e": "Tehlikeli durum ya da tehlikeli hareketten biri ortadan kaldırılırsa kaza zinciri tamamlanamaz; en doğrusu her iki yönden önlem almaktır.", "s": "2021 • 72. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Ağır yaralanma/ölümle sonuçlanan her kazanın temelinde istatistiksel olarak ne vardır?", "o": ["Hiçbir öncül olay yoktur", "Çok sayıda daha hafif olay ve yaralanmasız (ramak kala) vaka", "Sadece bir kez şanssızlık", "Yalnızca ekipman hatası"], "c": 1, "e": "Kaza piramidi: ciddi her kazanın altında onlarca hafif yaralanma ve yüzlerce yaralanmasız olay yatar — ramak kalalar büyük kazanın habercisidir.", "s": "2021 • 72. gün / 2021 • 342. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "'Kazaya ramak kala' (near miss) olayları neden raporlanmalıdır?", "o": ["Ceza vermek için", "Bir şeylerin yanlış gittiğinin işaretidir; kök neden bulunup düzeltilmezse yaralanmayla tekrarlar", "Rapor sayısını artırmak için", "Gerek yoktur, zarar oluşmamıştır"], "c": 1, "e": "Zararsız atlatılan olaylar kırmızı bayraktır; şansa güvenilmez, esas sebepler araştırılır ve düzeltici önlem alınır.", "s": "2021 • 320/342. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Yaralanmaların kaynağına dair yaygın oran hangisidir?", "o": ["%80 emniyetsiz şartlar, %20 davranış", "%20 emniyetsiz şartlar, %80 emniyetsiz davranışlar", "%50-%50", "%100 şartlar"], "c": 1, "e": "Yaralanmaların ~%20'si emniyetsiz şartlardan, ~%80'i emniyetsiz davranışlardan kaynaklanır; şartların çoğu da insan hatasına dayanır.", "s": "2020-09 • 269. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Bakım öncesi ekipmanın enerjisinin kesilmesini güvence altına alan uygulama hangisidir?", "o": ["İşaret levhası asmak", "Kilitleme/Etiketleme (EKED-LOTO)", "Sözlü uyarı", "Işıkları kapatmak"], "c": 1, "e": "Kilitleme/etiketleme, bakım öncesi enerjinin kesilmesini ve ekipmanın çalıştırılamamasını sağlar; sahada erişim ve izolasyonda EKED prosedürleri izlenmelidir.", "s": "2021 • 14. gün / 2021 • 60. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Makine koruyucuları hakkında hangisi doğrudur?", "o": ["Engeldir, sökülebilir", "Koruma amaçlı tasarlanmıştır; koruyucular ve güvenlik donanımları keyfî olarak çıkarılamaz", "Sadece yeni makinelerde gerekir", "Operatör isterse iptal eder"], "c": 1, "e": "Uzuv kayıplı kazaların ~%10'u makinelerden kaynaklanır; koruyucular hareketli parça, çapak ve sıçramalara karşı korur. 6331'e göre güvenlik donanımı keyfî çıkarılamaz/değiştirilemez.", "s": "2020-04 • 109. gün / 2021 • 309. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "6331 sayılı Kanun'a göre çalışanın yükümlülüklerinden biri hangisidir?", "o": ["KKD'yi gerektiğinde satmak", "Kendisinin ve etkilediği kişilerin sağlık-güvenliğini tehlikeye düşürmemek; KKD'yi doğru kullanmak ve korumak", "Riskleri gizlemek", "Eğitimlere katılmamak"], "c": 1, "e": "Madde 19: çalışan, eğitim ve talimatlara uygun davranır; makineleri kurallara uygun kullanır, güvenlik donanımını çıkarmaz, KKD'yi doğru kullanır.", "s": "2021 • 309. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Güvenlik işaret renklerinde kırmızı ve sarı zeminli işaretler neyi ifade eder?", "o": ["Kırmızı: öneri, Sarı: reklam", "Kırmızı: tehlike/yasak, Sarı: dikkat — potansiyel tehlike", "İkisi de süslemedir", "Kırmızı: çıkış, Sarı: ilkyardım"], "c": 1, "e": "Kırmızı zeminli işaret yakın tehlikeyi/yasağı, sarı zemin potansiyel tehlikeyi (dikkat) bildirir; acil çıkış ve ilkyardım işaretleri yeşildir. Geçici barikat ve uyarılar iş bitince kaldırılmalıdır.", "s": "2021 • 214. gün / 2020-10 • 301. gün / 2020-04 • 101. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "5S ile iş güvenliği ilişkisi için hangisi doğrudur?", "o": ["İlgisizdir", "Ayıklama-düzen-temizlik adımları birçok riskin temelindeki düzensizliği ortadan kaldırır; 6. S 'Safety'dir", "5S sadece kaliteyle ilgilidir", "5S yılda bir yapılır"], "c": 1, "e": "Risk değerlendirmelerinde çıkan birçok riskin temeli düzensizlik ve kirliliktir; etkili 5S, sağlık-güvenlik şartlarını doğrudan iyileştirir. Tertip-düzen kayma/takılma ve yangın riskini azaltır.", "s": "2021 • 29. gün / 2020-04 • 107. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "'Hayat Kurtaran Kurallar' kapsamında hangisi yer alır?", "o": ["Alkol etkisi altında kısa işler yapılabilir", "Alkol/uyuşturucu etkisinde çalışma yasağı, görev öncesi risk değerlendirme, EKED prosedürlerine uyum, koruyucuları çıkarmama, yetkisiz araç kullanmama", "Koruyucular işi yavaşlatıyorsa sökülür", "Yetki belgesi önerilir ama şart değildir"], "c": 1, "e": "Kurallar: sarhoş edici madde etkisinde çalışma ve silah yasağı; işe başlamadan risk değerlendirmesi; güvensiz koşulda çalışmayı reddetme ve raporlama; işe özel KKD; kilitleme-etiketleme; koruyucu çıkarmama; eğitim/yetki olmadan ekipman kullanmama.", "s": "2021 • 60. gün"}, {"k": "Güvenlik Kültürü, Ramak Kala ve EKED", "q": "Güvenli Davranış Gözlemi sürecinin amacı nedir?", "o": ["Suçlu bulup cezalandırmak", "Olay gerçekleşmeden davranışları gözlemleyip güvensiz davranışın nedenini sorgulamak ve geri bildirimle değişim sağlamak", "Mesai saymak", "Sadece evrak doldurmak"], "c": 1, "e": "Davranışlar gözlenebilir ve ölçülebilir; ölçülebildiği için güvenlik yönetilebilir. Süreç, saygılı iletişim ve iş başında öğrenme ile proaktif tehlike tespiti sağlar.", "s": "2020-08 • 223-224. gün"}]</script>
+<script id="catd" type="application/json">[{"n": "Yangın ve Acil Durum", "ic": "🔥", "count": 12}, {"n": "Kapalı Alanlar", "ic": "🛢️", "count": 10}, {"n": "Elektrik Güvenliği", "ic": "⚡", "count": 10}, {"n": "Yüksekte Çalışma ve Merdivenler", "ic": "🪜", "count": 12}, {"n": "Kişisel Koruyucu Donanım", "ic": "🦺", "count": 10}, {"n": "El Aletleri", "ic": "🔧", "count": 8}, {"n": "Kaldırma İşleri: Sapan, Halat, Elle Taşıma", "ic": "🏗️", "count": 10}, {"n": "Forklift ve İş Makineleri", "ic": "🚜", "count": 8}, {"n": "Güvenli Sürüş", "ic": "🚗", "count": 8}, {"n": "Kimyasallar ve Tehlikeli Maddeler", "ic": "🧪", "count": 10}, {"n": "İlkyardım ve Sağlık", "ic": "🚑", "count": 12}, {"n": "Güvenlik Kültürü, Ramak Kala ve EKED", "ic": "🛡️", "count": 12}]</script>
+<script>
+"use strict";
+var POOL = JSON.parse(document.getElementById('pool').textContent);
+var CATS = JSON.parse(document.getElementById('catd').textContent);
+var KARMA = {n:'Karma Mod', ic:'🎲', count:POOL.length};
+
+var TITLES = [
+ {min:0,    icon:"🥾", name:"Çaylak",            msg:"Küp ilk kez atıldı — devam!"},
+ {min:600,  icon:"🎯", name:"Soru Avcısı",       msg:"Sorular senden kaçamıyor!"},
+ {min:1400, icon:"📚", name:"Bilgi Ustası",      msg:"Takvim yaprakları ezberinde!"},
+ {min:2400, icon:"🏅", name:"Kategori Fatihi",   msg:"Kategorileri tek tek fethediyorsun!"},
+ {min:3600, icon:"🧠", name:"Havuz Hakimi",      msg:"122 sorunun hakimi sensin!"},
+ {min:5000, icon:"🏆", name:"Soru Küpü Efsanesi", msg:"Efsane! Derbinin aranan oyuncusu."},
+];
+function titleFor(p){ var t=TITLES[0]; for(var i=0;i<TITLES.length;i++){ if(p>=TITLES[i].min) t=TITLES[i]; } return t; }
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+
+
+/* ================= STATE ================= */
+var total=0, playerName="";
+var stats={}; // kategori adı -> {plays, correct, answered, best}
+CATS.concat([KARMA]).forEach(function(c){ stats[c.n]={plays:0,correct:0,answered:0,best:null}; });
+
+function addTotal(p){
+  var before=titleFor(total);
+  total+=p;
+  document.getElementById('totalScore').textContent=total;
+  var after=titleFor(total);
+  updateRank();
+  if(after!==before){ showToast('🎉 Yeni ünvan: '+after.icon+' '+after.name+' — '+after.msg); }
+}
+function updateRank(){
+  var t=titleFor(total);
+  document.getElementById('playerTitle').textContent=t.icon+' '+t.name;
+  document.getElementById('rankIcon').textContent=t.icon;
+  document.getElementById('rankName').textContent=t.name;
+  var next=TITLES[TITLES.indexOf(t)+1];
+  if(next){
+    document.getElementById('rankBar').style.width=Math.min(100,(total-t.min)/(next.min-t.min)*100)+'%';
+    document.getElementById('rankNext').textContent='Sonraki ünvan: '+next.icon+' '+next.name+' — '+(next.min-total)+' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width='100%';
+    document.getElementById('rankNext').textContent='En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show');},4500);
+}
+function registerPlayer(){
+  var v=document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length<5 || v.split(' ').length<2){ document.getElementById('nameErr').style.display='block'; return; }
+  playerName=v.replace(/(^|\s)\S/g,function(c){return c.toLocaleUpperCase('tr');});
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent=playerName;
+  document.getElementById('playerPill').style.display='flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id!=='name') id='name';
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') renderMenu();
+}
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function flashDanger(){ var f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= MENÜ ================= */
+function renderMenu(){
+  var box=document.getElementById('catMenu'); box.innerHTML='';
+  [KARMA].concat(CATS).forEach(function(c){
+    var st=stats[c.n];
+    var d=document.createElement('div');
+    d.className='mcard';
+    if(c.n==='Karma Mod') d.style.borderColor='var(--copper)';
+    d.onclick=function(){ startQuiz(c.n); };
+    d.innerHTML='<div class="ic">'+c.ic+'</div><h3>'+c.n+'</h3><p>'+c.count+' soru'+(c.n==='Karma Mod'?' · tüm kategoriler':'')+'</p>'+
+      '<div class="best">'+(st.best!=null?'⭐ En iyi: '+st.best+' puan':'')+(st.plays?' · '+st.plays+' maç':'')+'</div>';
+    box.appendChild(d);
+  });
+}
+
+/* ================= QUIZ ================= */
+var qList=[], qIdx=0, qScore=0, qCorrect=0, qCat='';
+function startQuiz(cat){
+  qCat=cat;
+  var src = cat==='Karma Mod' ? POOL : POOL.filter(function(e){return e.k===cat;});
+  qList=shuffle(src).slice(0,10);
+  qIdx=0; qScore=0; qCorrect=0;
+  document.getElementById('quizTitle').textContent=(cat==='Karma Mod'?'🎲':'❓')+' '+cat;
+  document.getElementById('quizScore').textContent=0;
+  renderQuiz(); go('quiz');
+}
+function renderQuiz(){
+  var s=qList[qIdx];
+  document.getElementById('quizNo').textContent=qIdx+1;
+  document.getElementById('quizBar').style.width=(qIdx/qList.length*100)+'%';
+  document.getElementById('quizCat').textContent=(qCat==='Karma Mod'? s.k : s.s);
+  document.getElementById('quizQ').textContent=s.q;
+  document.getElementById('quizExpl').className='expl';
+  document.getElementById('quizNext').style.display='none';
+  var box=document.getElementById('quizOpts'); box.innerHTML='';
+  shuffle(s.o.map(function(t,i){return {t:t,i:i};})).forEach(function(op){
+    var d=document.createElement('div');
+    d.className='opt'; d.textContent=op.t;
+    d.onclick=function(){ answerQuiz(d,op.i,s); };
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el,i,s){
+  var opts=document.querySelectorAll('#quizOpts .opt');
+  opts.forEach(function(o){o.classList.add('dim');});
+  var ex=document.getElementById('quizExpl');
+  stats[qCat].answered++;
+  if(i===s.c){
+    el.classList.remove('dim'); el.classList.add('correct');
+    SFX.cheer(); qScore+=120; qCorrect++; stats[qCat].correct++;
+    ex.className='expl ok'; ex.innerHTML='✅ '+s.e;
+  } else {
+    el.classList.add('incorrect');
+    var list=[].slice.call(opts), corr=null;
+    list.forEach(function(o){ if(o.textContent===s.o[s.c]) corr=o; });
+    if(corr){ corr.classList.remove('dim'); corr.classList.add('correct'); }
+    flashDanger(); SFX.buzz();
+    ex.className='expl no'; ex.innerHTML='⚠️ '+s.e;
+  }
+  document.getElementById('quizScore').textContent=qScore;
+  document.getElementById('quizNext').style.display='inline-block';
+}
+function nextQuiz(){
+  qIdx++;
+  if(qIdx>=qList.length){
+    var st=stats[qCat];
+    st.plays++;
+    if(st.best==null||qScore>st.best) st.best=qScore;
+    var stars=qCorrect>=9?3:qCorrect>=7?2:qCorrect>=5?1:0;
+    addTotal(qScore);
+    var t=titleFor(total);
+    document.getElementById('resPlayer').textContent=playerName+' · '+t.icon+' '+t.name;
+    document.getElementById('resEmoji').textContent=stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'📘';
+    document.getElementById('resTitle').textContent=qCorrect+'/'+qList.length+' doğru!';
+    document.getElementById('resStars').textContent=stars>0?'⭐'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆';
+    document.getElementById('resPts').textContent='+'+qScore+' puan  ·  💧 +'+Math.floor(qScore/100)+' can suyu';
+    document.getElementById('resMsg').textContent= stars>=2? qCat+' kategorisinde harika bir maç — bölüm ortalamasını yukarı çektin!' : 'Açıklamaları okuyup tekrar dene; havuz her maçta farklı sorular getirir.';
+    if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+    document.getElementById('resReplay').onclick=function(){ startQuiz(qCat); };
+    go('result');
+  } else renderQuiz();
+}
+
+/* ================= TRAINER ================= */
+function openTrainer(){
+  var t=titleFor(total);
+  document.getElementById('trName').textContent=playerName||'—';
+  document.getElementById('trTitle').textContent='Ünvan: '+t.icon+' '+t.name;
+  document.getElementById('trTotal').textContent=total+' puan';
+  document.getElementById('trDate').textContent=new Date().toLocaleString('tr-TR',{dateStyle:'long',timeStyle:'short'});
+  var row=function(l,v){return '<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';};
+  var played=[KARMA].concat(CATS).filter(function(c){return stats[c.n].plays>0;});
+  document.getElementById('trCards').innerHTML = played.length ? played.map(function(c){
+    var s=stats[c.n]; var pct=s.answered?Math.round(s.correct/s.answered*100):0;
+    return '<div class="trcard"><h4>'+c.ic+' '+c.n+'</h4>'+
+      row('Maç', s.plays)+row('En iyi puan', s.best!=null?s.best:'—')+
+      row('Doğru / Cevap', s.correct+' / '+s.answered)+row('Başarı', '%'+pct)+'</div>';
+  }).join('') : '<div class="trcard"><h4>📘 Henüz maç oynanmadı</h4><div class="row"><span>Rapor, kategoriler oynandıkça otomatik dolar.</span></div></div>';
+  var notes=[];
+  if(played.length){
+    var weak=played.filter(function(c){ var s=stats[c.n]; return s.answered>=5 && s.correct/s.answered<0.7; });
+    var strong=played.filter(function(c){ var s=stats[c.n]; return s.answered>=5 && s.correct/s.answered>=0.9; });
+    if(strong.length) notes.push('Güçlü alanlar: '+strong.map(function(c){return c.n;}).join(', ')+'.');
+    if(weak.length) notes.push('Tekrar önerilen alanlar: '+weak.map(function(c){return c.n;}).join(', ')+' — ilgili haftaların bilgi kartları çalışılmalı.');
+    else notes.push('Belirgin zayıf alan görülmedi.');
+    notes.push('Genel seviye: '+t.icon+' '+t.name+'.');
+  } else {
+    notes.push('Katılımcı henüz maç oynamadı.');
+  }
+  document.getElementById('trNote').innerHTML='<b>Eğitici değerlendirme notu:</b><br>• '+notes.join('<br>• ');
+  go('trainer');
+}
+
+var _ni=document.getElementById('nameInput');
+_ni.addEventListener('keydown',function(e){ if(e.key==='Enter') registerPlayer(); });
+_ni.addEventListener('input',function(){ document.getElementById('nameErr').style.display='none'; });
+</script>
+
+</html>

@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Ark Dedektifi</title>
+<style>
+  :root{
+    --copper:#b57b5e; --copper-dark:#8f5c43; --copper-light:#d9a78e;
+    --ink:#1d1d1b; --bg:#f7f4f1; --card:#ffffff; --card2:#f8f2ee;
+    --border:#e6ddd5; --muted:#8b8178;
+    --green:#2e9e5b; --green-bg:#e9f7ef; --red:#d64545; --red-bg:#fdeeee;
+    --warn-bg:#fdf6e6; --warn-bd:#d69e2e;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #f3e6dd 0%, rgba(243,230,221,0) 60%),
+      var(--bg);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 60px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;cursor:pointer;}
+  .brand .logobox{background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px 14px;box-shadow:0 2px 8px rgba(29,29,27,.06);display:flex;align-items:center;}
+  .brand .logobox svg{height:34px;width:auto;display:block;}
+  .brand .app{font-weight:800;font-size:1.05rem;letter-spacing:.4px;}
+  .brand .app b{color:var(--copper);}
+  .brand .app small{display:block;font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+  .scorebox{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:14px;align-items:center;font-size:.95rem;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .scorebox .pt{color:var(--copper-dark);}
+  .screen{display:none;animation:fadein .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .shake{animation:shake .4s ease;}
+  h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:-.3px;}
+  h2{font-size:1.4rem;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:22px;line-height:1.5;}
+  .accent{color:var(--copper);}
+  .stripe{height:8px;border-radius:6px;margin:14px 0 24px;background:repeating-linear-gradient(45deg,var(--copper-light) 0 16px,var(--ink) 16px 32px);opacity:.9;}
+  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+  .mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:.18s;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--copper-dark),var(--copper-light));opacity:0;transition:.18s;}
+  .mcard:hover{transform:translateY(-3px);border-color:var(--copper-light);box-shadow:0 8px 20px rgba(143,92,67,.15);}
+  .mcard:hover::before{opacity:1;}
+  .mcard .ic{font-size:2rem;margin-bottom:10px;}
+  .mcard h3{margin-bottom:6px;font-size:1.1rem;}
+  .mcard p{color:var(--muted);font-size:.88rem;line-height:1.45;}
+  .mcard .best{margin-top:10px;font-size:.8rem;color:var(--copper-dark);font-weight:700;}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;font-weight:800;border:none;border-radius:12px;padding:12px 22px;font-size:1rem;cursor:pointer;transition:.15s;box-shadow:0 3px 10px rgba(143,92,67,.25);}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--border);font-weight:600;box-shadow:none;}
+  .btn.small{padding:8px 14px;font-size:.85rem;border-radius:10px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:700;}
+  /* LEARN */
+  .phase-label{font-size:.8rem;font-weight:800;letter-spacing:2px;color:var(--copper-dark);margin:22px 0 10px;text-transform:uppercase;}
+  .steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+  .stepcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;}
+  .stepcard:hover{border-color:var(--copper);}
+  .stepcard .num{font-size:.72rem;font-weight:800;color:var(--copper);letter-spacing:1px;}
+  .stepcard .name{font-weight:800;margin:2px 0 4px;}
+  .stepcard .desc{font-size:.82rem;color:var(--muted);line-height:1.4;display:none;}
+  .stepcard.open .desc{display:block;}
+  .notebox{background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:12px;padding:14px;margin-top:20px;font-size:.9rem;line-height:1.55;}
+  .notebox b{color:#9c6d10;}
+  /* ORDER GAME */
+  .seq-line{display:flex;flex-wrap:wrap;gap:6px;min-height:52px;background:var(--card2);border:1px dashed var(--copper-light);border-radius:12px;padding:8px;margin-bottom:16px;}
+  .seq-chip{background:var(--green);color:#fff;font-weight:800;font-size:.78rem;border-radius:8px;padding:6px 9px;animation:fadein .25s;}
+  .pool{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;font-weight:700;font-size:.9rem;text-align:center;transition:.15s;user-select:none;box-shadow:0 2px 6px rgba(29,29,27,.04);}
+  .pcard:hover{border-color:var(--copper);transform:translateY(-2px);}
+  .pcard .hint{display:block;font-size:.72rem;color:var(--muted);font-weight:600;margin-top:4px;}
+  .pcard.done{opacity:0;pointer-events:none;transform:scale(.7);transition:.3s;}
+  .pcard.wrong{border-color:var(--red);background:var(--red-bg);}
+  /* QUIZ + SCENARIO */
+  .qbox{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 2px 12px rgba(29,29,27,.05);}
+  .qtext{font-size:1.12rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+  .opts{display:grid;gap:10px;}
+  .opt{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s;font-size:.95rem;line-height:1.4;}
+  .opt:hover{border-color:var(--copper);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.incorrect{background:var(--red-bg);border-color:var(--red);}
+  .opt.dim{opacity:.55;pointer-events:none;}
+  .expl{margin-top:16px;padding:13px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none;}
+  .expl.ok{display:block;background:var(--green-bg);border:1px solid var(--green);}
+  .expl.no{display:block;background:var(--red-bg);border:1px solid var(--red);}
+  .progressbar{height:8px;background:#e9e2db;border-radius:6px;overflow:hidden;margin-bottom:18px;}
+  .progressbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .3s;}
+  .lives{font-size:1.05rem;letter-spacing:2px;}
+  .scene-tag{display:inline-block;background:#f3e6dd;color:var(--copper-dark);font-size:.75rem;font-weight:800;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:.5px;}
+  /* RESULT */
+  .result{text-align:center;padding:30px 16px;}
+  .result .big{font-size:3.4rem;margin-bottom:8px;}
+  .result .stars{font-size:2rem;letter-spacing:6px;margin:10px 0;color:var(--copper);}
+  .result .pts{font-size:1.5rem;font-weight:800;color:var(--copper-dark);margin-bottom:16px;}
+  .danger-flash{position:fixed;inset:0;background:rgba(214,69,69,.22);pointer-events:none;opacity:0;z-index:50;}
+  .danger-flash.on{animation:dflash .5s ease;}
+  @keyframes dflash{0%{opacity:1}100%{opacity:0}}
+  /* NAME + RANK */
+  .namebox{max-width:480px;margin:40px auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;text-align:center;box-shadow:0 2px 12px rgba(29,29,27,.06);}
+  .namebox input{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:12px;font-size:1rem;margin:16px 0;outline:none;background:var(--card2);color:var(--ink);text-align:center;font-weight:600;}
+  .namebox input:focus{border-color:var(--copper);}
+  .player-pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.88rem;display:none;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(29,29,27,.05);}
+  .player-pill .ttl{color:var(--copper-dark);font-size:.76rem;font-weight:800;}
+  .rankcard{margin:-6px 0 20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(29,29,27,.05);}
+  .rankcard .ric{font-size:2.2rem;}
+  .rankcard .rname{font-weight:800;}
+  .rankcard .rnext{font-size:.8rem;color:var(--muted);margin-top:2px;}
+  .rankbar{flex:1;min-width:160px;height:10px;background:#e9e2db;border-radius:6px;overflow:hidden;}
+  .rankbar i{display:block;height:100%;background:linear-gradient(90deg,var(--copper-light),var(--copper-dark));transition:width .4s;}
+  .toast{position:fixed;left:50%;top:18px;opacity:0;visibility:hidden;transform:translateX(-50%) translateY(-150%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .4s ease,opacity .3s ease,visibility .3s;z-index:60;font-size:.92rem;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  /* TRAINER */
+  .trhead{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .trep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+  .trcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .trcard h4{font-size:.92rem;margin-bottom:8px;color:var(--copper-dark);}
+  .trcard .row{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;padding:4px 0;border-bottom:1px dashed var(--border);}
+  .trcard .row:last-child{border-bottom:none;}
+  .trcard .row b{font-variant-numeric:tabular-nums;}
+  @media print{
+    body{background:#fff;}
+    header,footer,.no-print{display:none !important;}
+    .screen{display:none !important;}
+    #scr-trainer{display:block !important;}
+    .trhead,.trcard,.notebox{box-shadow:none;}
+  }
+  footer{margin-top:40px;text-align:center;color:#b3a89e;font-size:.78rem;line-height:1.6;}
+  footer svg{height:24px;width:auto;opacity:.9;display:block;margin:0 auto 6px;}
+</style>
+<div class="danger-flash" id="dangerFlash"></div>
+<div class="toast" id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="cu1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4a33"/><stop offset="1" stop-color="#c08a6d"/>
+    </linearGradient>
+    <linearGradient id="cu2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c08a6d"/><stop offset="1" stop-color="#e6bba3"/>
+    </linearGradient>
+    <g id="yankiLogo">
+      <polygon fill="url(#cu1)" points="0,6 13,6 36,30 13,54 0,54 23,30"/>
+      <polygon fill="url(#cu2)" points="30,14 45,30 30,46 39,46 55,30 39,14"/>
+      <text x="66" y="37" font-family="'Segoe UI',Arial,sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#1d1d1b">YANKI</text>
+      <text x="68" y="52" font-family="'Segoe UI',Arial,sans-serif" font-size="8.5" font-weight="600" letter-spacing="4.6" fill="#8b8178">SOLUTIONS</text>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand" onclick="go('home')">
+      <div class="logobox"><svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg></div>
+      <div class="app"><b>GÜVENLİK LİGİ</b><small id="hdrSmall"></small></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <div class="player-pill" id="playerPill">👷 <span id="playerName"></span> <span class="ttl" id="playerTitle"></span></div>
+      <div class="scorebox">🏆 Toplam: <span class="pt" id="totalScore">0</span> puan</div>
+      <button class="btn ghost small" id="muteBtn" onclick="SFX.toggle()" title="Ses aç/kapat">🔊</button>
+    </div>
+  </header>
+
+  <section class="screen active" id="scr-name">
+    <div class="namebox">
+      <div style="font-size:2.6rem;margin-bottom:6px;" id="welIcon"></div>
+      <h2 id="welH"></h2>
+      <p class="sub" style="margin-bottom:0;" id="welSub"></p>
+      <input id="nameInput" type="text" maxlength="40" placeholder="Adınız ve Soyadınız" autocomplete="off">
+      <br>
+      <button class="btn" onclick="registerPlayer()">Maça Başla →</button>
+      <p id="nameErr" style="display:none;color:var(--red);margin:12px 0 0;font-size:.85rem;font-weight:600;">Lütfen adınızı ve soyadınızı birlikte yazın (örn. Ayşe Yılmaz).</p>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-home">
+    <h1 id="homeH1"></h1>
+    <p class="sub" id="homeSub"></p>
+    <div class="stripe"></div>
+    <div class="rankcard">
+      <div class="ric" id="rankIcon">🥾</div>
+      <div style="min-width:190px;">
+        <div class="rname" id="rankName">Çaylak</div>
+        <div class="rnext" id="rankNext"></div>
+      </div>
+      <div class="rankbar"><i id="rankBar" style="width:0%"></i></div>
+    </div>
+    <div class="menu">
+      <div class="mcard" onclick="go('rehber')">
+        <div class="ic">📖</div><h3>Bilgi Kartları</h3>
+        <p>Konunun özünü kartlarla öğren. Her yeni kart +10 puan!</p>
+        <div class="best" id="bestCards"></div>
+      </div>
+      <div class="mcard" onclick="startQuiz()">
+        <div class="ic">❓</div><h3>Bilgi Yarışması</h3>
+        <p>19 soruluk havuzdan her maçta rastgele 10 soru — soru başına 120 puan!</p>
+        <div class="best" id="bestQuiz"></div>
+      </div>
+      <div class="mcard" onclick="startCase()">
+        <div class="ic" id="vakaIc">🚨</div><h3 id="vakaH3"></h3>
+        <p id="vakaP"></p>
+        <div class="best" id="bestVaka"></div>
+      </div>
+    </div>
+    <div class="notebox" id="homeNote"></div>
+    <div style="margin-top:14px;text-align:right;"><button class="btn ghost small" onclick="openTrainer()">👨‍🏫 Eğitici Ekranı</button></div>
+  </section>
+
+  <section class="screen" id="scr-rehber">
+    <div class="topbar"><h2>📖 Bilgi Kartları</h2><button class="btn ghost small" onclick="go('home')">← Ana Menü</button></div>
+    <p class="sub">Kartlara dokunarak açıklamaları gör. İlk kez açtığın her kart +10 puan kazandırır.</p>
+    <div class="steps-grid" id="cardGrid"></div>
+  </section>
+
+  <section class="screen" id="scr-trainer">
+    <div class="topbar">
+      <h2>👨‍🏫 Eğitici Ekranı — Katılımcı Raporu</h2>
+      <div style="display:flex;gap:8px;" class="no-print">
+        <span class="pill">📸 Bu ekranın görüntüsünü alıp eğitmeninizle paylaşın</span>
+        <button class="btn ghost small" onclick="go('home')">← Ana Menü</button>
+      </div>
+    </div>
+    <div class="trhead">
+      <div>
+        <div style="font-weight:800;font-size:1.15rem;" id="trName">—</div>
+        <div class="sub" style="margin:0;" id="trTitle"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:800;font-size:1.4rem;color:var(--copper-dark);" id="trTotal">0 puan</div>
+        <div class="sub" style="margin:0;font-size:.8rem;" id="trDate"></div>
+      </div>
+    </div>
+    <div class="trep" id="trCards"></div>
+    <div class="notebox" id="trNote" style="margin-top:14px;"></div>
+  </section>
+
+  <section class="screen" id="scr-quiz">
+    <div class="topbar">
+      <h2>❓ Bilgi Yarışması</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="pill">Soru <b id="quizNo">1</b>/10</span>
+        <span class="pill">Puan: <b id="quizScore">0</b></span>
+        <button class="btn ghost small" onclick="go('home')">← Vazgeç</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <div class="qtext" id="quizQ"></div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="expl" id="quizExpl"></div>
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn" id="quizNext" style="display:none;" onclick="nextQuiz()">Devam →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-case">
+    <div class="topbar">
+      <h2 id="caseTitle">Vaka</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="pill">Puan: <b id="caseScore">0</b></span>
+        <span class="pill lives" id="caseLives">❤️❤️❤️</span>
+        <button class="btn ghost small" onclick="go('home')">← Vazgeç</button>
+      </div>
+    </div>
+    <div class="progressbar"><i id="caseBar" style="width:0%"></i></div>
+    <div class="qbox">
+      <span class="scene-tag" id="caseTag"></span>
+      <div class="qtext" id="caseQ"></div>
+      <div class="opts" id="caseOpts"></div>
+      <div class="expl" id="caseExpl"></div>
+      <div style="margin-top:16px;text-align:right;">
+        <button class="btn" id="caseNext" style="display:none;" onclick="nextStep()">Devam →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="scr-result">
+    <div class="result">
+      <div class="big" id="resEmoji">🏆</div>
+      <h2 id="resTitle"></h2>
+      <p class="sub" id="resPlayer" style="margin:6px 0 0;font-weight:700;color:var(--copper-dark);"></p>
+      <div class="stars" id="resStars"></div>
+      <div class="pts" id="resPts"></div>
+      <p class="sub" id="resMsg"></p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" id="resReplay">🔁 Tekrar Oyna</button>
+        <button class="btn ghost" onclick="go('home')">Ana Menü</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <svg viewBox="0 0 185 60" role="img" aria-label="Yanki Solutions"><use href="#yankiLogo"/></svg>
+    <span id="footLine"></span>
+  </footer>
+</div>
+
+<script id="gdata" type="application/json">{"title": "Ark Dedektifi", "topic": "Elektrik: tehlike, risk ve önlemler", "ic": "⚡", "small": "Ark Dedektifi · Elektrik Güvenliği", "welH": "Ark Dedektifi’ne Hoş Geldin!", "welSub": "Bu haftanın maçı: elektrik! Görünmez tehlikeyi tanı, 5 altın kuralı uygula, pano bakımı vakasını kazasız yönet. Bölümün için oyna!", "h1a": "Elektrik Affetmez,", "h1b": "Dedektif Yanılmaz!", "homeSub": "30 miliamperin gücünden 5 altın kurala, hasarlı kablodan kaçak akım rölesine — üç bölümü de tamamla.", "note": "Elektrik işi YETKİLİ işidir: \"küçük iş\" diye panoya, kabloya, tesisata dokunma. Sigorta attıysa nedeni bulunmadan tekrar kaldırılmaz!", "foot": "GÜVENLİK LİGİ · Haftanın Maçı: Elektrik Güvenliği · Safety Digital Games", "cards": [{"t": "Görünmez Tehlike", "d": "Elektrik görünmez, kokmaz, ses vermez. 30 mA gibi küçücük bir akım bile kalbin ritmini bozabilir. Islak zemin ve terli el, direnci düşürüp riski katlar."}, {"t": "Yetkili Kişi Kuralı", "d": "Elektrik tesisatına yalnızca yetkili/EKAT belgeli elektrikçi müdahale eder. Arıza gördüğünde işin ehline bildir; \"ben hallederim\" cümlesi kaza raporlarının klasiğidir."}, {"t": "5 Altın Kural", "d": "1) Gerilimi kes. 2) Tekrar kapamaya karşı önlem al (KİLİTLE-ETİKETLE!). 3) Gerilim yokluğunu doğrula. 4) Topraklama ve kısa devre yap. 5) Komşu gerilimli bölümleri izole et."}, {"t": "Kaçak Akım Rölesi (RCD)", "d": "İnsan koruması için 30 mA kaçak akım rölesi kullanılır; kaçağı milisaniyeler içinde keser. Test butonuna düzenli basarak çalıştığını doğrula."}, {"t": "Kablolar ve Fişler", "d": "Hasarlı kablo, kırık fiş, yanık priz kullanılmaz ve bantla \"tamir\" edilmez — değiştirilir. Kablolar keskin kenarlardan, forklift yollarından, ıslak zeminden geçirilmez."}, {"t": "Uzatma ve Makara", "d": "Makara kablo tamamen açılmadan yüklenirse bobin gibi ısınır ve yangın çıkarır. Zincirleme priz-uzatma bağlamak (priz üstüne priz) aşırı yük ve yangın riskidir."}, {"t": "Pano Disiplini", "d": "Pano kapakları kapalı ve kilitli tutulur, önünde malzeme depolanmaz (acil erişim!), yetkisiz kişi pano açamaz. Panonun önü bir yangın söndürücü kadar ulaşılabilir olmalıdır."}, {"t": "Islak Ortam", "d": "Islak elle fişe, anahtara, ekipmana dokunulmaz. Dış sahada ve nemli alanlarda IP korumalı ekipman ve düşük güvenlik gerilimi tercih edilir."}, {"t": "Ark Flaş (Arc Flash)", "d": "Pano içinde kısa devre; binlerce derecelik ark patlaması yaratabilir. Gerilim altında çalışma yasaktır; zorunlu hallerde özel ark kıyafeti, yüz siperi ve yetkilendirme gerekir."}], "quiz": [{"q": "İnsan koruması için kaçak akım rölesi kaç mA olmalıdır?", "o": ["300 mA", "30 mA", "3 A", "10 A"], "c": 1, "e": "30 mA RCD insan hayatını korur; 300 mA yangın korumasıdır."}, {"q": "5 altın kuralın İLK adımı nedir?", "o": ["Topraklama yapmak", "Gerilimi kesmek", "Gerilim ölçmek", "Eldiven giymek"], "c": 1, "e": "Önce gerilim kesilir; ardından tekrar kapamaya karşı kilitle-etiketle gelir."}, {"q": "Gerilimi kestikten sonra tekrar kapamaya karşı en güvenilir önlem hangisi?", "o": ["Panoya not bırakmak", "Şalteri kilitleyip etiketlemek (EKED)", "Arkadaşına söylemek", "Kapıyı kapatmak"], "c": 1, "e": "Kilit + etiket, şalterin senin haberin olmadan kaldırılmasını fiziksel olarak engeller."}, {"q": "Gerilim yokluğu neyle doğrulanır?", "o": ["Elle dokunarak", "Çalıştığı önce ve sonra test edilmiş uygun ölçü aletiyle", "Göz kararı", "Işıkların sönmesiyle"], "c": 1, "e": "Ölçü aleti ölçümden önce ve sonra bilinen bir kaynakta test edilir — arızalı alet \"gerilim yok\" diyebilir."}, {"q": "Hasarlı (dış kılıfı sıyrılmış) bir uzatma kablosu buldun. Ne yaparsın?", "o": ["İzole bantla sarıp kullanırım", "Kullanımdan çıkarır, etiketler ve değişim için bildiririm", "Sadece kuru havada kullanırım", "Kimseye söylemem"], "c": 1, "e": "Hasarlı kablo tamir edilmez, kullanımdan çıkarılır. Bant, mekanik koruma sağlamaz."}, {"q": "Kablo makarasıyla yüksek güçlü ısıtıcı çalıştıracaksın. Doğru uygulama?", "o": ["Makarayı sarılı bırakmak", "Kabloyu tamamen açmak", "Yarısını açmak yeterli", "İki makarayı seri bağlamak"], "c": 1, "e": "Sarılı makara bobin etkisiyle ısınır ve eriyebilir; kablo tamamen açılır ve yük sınırına bakılır."}, {"q": "Sigorta/termik tekrar tekrar atıyor. Doğru davranış hangisi?", "o": ["Daha büyük sigorta takmak", "Atmaması için elle tutmak", "Nedeni yetkili elektrikçi bulana kadar devreyi kapalı tutmak", "Telle köprülemek"], "c": 2, "e": "Sigorta bir şey anlatıyordur: aşırı yük veya kaçak. Neden bulunmadan devre tekrar yüklenmez; sigorta asla büyütülmez/köprülenmez."}, {"q": "Pano önüne malzeme istiflenmiş. Bu neden sorundur?", "o": ["Görüntü kirliliği yapar", "Acil durumda panoya erişimi engeller", "Panoyu tozlandırır", "Sorun değildir"], "c": 1, "e": "Acil durumda enerjiyi saniyeler içinde kesmek gerekir; pano önü her zaman boş bırakılır."}, {"q": "Kopup yere düşmüş bir enerji hattı gördün. Ne yaparsın?", "o": ["Hattı çekip kaldırırım", "En az 20-30 m uzak durur, küçük adımlarla uzaklaşır, çevreyi uzaklaştırıp yetkililere bildiririm", "Lastik çizmeyle üzerinden atlarım", "Telefonla video çekerim"], "c": 1, "e": "Yerdeki hat çevresinde adım gerilimi oluşur: küçük adımlarla uzaklaş, kimseyi yaklaştırma, derhal bildir."}, {"q": "Islak elle fişi çekmek neden tehlikelidir?", "o": ["Fiş paslanır", "Su, derinin direncini düşürür ve akım vücuttan kolay geçer", "Priz kirlenir", "Tehlikeli değildir"], "c": 1, "e": "Islaklık vücut direncini düşürür; aynı gerilimde çok daha büyük akım geçer ve çarpılma ağırlaşır."}, {"q": "İnsan vücudundan geçen 20-30 mA akımın tipik etkisi nedir?", "o": ["Sadece karıncalanma", "Diyafram kasılması — solunum alamama", "Hiçbir etki", "Saç dökülmesi"], "c": 1, "e": "10 mA altı karıncalanma, 10-20 mA kasılma (iletkene yapışma), 20-30 mA diyafram kasılması, 50 mA üzeri kalpte düzensizlik ve durma riski oluşturur. [2020-02 • 39. gün]"}, {"q": "Kaynak makinesi boştayken voltaj yaklaşık hangi aralığa çıkar?", "o": ["5-10 V", "20-30 V", "65-100 V", "500-600 V"], "c": 2, "e": "Kaynak sırasında 20-30 V olan gerilim, makine boşta çalışırken 65-100 V'a çıkar; çarpılmaların çoğu makine boştayken yaşanır. [2020-02 • 39. gün]"}, {"q": "Çift yalıtımlı elektrikli el aletinin uluslararası sembolü nedir?", "o": ["Üçgen içinde ünlem", "İç içe geçmiş iki kare", "Kırmızı daire", "Yıldırım işareti"], "c": 1, "e": "Çift yalıtım iç içe iki kare (veya UL) ile gösterilir; aktif ve pasif bölümler iki bağımsız yalıtım katmanıyla korunur. [2020-02 • 41. gün]"}, {"q": "Üç damarlı (topraklı) uzatma kablosu hangi prize takılmalıdır?", "o": ["Herhangi bir prize", "Yalnızca topraklı prize", "Topraksız prize adaptörle", "Fark etmez"], "c": 1, "e": "Üçüncü tel topraklamadır; topraklı kablo asla topraksız çıkışa takılmamalı, güç aletlerinde (çift yalıtımlı değilse) topraklı uzatma kullanılmalıdır. [2021 • 327. gün]"}, {"q": "Uzatma kablosunu prizden çıkarırken doğru davranış hangisidir?", "o": ["Kablodan hızla çekmek", "Fişten tutup çekmek", "Ayakla bastırıp çekmek", "Kabloyu sallamak"], "c": 1, "e": "Kablodan çekmek iletkenleri ve fişi yıpratır; fişten tutulur. Kablolar halı altından, kapı ve pencere aralıklarından geçirilmez. [2021 • 327. gün]"}, {"q": "Priz veya lamba değiştirmeden önce yapılması gereken nedir?", "o": ["Eldiven giymek yeterli", "Sigortayı kapatmak ve kimse açmasın diye işaret/kilit koymak", "Hızlı çalışmak", "Islak bezle silmek"], "c": 1, "e": "Önce ana sigorta kapatılır ve üzerine uyarı işareti veya kilit konur — bu, kilitleme-etiketlemenin evdeki basit halidir. [2020-03 • 72. gün]"}, {"q": "Statik elektriğin tutuşturucu kaynak olmasını önlemenin iki temel yolu nedir?", "o": ["Boya ve cila", "Maddeleri birbirine bağlama (bonding) ve topraklama", "Havalandırma ve ışıklandırma", "Eldiven ve gözlük"], "c": 1, "e": "İletken cisimler birbirine bağlanır ve toprağa bağlanır; mümkün değilse madde daha az tehlikeli olanla değiştirilir. [2021 • 125. gün]"}, {"q": "Dış sahada kullanılacak uzatma kablosunun onaylı olduğunu ne gösterir?", "o": ["Rengi", "Üzerindeki 'outdoor' ibaresi veya 'WA' işareti", "Uzunluğu", "Fiyatı"], "c": 1, "e": "İnşaat sahaları ve dış ortam için elektrik koduna uygun, üzerinde dış saha ibaresi/işareti bulunan kablolar kullanılır; hasar yönünden düzenli kontrol edilir. [2021 • 327. gün]"}, {"q": "Elektrikli ekipman kablolarının mekanik hasardan korunması için hangisi doğrudur?", "o": ["Kapı aralığından geçirmek", "Koruyucu kılıf içine almak, gömmek veya duvara/tavana sabitlemek", "Bantla sarıp kullanmak", "Islak zemine sermek"], "c": 1, "e": "Kablolar ezilme ve kesilmeye karşı kılıfla korunur veya güzergâhı değiştirilir; kapı-pencere aralıklarından geçirilmez, hasarlı kablo değiştirilir. [2020-05 • 151. gün]"}], "vaka": {"ic": "🔌", "name": "Pano Bakımı", "p": "Motor besleme panosunda termik değişimi yapılacak. 5 altın kuralı sahada uygula; 3 canın var!", "steps": [{"tag": "İŞ EMRİ", "q": "Üretim şefi: \"Motor durdu, termiği hemen değiştir, 5 dakikalık iş!\" Sen bakım teknikerisin ama elektrik yetkin yok. Kararın?", "o": ["5 dakikalık iş, hemen yaparım", "İşi yetkili elektrikçiye yönlendiririm; yetkisiz müdahale etmem", "Eldiven giyip yaparım", "Panoya bakar, kolaysa yaparım"], "c": 1, "ok": "Doğru! Elektrik işi yetki ister. \"Küçük iş\" baskısı, kaza raporlarının ilk cümlesidir.", "no": "Yetkisiz elektrik işi yasaktır! İş ne kadar küçük görünürse görünsün yetkili elektrikçi çağrılır."}, {"tag": "KURAL 1-2", "q": "Yetkili elektrikçi geldi, sen de nezaret ediyorsun. İlk iki adım ne olmalı?", "o": ["Panoyu açıp termiğe bakmak", "Besleme şalterini kesmek ve kilit-etiket takmak", "Eldiven giyip ölçüm yapmak", "Motoru elle çevirmek"], "c": 1, "ok": "Doğru! Kural 1-2: gerilimi kes + tekrar kapamaya karşı kilitle-etiketle. EKED burada devreye girer.", "no": "Sıra önemli! Önce gerilim kesilir ve şalter kilitlenip etiketlenir; pano ondan sonra açılır."}, {"tag": "KURAL 3", "q": "Şalter kilitli. Elektrikçi ölçü aletini çıkardı. Gerilim yokluğu nasıl doğrulanır?", "o": ["Aleti önce bilinen bir kaynakta test et → panoda ölç → aleti tekrar test et", "Direkt panoda ölç, yeter", "Parmakla hafifçe dokun", "Işık yanmıyorsa gerilim yoktur"], "c": 0, "ok": "Doğru! Alet ölçümden önce ve sonra test edilir; arızalı alet \"gerilim yok\" diye yanıltabilir.", "no": "Ölçü aleti arızalıysa seni yanıltır! Önce-test, ölç, sonra-test üçlüsü şarttır."}, {"tag": "SÜRPRİZ", "q": "Ölçümde bir fazda hâlâ gerilim var! Kilitlediğiniz şalter başka hattı kesiyormuş. Ne yapılır?", "o": ["Eldivenle devam edilir", "İş durdurulur; doğru kesme noktası bulunur, o da kilitlenip tekrar ölçülür", "O faza dokunmadan çalışılır", "Gerilim azdır, önemsenmez"], "c": 1, "ok": "Doğru! DENE/doğrula adımı tam da bunun için var. Doğru izolasyon noktası bulunup kilitlenmeden işe başlanmaz.", "no": "Ölüm riski! Gerilimli fazla \"dikkatli\" çalışılmaz; doğru nokta kesilip doğrulanana kadar iş durur."}, {"tag": "ÇALIŞMA", "q": "Gerilimsizlik doğrulandı, termik değişiyor. Bu sırada bir operatör \"makineyi deneyeceğim\" diyerek şaltere yöneliyor. Etiket asılı. Ne olur?", "o": ["Kilit ve etiket varken şalteri kaldıramaz; girişimi durdurulur ve amire bildirilir", "Ricayla açtırabilir", "Elektrikçi izin verirse açar", "Kimse fark etmezse açar"], "c": 0, "ok": "Doğru! Kilit-etiket ihlali ciddi disiplin konusudur; kimse başkasının kilidini kaldıramaz.", "no": "Asla! \"ÇALIŞTIRMAYIN\" etiketi ve kilit varken start girişimi, içeride çalışanı öldürebilir."}, {"tag": "DEVREYE ALMA", "q": "Termik değişti. Devreye alma nasıl yapılır?", "o": ["Şalteri kaldırıp gidilir", "Pano kapatılır, bölgede kimsenin olmadığı doğrulanır, kilidi takan söker, bildirimle enerji verilir ve motor izlenir", "Önce motor elle döndürülür", "Kilit kesilerek hızlıca açılır"], "c": 1, "ok": "Doğru! Kapak + bölge kontrolü + kilidi sahibinin sökmesi + bildirim + izleyerek devreye alma. Vaka kazasız kapandı!", "no": "Yanlış! Devreye alma da prosedürdür: kapak, bölge, kilit sökümü (sahibi), bildirim, izleme."}]}}</script>
+<script>
+"use strict";
+var G = JSON.parse(document.getElementById('gdata').textContent);
+
+/* ================= TITLES ================= */
+var TITLES = [
+ {min:0,    icon:"🥾", name:"Çaylak",           msg:"Her yıldız ilk maçına bir kez çıkar!"},
+ {min:500,  icon:"🔍", name:"Gönüllü",          msg:"Takım için oynamaya başladın!"},
+ {min:1000, icon:"🛟", name:"Saha Gözcüsü",     msg:"Tehlikeleri görmeye başladın!"},
+ {min:1600, icon:"🎓", name:"Uzman Adayı",      msg:"Bölümün sana güveniyor!"},
+ {min:2200, icon:"🛡️", name:"Konu Uzmanı",      msg:"Bu haftanın konusunda otorite sensin!"},
+ {min:2800, icon:"🌟", name:"Haftanın Yıldızı", msg:"Efsane! Bölümünü sırtlıyorsun."},
+];
+function titleFor(p){ var t=TITLES[0]; for(var i=0;i<TITLES.length;i++){ if(p>=TITLES[i].min) t=TITLES[i]; } return t; }
+
+/* ================= SES EFEKTLERİ ================= */
+const SFX = (function(){
+  let ctx = null, muted = false;
+  function ac(){
+    try{
+      if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(ctx && ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }catch(e){ return null; }
+  }
+  function tone(f0, f1, dur, type, vol, when){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + (when||0);
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine';
+      o.frequency.setValueAtTime(f0, t);
+      if(f1 && f1!==f0) o.frequency.exponentialRampToValueAtTime(f1, t+dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol||0.12, t+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t+dur+0.05);
+    }catch(e){}
+  }
+  function clap(when, vol){
+    const c = ac(); if(!c || muted) return;
+    try{
+      const t = c.currentTime + when;
+      const dur = 0.07 + Math.random()*0.05;
+      const n = Math.floor(c.sampleRate * dur);
+      const buf = c.createBuffer(1, n, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<n;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/n, 2);
+      const src = c.createBufferSource(); src.buffer = buf;
+      const bp = c.createBiquadFilter(); bp.type='bandpass';
+      bp.frequency.value = 1200 + Math.random()*1800; bp.Q.value = 0.8;
+      const g = c.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(c.destination);
+      src.start(t);
+    }catch(e){}
+  }
+  return {
+    init(){ ac(); },
+    toggle(){
+      muted = !muted;
+      const b = document.getElementById('muteBtn');
+      if(b) b.textContent = muted ? '🔇' : '🔊';
+      if(!muted) this.ding();
+    },
+    ding(){ tone(660,660,.12,'triangle',.12,0); tone(880,880,.18,'triangle',.12,.09); },
+    applause(dur, vol){
+      dur = dur||1.4; vol = vol||.7;
+      const claps = Math.floor(dur*22);
+      for(let i=0;i<claps;i++) clap(Math.random()*dur, (0.10+Math.random()*0.10)*vol);
+    },
+    cheer(){ this.ding(); this.applause(0.8, .5); },
+    fanfare(){
+      [523,659,784,1047].forEach((f,i)=>tone(f,f,.22,'triangle',.11,i*.12));
+      tone(1047,1047,.5,'triangle',.1,.5);
+      this.applause(1.6,.8);
+    },
+    buzz(){ tone(170,110,.28,'square',.06,0); },
+    fail(){ tone(220,110,.5,'sawtooth',.07,0); tone(165,82,.6,'sawtooth',.06,.25); }
+  };
+})();
+
+
+
+/* ================= STATE ================= */
+var total=0, playerName="";
+var best={quiz:null, vaka:null};
+var stats={quiz:{plays:0,correct:0,answered:0}, vaka:{plays:0,wrong:0,completed:0}, cards:{opened:0}};
+var cardSeen={};
+
+function addTotal(p){
+  var before=titleFor(total);
+  total+=p;
+  document.getElementById('totalScore').textContent=total;
+  var after=titleFor(total);
+  updateRank();
+  if(after!==before){ showToast('🎉 Yeni ünvan: '+after.icon+' '+after.name+' — '+after.msg); }
+}
+function updateRank(){
+  var t=titleFor(total);
+  document.getElementById('playerTitle').textContent=t.icon+' '+t.name;
+  document.getElementById('rankIcon').textContent=t.icon;
+  document.getElementById('rankName').textContent=t.name;
+  var next=TITLES[TITLES.indexOf(t)+1];
+  if(next){
+    document.getElementById('rankBar').style.width=Math.min(100,(total-t.min)/(next.min-t.min)*100)+'%';
+    document.getElementById('rankNext').textContent='Sonraki ünvan: '+next.icon+' '+next.name+' — '+(next.min-total)+' puan kaldı';
+  } else {
+    document.getElementById('rankBar').style.width='100%';
+    document.getElementById('rankNext').textContent='En yüksek ünvana ulaştın! 👏';
+  }
+}
+function showToast(msg){
+  SFX.fanfare();
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show');},4500);
+}
+function registerPlayer(){
+  var v=document.getElementById('nameInput').value.trim().replace(/\s+/g,' ');
+  if(v.length<5 || v.split(' ').length<2){ document.getElementById('nameErr').style.display='block'; return; }
+  playerName=v.replace(/(^|\s)\S/g,function(c){return c.toLocaleUpperCase('tr');});
+  SFX.init(); SFX.ding();
+  document.getElementById('playerName').textContent=playerName;
+  document.getElementById('playerPill').style.display='flex';
+  updateRank();
+  go('home');
+}
+function go(id){
+  if(!playerName && id!=='name') id='name';
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('scr-'+id).classList.add('active');
+  if(id==='home') refreshBest();
+}
+function refreshBest(){
+  document.getElementById('bestQuiz').textContent = best.quiz!=null ? '⭐ En iyi: '+best.quiz+' puan' : '';
+  document.getElementById('bestVaka').textContent = best.vaka!=null ? '⭐ En iyi: '+best.vaka+' puan' : '';
+  document.getElementById('bestCards').textContent = stats.cards.opened ? '📖 '+stats.cards.opened+'/'+G.cards.length+' kart incelendi' : '';
+}
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function flashDanger(){ var f=document.getElementById('dangerFlash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
+
+/* ================= REHBER ================= */
+function renderCards(){
+  var g=document.getElementById('cardGrid'); g.innerHTML='';
+  G.cards.forEach(function(c,i){
+    var d=document.createElement('div');
+    d.className='stepcard'+(cardSeen[i]?' open':'');
+    d.innerHTML='<div class="num">KART '+(i+1)+(cardSeen[i]?' · ✓':'')+'</div><div class="name">'+c.t+'</div><div class="desc">'+c.d+'</div>';
+    d.onclick=function(){
+      d.classList.toggle('open');
+      if(!cardSeen[i]){ cardSeen[i]=true; stats.cards.opened++; addTotal(10); SFX.ding();
+        d.querySelector('.num').textContent='KART '+(i+1)+' · ✓'; }
+    };
+    g.appendChild(d);
+  });
+}
+
+/* ================= QUIZ ================= */
+var qList=[], qIdx=0, qScore=0, qCorrect=0;
+function startQuiz(){
+  qList=shuffle(G.quiz).slice(0,10); qIdx=0; qScore=0; qCorrect=0;
+  document.getElementById('quizScore').textContent=0;
+  renderQuiz(); go('quiz');
+}
+function renderQuiz(){
+  var s=qList[qIdx];
+  document.getElementById('quizNo').textContent=qIdx+1;
+  document.getElementById('quizBar').style.width=(qIdx/qList.length*100)+'%';
+  document.getElementById('quizQ').textContent=s.q;
+  document.getElementById('quizExpl').className='expl';
+  document.getElementById('quizNext').style.display='none';
+  var box=document.getElementById('quizOpts'); box.innerHTML='';
+  shuffle(s.o.map(function(t,i){return {t:t,i:i};})).forEach(function(op){
+    var d=document.createElement('div');
+    d.className='opt'; d.textContent=op.t;
+    d.onclick=function(){ answerQuiz(d,op.i,s); };
+    box.appendChild(d);
+  });
+}
+function answerQuiz(el,i,s){
+  var opts=document.querySelectorAll('#quizOpts .opt');
+  opts.forEach(function(o){o.classList.add('dim');});
+  var ex=document.getElementById('quizExpl');
+  stats.quiz.answered++;
+  if(i===s.c){
+    el.classList.remove('dim'); el.classList.add('correct');
+    SFX.cheer(); qScore+=120; qCorrect++; stats.quiz.correct++;
+    ex.className='expl ok'; ex.innerHTML='✅ '+s.e;
+  } else {
+    el.classList.add('incorrect');
+    opts.forEach(function(o,k){ /* doğruyu göster */ });
+    var corr=null; var list=[].slice.call(opts);
+    list.forEach(function(o){ if(o.textContent===s.o[s.c]) corr=o; });
+    if(corr){ corr.classList.remove('dim'); corr.classList.add('correct'); }
+    flashDanger(); SFX.buzz();
+    ex.className='expl no'; ex.innerHTML='⚠️ '+s.e;
+  }
+  document.getElementById('quizScore').textContent=qScore;
+  document.getElementById('quizNext').style.display='inline-block';
+}
+function nextQuiz(){
+  qIdx++;
+  if(qIdx>=qList.length){
+    stats.quiz.plays++;
+    if(best.quiz==null||qScore>best.quiz) best.quiz=qScore;
+    var stars=qCorrect>=9?3:qCorrect>=7?2:qCorrect>=5?1:0;
+    finishGame(qScore, qCorrect+'/10 doğru!', stars>=2?'Harika bir maç çıkardın — bölümünün ortalamasını yukarı çektin!':'Bilgi kartlarına göz atıp tekrar dene; her tekrar bölüm ortalamana katkı.', stars, startQuiz, stars>=3?'🏆':stars>=2?'🎉':stars>=1?'👍':'📘');
+  } else renderQuiz();
+}
+
+/* ================= VAKA ================= */
+var stepIdx=0, caseScore=0, caseLives=3;
+function startCase(){
+  stepIdx=0; caseScore=0; caseLives=3;
+  document.getElementById('caseTitle').textContent=G.vaka.ic+' '+G.vaka.name;
+  document.getElementById('caseScore').textContent=0;
+  renderStep(); go('case');
+}
+function renderStep(){
+  var s=G.vaka.steps[stepIdx];
+  document.getElementById('caseLives').textContent='❤️'.repeat(caseLives)+'🖤'.repeat(3-caseLives);
+  document.getElementById('caseBar').style.width=(stepIdx/G.vaka.steps.length*100)+'%';
+  document.getElementById('caseTag').textContent=s.tag;
+  document.getElementById('caseQ').textContent=s.q;
+  document.getElementById('caseExpl').className='expl';
+  document.getElementById('caseNext').style.display='none';
+  var box=document.getElementById('caseOpts'); box.innerHTML='';
+  shuffle(s.o.map(function(t,i){return {t:t,i:i};})).forEach(function(op){
+    var d=document.createElement('div');
+    d.className='opt'; d.textContent=op.t;
+    d.onclick=function(){ answerStep(d,op.i,s); };
+    box.appendChild(d);
+  });
+}
+function answerStep(el,i,s){
+  var opts=document.querySelectorAll('#caseOpts .opt');
+  var ex=document.getElementById('caseExpl');
+  if(i===s.c){
+    opts.forEach(function(o){o.classList.add('dim');});
+    el.classList.remove('dim'); el.classList.add('correct');
+    SFX.cheer(); caseScore+=150;
+    ex.className='expl ok'; ex.innerHTML='✅ '+s.ok;
+    document.getElementById('caseScore').textContent=caseScore;
+    document.getElementById('caseNext').style.display='inline-block';
+  } else {
+    el.classList.add('incorrect','dim');
+    stats.vaka.wrong++; caseLives--;
+    flashDanger(); SFX.buzz();
+    document.getElementById('caseLives').textContent='❤️'.repeat(caseLives)+'🖤'.repeat(3-caseLives);
+    ex.className='expl no'; ex.innerHTML='⚠️ '+s.no+(caseLives>0?' <b>Tekrar dene!</b>':'');
+    if(caseLives<=0){
+      opts.forEach(function(o){o.classList.add('dim');});
+      stats.vaka.plays++;
+      if(best.vaka==null||caseScore>best.vaka) best.vaka=caseScore;
+      finishGame(caseScore,'Vaka kazayla sonuçlandı!','Üç kritik hata üst üste geldi. Bilgi kartlarına dön ve vakayı baştan al — gerçek sahada ikinci şans yok.',0,startCase,'💥');
+    }
+  }
+}
+function nextStep(){
+  stepIdx++;
+  if(stepIdx>=G.vaka.steps.length){
+    stats.vaka.plays++; stats.vaka.completed++;
+    caseScore+=caseLives*100;
+    if(best.vaka==null||caseScore>best.vaka) best.vaka=caseScore;
+    finishGame(caseScore,'Vaka kazasız kapatıldı!','Doğru kararlarla herkes güvende. Kalan can bonusu: +'+(caseLives*100)+' puan.',caseLives,startCase,'🦺');
+  } else renderStep();
+}
+
+/* ================= RESULT ================= */
+function finishGame(pts,title,msg,stars,replayFn,emoji){
+  addTotal(pts);
+  var t=titleFor(total);
+  document.getElementById('resPlayer').textContent=playerName+' · '+t.icon+' '+t.name;
+  document.getElementById('resEmoji').textContent=emoji;
+  document.getElementById('resTitle').textContent=title;
+  document.getElementById('resStars').textContent=stars>0?'⭐'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆';
+  document.getElementById('resPts').textContent='+'+pts+' puan  ·  💧 +'+Math.floor(pts/100)+' can suyu';
+  document.getElementById('resMsg').textContent=msg;
+  if(stars>=2){ SFX.applause(1.8,.9); } else if(stars>=1){ SFX.ding(); } else { SFX.fail(); }
+  document.getElementById('resReplay').onclick=replayFn;
+  go('result');
+}
+
+/* ================= TRAINER ================= */
+function openTrainer(){
+  var t=titleFor(total);
+  document.getElementById('trName').textContent=playerName||'—';
+  document.getElementById('trTitle').textContent='Ünvan: '+t.icon+' '+t.name+' · Konu: '+G.topic;
+  document.getElementById('trTotal').textContent=total+' puan';
+  document.getElementById('trDate').textContent=new Date().toLocaleString('tr-TR',{dateStyle:'long',timeStyle:'short'});
+  var row=function(l,v){return '<div class="row"><span>'+l+'</span><b>'+v+'</b></div>';};
+  var q=stats.quiz, v=stats.vaka;
+  var pct=q.answered?Math.round(q.correct/q.answered*100):null;
+  document.getElementById('trCards').innerHTML=
+    '<div class="trcard"><h4>📖 Bilgi Kartları</h4>'+
+      row('İncelenen kart', stats.cards.opened+' / '+G.cards.length)+
+    '</div>'+
+    '<div class="trcard"><h4>❓ Bilgi Yarışması</h4>'+
+      row('Oynama sayısı', q.plays)+
+      row('En iyi puan', best.quiz!=null?best.quiz:'—')+
+      row('Doğru / Cevap', q.correct+' / '+q.answered)+
+      row('Başarı oranı', pct!=null?'%'+pct:'—')+
+    '</div>'+
+    '<div class="trcard"><h4>'+G.vaka.ic+' Vaka</h4>'+
+      row('Oynama sayısı', v.plays)+
+      row('En iyi puan', best.vaka!=null?best.vaka:'—')+
+      row('Kazasız tamamlama', v.completed)+
+      row('Yanlış karar', v.wrong)+
+    '</div>';
+  var notes=[];
+  if(!q.plays && !v.plays && !stats.cards.opened){
+    notes.push('Katılımcı henüz bölüm oynamadı — rapor, bölümler oynandıkça otomatik dolar.');
+  } else {
+    if(pct!=null) notes.push(pct>=70?'Quiz başarısı %'+pct+' — konu bilgisi iyi düzeyde.':'Quiz başarısı %'+pct+' — '+G.topic+' konusu tekrar edilmeli.');
+    if(v.plays) notes.push(v.completed>0?'Vakayı '+v.completed+' kez kazasız yönetti'+(v.wrong?' ('+v.wrong+' yanlış karar).':'.'):'Vaka henüz kazasız tamamlanamadı — uygulama pekiştirilmeli.');
+    if(stats.cards.opened<G.cards.length) notes.push('Bilgi kartlarının '+stats.cards.opened+'/'+G.cards.length+'ı incelendi — kalan kartlar önerilmeli.');
+    notes.push('Genel seviye: '+t.icon+' '+t.name+'.');
+  }
+  document.getElementById('trNote').innerHTML='<b>Eğitici değerlendirme notu:</b><br>• '+notes.join('<br>• ');
+  go('trainer');
+}
+
+/* ================= INIT ================= */
+document.getElementById('hdrSmall').textContent=G.small;
+document.getElementById('welIcon').textContent=G.ic;
+document.getElementById('welH').textContent=G.welH;
+document.getElementById('welSub').textContent=G.welSub;
+document.getElementById('homeH1').innerHTML=G.h1a+' <span class="accent">'+G.h1b+'</span>';
+document.getElementById('homeSub').textContent=G.homeSub;
+document.getElementById('homeNote').innerHTML='⚠️ <b>Unutma:</b> '+G.note;
+document.getElementById('vakaIc').textContent=G.vaka.ic;
+document.getElementById('vakaH3').textContent='Vaka: '+G.vaka.name;
+document.getElementById('vakaP').textContent=G.vaka.p;
+document.getElementById('footLine').textContent=G.foot;
+renderCards();
+var _ni=document.getElementById('nameInput');
+_ni.addEventListener('keydown',function(e){ if(e.key==='Enter') registerPlayer(); });
+_ni.addEventListener('input',function(){ document.getElementById('nameErr').style.display='none'; });
+</script>
+
+</html>
